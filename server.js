@@ -57,7 +57,10 @@ app.get('/getDreams', function(request, response) {
 });
 
 app.post('/writeDream', function(request, response) {
-  
+  db.serialize(function() {
+    db.run('INSERT INTO Dreams (dream) VALUES (?)', request.body.dream);
+  });
+  response.sendStatus(201);
 });
 
 // listen for requests :)

@@ -34,6 +34,14 @@ const appendNewDream = function(dream) {
   dreamsList.appendChild(newListItem);
 }
 
+// helper to submit
+const submitDream = function(dream) {
+  let dreamPost = new XMLHttpRequest();
+  dreamPost.open('post', '/writeDream');
+  dreamPost.setRequestHeader("Content-Type", "application/json");
+  dreamPost.send(JSON.stringify({"dream": dream}));
+}
+
 // listen for the form to be submitted and add a new dream when it is
 dreamsForm.onsubmit = function(event) {
   // stop our form submission from refreshing the page
@@ -41,6 +49,7 @@ dreamsForm.onsubmit = function(event) {
 
   // get dream value and add it to the list
   dreams.push(dreamInput.value);
+  submitDream(dreamInput.value);
   appendNewDream(dreamInput.value);
 
   // reset form 
