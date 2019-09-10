@@ -12,6 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
+app.use(express.json());
 
 // init sqlite db
 var fs = require('fs');
@@ -53,6 +54,10 @@ app.get('/getDreams', function(request, response) {
   db.all('SELECT * from Dreams', function(err, rows) {
     response.send(JSON.stringify(rows));
   });
+});
+
+app.post('/writeDream', function(request, response) {
+  
 });
 
 // listen for requests :)
