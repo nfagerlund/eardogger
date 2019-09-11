@@ -66,11 +66,18 @@ function createDogear(prefix, current) {
 function updateDogear(current) {
   let ok = true;
   db.serialize(function(){
-    db.run('UPDATE Dogears SET current = $current WHERE $current LIKE "http://" || prefix || "%" OR $current LIKE "https://" || prefix || "%"', {$current: current}, function(err){
-      if (err) {
-        ok = false;
+    db.run(
+      'UPDATE Dogears ' + 
+      'SET current = $current WHERE ' +
+        '$current LIKE "http://" || prefix || "%" OR ' +
+        '$current LIKE "https://" || prefix || "%"', 
+      {$current: current}, 
+      function(err){
+        if (err) {
+          ok = false;
+        }
       }
-    });
+    );
   });
   return ok;
 }
