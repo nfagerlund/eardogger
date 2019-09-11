@@ -64,7 +64,9 @@ function updateDogear(current) {
       'UPDATE Dogears ' + 
       'SET current = $current WHERE ' +
         '$current LIKE "http://" || prefix || "%" OR ' +
-        '$current LIKE "https://" || prefix || "%"', 
+        '$current LIKE "https://" || prefix || "%" ' +
+        'ORDER BY length(prefix) ' +
+        'LIMIT 1', 
       {$current: current}, 
       function(err){
         if (err) {
