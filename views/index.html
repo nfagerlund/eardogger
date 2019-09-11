@@ -49,6 +49,15 @@
       <section class="dogears">
         <ul id="dogears"></ul>
       </section>
+      
+      <h5>
+        Updater bookmarklet
+      </h5>
+      <p>
+        (Right now, this can only update existing dogears. It can't create new ones yet.)
+      </p>
+      <textarea rows="3" cols="15">javascript:(()=>{var u=new XMLHttpRequest();u.open('post', 'https://eardogger.glitch.me/update');u.setRequestHeader("Content-Type", "application/json");u.send(JSON.stringify({current: document.location.href}));})();</textarea>
+      
     </main>
 
     <footer>
