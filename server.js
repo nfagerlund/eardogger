@@ -48,23 +48,45 @@ db.serialize(function(){
 });
 
 function createDogear(prefix, current) {
+  let ok = true;
   if (!current) {
     current = prefix;
   }
   db.serialize(function(){
     db.run('INSERT INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current], function(err){
       if (err) {
-        updateDogear(current); // I'd like to just upsert, but I don't have a new enough sqlite version installed.
+        ok = updateDogear(current); // I'd like to just upsert, but I don't have a new enough sqlite version installed.
       }
     });
   });
+  return ok;
 }
 
+// Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
 function updateDogear(current) {
+  let ok = true;
   db.serialize(function(){
-    db.run('UPDATE Dogears SET current = $current WHERE $current LIKE prefix || "%"')
+    db.run('UPDATE Dogears SET current = $current WHERE $current LIKE prefix || "%"', {$current: current}, function(err){
+      if (err) {
+        ok = false;
+      }
+    });
   });
+  return ok;
 }
+
+function getDogear(url) {
+  let ok = true;
+  let result = false;
+  db.serialize(function(){
+    db.get('SELECT current FROM Dogears WHERE ? LIKE prefix || "%" ORDER BY length(prefix) DESC', url, function(err, row){
+      result = row.current;
+    });
+  });
+  return result;
+}
+
+updateDogear('https://example.com/comic/9');
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
 app.get('/', function(request, response) {
