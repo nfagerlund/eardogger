@@ -66,7 +66,7 @@ function createDogear(prefix, current) {
 function updateDogear(current) {
   let ok = true;
   db.serialize(function(){
-    db.run('UPDATE Dogears SET current = $current WHERE $current LIKE prefix || "%"', {$current: current}, function(err){
+    db.run('UPDATE Dogears SET current = $current WHERE $current LIKE "http://" || prefix || "%" OR $current LIKE "https://" || prefix || "%"', {$current: current}, function(err){
       if (err) {
         ok = false;
       }
@@ -79,14 +79,14 @@ function getDogear(url) {
   let ok = true;
   let result = false;
   db.serialize(function(){
-    db.get('SELECT current FROM Dogears WHERE ? LIKE prefix || "%" ORDER BY length(prefix) DESC', url, function(err, row){
+    db.get('SELECT current FROM Dogears WHERE $url LIKE "http://" || prefix || "%" OR $url LIKE "https://" || prefix || "%" ORDER BY length(prefix) DESC', {$url: url}, function(err, row){
       result = row.current;
     });
   });
   return result;
 }
 
-updateDogear('https://example.com/comic/9');
+// updateDogear('https://example.com/comic/20');
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
 app.get('/', function(request, response) {
