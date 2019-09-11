@@ -96,7 +96,27 @@ function getDogear(url) {
 
 // updateDogear('https://example.com/comic/20');
 
-app.post('/update')
+app.post('/update', function(req, res){
+  updateDogear(req.body.current);
+  res.sendStatus(200);
+});
+
+app.post('/create', function(req, res){
+  createDogear(req.body.prefix, req.body.current)
+  res.sendStatus(201);
+});
+
+app.get('/list', function(req, res){
+  db.serialize(function(){
+    db.all(
+      'SELECT current FROM Dogears ORDER BY prefix ASC',
+      [],
+      function(err, rows){
+        res.send(JSON.stringify(rows));
+      }
+    );
+  });
+});
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
 app.get('/', function(request, response) {
