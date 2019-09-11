@@ -47,11 +47,13 @@ db.serialize(function(){
   db.run('CREATE TABLE IF NOT EXISTS Dogears (prefix TEXT PRIMARY KEY NOT NULL, current TEXT)');
 });
 
-const createDogear = function(prefix, current) {
+function createDogear(prefix, current) {
   if (!current) {
     current = prefix;
   }
-  
+  db.serialize(function(){
+    db.run('INSERT INTO Dogears (prefix, current) VALUES ()')
+  });
 }
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
