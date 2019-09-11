@@ -52,7 +52,17 @@ function createDogear(prefix, current) {
     current = prefix;
   }
   db.serialize(function(){
-    db.run('INSERT INTO Dogears (prefix, current) VALUES ()')
+    db.run('INSERT INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current], function(err){
+      if (err) {
+        updateDogear(current); // I'd like to just upsert, but I don't have a new enough sqlite version installed.
+      }
+    });
+  });
+}
+
+function updateDogear(current) {
+  db.serialize(function(){
+    db.run('UPDATE Dogears SET current = $current WHERE $current LIKE prefix || "%"')
   });
 }
 
