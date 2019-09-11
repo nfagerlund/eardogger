@@ -48,18 +48,12 @@ db.serialize(function(){
 });
 
 function createDogear(prefix, current) {
-  let ok = true;
   if (!current) {
     current = prefix;
   }
   db.serialize(function(){
-    db.run('INSERT INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current], function(err){
-      if (err) {
-        ok = updateDogear(current); // I'd like to just upsert, but I don't have a new enough sqlite version installed.
-      }
-    });
+    db.run('INSERT OR REPLACE INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current]);
   });
-  return ok;
 }
 
 // Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
