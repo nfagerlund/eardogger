@@ -50,7 +50,7 @@ const submitDogear = function(dest, dogObj) {
 // create form:
 createForm.onsubmit = function(e) {
   e.preventDefault();
-  submitDogear('/create', {prefix: createPrefixInput, current: createCurrentInput});
+  submitDogear('/create', {prefix: createPrefixInput.value, current: createCurrentInput.value});
   createPrefixInput.value = '';
   createCurrentInput.value = '';
   refreshDogears();
@@ -59,7 +59,7 @@ createForm.onsubmit = function(e) {
 // update form:
 updateForm.onsubmit = function(e) {
   e.preventDefault();
-  submitDogear('/update', {current: updateCurrentInput});
+  submitDogear('/update', {current: updateCurrentInput.value});
   updateCurrentInput.value = '';
   refreshDogears();
 };

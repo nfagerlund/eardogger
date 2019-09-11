@@ -57,6 +57,9 @@ function createDogear(prefix, current) {
 }
 
 // Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
+// so, uhhhh for the prototype just don't do that.
+// btw I tried using sqlite's ORDER BY + LIMIT feature for update, but the version
+// linked into the nodejs module does not actually support that and just syntax errors. BOO.
 function updateDogear(current) {
   let ok = true;
   db.serialize(function(){
@@ -64,9 +67,7 @@ function updateDogear(current) {
       'UPDATE Dogears ' + 
         'SET current = $current WHERE ' +
         '$current LIKE "http://"  || prefix || "%" OR ' +
-        '$current LIKE "https://" || prefix || "%" ' +
-        'ORDER BY length(prefix) DESC ' +
-        'LIMIT 1', 
+        '$current LIKE "https://" || prefix || "%" ', 
       {$current: current}, 
       function(err){
         if (err) {
