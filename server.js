@@ -21,7 +21,7 @@ var exists = fs.existsSync(dbFile);
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
 
-// if ./.data/sqlite.db does not exist, create it, otherwise print records to console
+// GL: if ./.data/sqlite.db does not exist, create it, otherwise print records to console
 db.serialize(function(){
   if (!exists) {
     db.run('CREATE TABLE Dreams (dream TEXT)');
@@ -42,7 +42,19 @@ db.serialize(function(){
   }
 });
 
-// http://expressjs.com/en/starter/basic-routing.html
+// NF: init dogears table
+db.serialize(function(){
+  db.run('CREATE TABLE IF NOT EXISTS Dogears (prefix TEXT PRIMARY KEY NOT NULL, current TEXT)');
+});
+
+const createDogear = function(prefix, current) {
+  if (!current) {
+    current = prefix;
+  }
+  
+}
+
+// GL: http://expressjs.com/en/starter/basic-routing.html
 app.get('/', function(request, response) {
   response.sendFile(__dirname + '/views/index.html');
 });
