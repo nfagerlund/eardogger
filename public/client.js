@@ -15,7 +15,10 @@ const updateForm = document.forms[1];
 const cookieButton = document.getElementById('cookie');
 
 // fake a session cookie
-
+cookieButton.addEventListener('click', e => {
+  document.cookie = "test-session=aoeuhtns;expires=Fri, 31 Dec 9999 23:59:59 GMT";
+  window.alert('ok, set your cookie to aoeuhtns');
+});
 
 // a helper function to call when our request for dogears is done
 const getDogearsListener = function() {
