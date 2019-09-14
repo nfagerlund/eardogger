@@ -12,6 +12,10 @@ const createForm = document.forms[0];
   const createCurrentInput = createForm.elements['current'];
 const updateForm = document.forms[1];
   const updateCurrentInput = updateForm.elements['current'];
+const cookieButton = document.getElementById('cookie');
+
+// fake a session cookie
+
 
 // a helper function to call when our request for dogears is done
 const getDogearsListener = function() {
