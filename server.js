@@ -20,7 +20,9 @@ app.use(express.json());
 // s/o to http://johnzhang.io/options-request-in-express 
 // (via https://support.glitch.com/t/how-do-i-do-a-cors-on-my-api/7497/8)
 app.use(function(req, res, next){
-  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header('Access-Control-Allow-Credentials', true);
+  res.header('Vary', 'Origin');
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
   //intercepts OPTIONS method
