@@ -4,8 +4,10 @@
 // init project
 var express = require('express');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
 var app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // we've started you off with Express, 
 // but feel free to use whatever libs or frameworks you'd like through `package.json`.
@@ -116,6 +118,7 @@ function getDogear(url) {
 // updateDogear('https://example.com/comic/20');
 
 app.post('/update', function(req, res){
+  
   updateDogear(req.body.current);
   res.sendStatus(200);
 });
