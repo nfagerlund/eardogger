@@ -118,9 +118,13 @@ function getDogear(url) {
 // updateDogear('https://example.com/comic/20');
 
 app.post('/update', function(req, res){
-  
-  updateDogear(req.body.current);
-  res.sendStatus(200);
+  if (req.cookies['test-session'] === 'aoeuhtns') {
+    updateDogear(req.body.current);
+    res.sendStatus(200);
+  } else {
+    res.status(401);
+    res.send(JSON.stringify(req.cookies));
+  }
 });
 
 app.post('/create', function(req, res){
