@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(function(req, res, next){
   // works w/ cookies:
   res.header("Access-Control-Allow-Origin", req.headers.origin);
-  // doesn't work w/ cookies: 
+  // doesn't work w/ cookies:
   // res.header("Access-Control-Allow-Origin", '*');
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Vary', 'Origin');
@@ -37,7 +37,7 @@ app.use(function(req, res, next){
 });
 
 // Use sqlite for db
-const db = require('./db/sqlite');
+const db = require('./db/pg_sync');
 
 // bad, replace later:
 
@@ -92,7 +92,12 @@ app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
   // Hmm, no error handling, I guess...
-  db.query('INSERT OR REPLACE INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current], ()=>{});
+  db.query('INSERT OR REPLACE INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current], (err, rows)=>{
+    if (err) {
+      // I'm pretty sure I have a syntax error here, because different upsert syntax.
+      console.log(err)
+    }
+  });
 
   res.sendStatus(201);
 });
