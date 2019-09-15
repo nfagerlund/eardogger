@@ -9,7 +9,11 @@ module.exports = {
   query: (text, params, callback) => {
     pool.query(text, params, (err, res) => {
       console.log(res);
-      callback(err, res.rows)
+      try {
+        callback(err, res.rows)
+      } catch {
+        callback(err, null)
+      }
     });
   }
 };
