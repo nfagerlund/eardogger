@@ -36,11 +36,8 @@ app.use(function(req, res, next){
   }
 });
 
-// init sqlite db
-// var fs = require('fs');
-var dbFile = './.data/sqlite.db';
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database(dbFile);
+// Use sqlite for db
+const db = require('./db/sqlite');
 
 // bad, replace later:
 
@@ -68,22 +65,20 @@ var db = new sqlite3.Database(dbFile);
 app.post('/update', function(req, res){
   // TODO: that's fake auth
   if (req.cookies['test-session'] === 'aoeuhtns') {
-    db.serialize(function(){
-      db.run(
-        'UPDATE Dogears ' +
-          'SET current = $current WHERE ' +
-          '$current LIKE "http://"  || prefix || "%" OR ' +
-          '$current LIKE "https://" || prefix || "%" ',
-        {$current: req.body.current},
-        function(err){
-          if (err) {
-            res.sendStatus(404);
-          } else {
-            res.sendStatus(200);
-          }
+    db.query(
+      'UPDATE Dogears ' +
+        'SET current = $current WHERE ' +
+        '$current LIKE "http://"  || prefix || "%" OR ' +
+        '$current LIKE "https://" || prefix || "%" ',
+      {$current: req.body.current},
+      function(err){
+        if (err) {
+          res.sendStatus(404);
+        } else {
+          res.sendStatus(200);
         }
-      );
-    });
+      }
+    );
   } else {
     // Move this into a middleware once I have real sessions working
     res.status(401);
@@ -96,24 +91,21 @@ app.post('/update', function(req, res){
 app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
-  db.serialize(function(){
-    db.run('INSERT OR REPLACE INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current]);
-  });
+  // Hmm, no error handling, I guess...
+  db.query('INSERT OR REPLACE INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current], ()=>{});
 
   res.sendStatus(201);
 });
 
 // API: list
 app.get('/list', function(req, res){
-  db.serialize(function(){
-    db.all(
-      'SELECT current FROM Dogears ORDER BY prefix ASC',
-      [],
-      function(err, rows){
-        res.send(JSON.stringify(rows));
-      }
-    );
-  });
+  db.query(
+    'SELECT current FROM Dogears ORDER BY prefix ASC',
+    [],
+    (err, rows) => {
+      res.send(JSON.stringify(rows));
+    }
+  );
 });
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
