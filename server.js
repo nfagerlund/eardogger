@@ -92,12 +92,17 @@ app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
   // Hmm, no error handling, I guess...
-  db.query('INSERT OR REPLACE INTO Dogears (prefix, current) VALUES (?, ?)', [prefix, current], (err, rows)=>{
-    if (err) {
-      // I'm pretty sure I have a syntax error here, because different upsert syntax.
-      console.log(err)
+  db.query('INSERT INTO Dogears (prefix, current) VALUES (?, ?) ON CONFLICT DO UPDATE ' +
+      'SET current = $2 WHERE ' +
+      '$2 LIKE "http://"  || prefix || "%" OR ' +
+      '$2 LIKE "https://" || prefix || "%" ',
+    [prefix, current],
+    (err, rows)=>{
+      if (err) {
+        console.log(err)
+      }
     }
-  });
+  );
 
   res.sendStatus(201);
 });
