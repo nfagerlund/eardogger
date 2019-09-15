@@ -14,9 +14,23 @@ If a URL matches multiple bookmarks' prefixes, they'll both get moved to that lo
 
 All API calls require a session cookie for auth, because they're meant to be called by bookmarklets or browser extensions or the UI.
 
-### Global return codes
+### Shared Status Codes
 
-- All methods return 401 with empty body if there's no session cookie. Can't do anything with your bookmarks if I don't know who you are.
+All methods return 401 with empty body if there's no session cookie. Can't do anything with your bookmarks if I don't know who you are.
+
+### Bookmark Objects
+
+A few endpoints can return bookmark objects, which look like this:
+
+```javascript
+{
+  "prefix": "string", // without protocol
+  "current": "URL",
+  "name": "display name", // optional
+  "updated": "last update time", // format?
+  "id": "opaque ID" // maybe
+}
+```
 
 ### POST /v1/create
 
@@ -74,6 +88,26 @@ Success | 200, empty body
 Can't find bookmark | 404, empty body
 Syntax error, API version decommissioned, etc. | 400, optional JSON object with `{error: "error name", help: "HTML explanation"}`
 
+### GET /v1/current/:url
+
+(The informational version.)
+
+Get the current position of the most specific bookmark that matches the provided URL. Returns JSON.
+
+URL parameters:
+
+Name | Description
+-|-
+:url | The URL-encoded URL (yo dawg) to retrieve a bookmark for.
+
+Returns:
+
+Outcome | Response
+-|-
+Success | 200, JSON bookmark object
+Can't find bookmark | 404, empty body
+Syntax error, API version decommissioned, etc. | 400, optional JSON object with `{error: "error name", help: "HTML explanation"}`
+
 ### GET /v1/list
 
 List all bookmarks.
@@ -86,8 +120,8 @@ Returns:
 
 ```javascript
 [
-  { "current": "http://example.com/comic/24" },
-  # ...
+  { bookmark_object }, // see above for format
+  // ...
 ]
 ```
 
@@ -125,10 +159,29 @@ Name | Description
 :url | URL-encoded URL (yo dawg) of the URL you want to bookmark.
 
 - If it found and updated existing bookmarks:
-    - Display "Bookmarks updated" page w/ 3-sec countdown; redirect to :url after countdown.
+    - Display "Bookmarks updated" page w/ 3-sec countdown; 302 to :url after countdown.
 - If no bookmarks matched:
     - Display create bookmark form
         - Only offer prefix; display :url but leave it hardcoded.
-        - On success: display "Bookmark created" page w/ 3-sec countdown; redirect to :url after countdown.
+        - On success: display "Bookmark created" page w/ 3-sec countdown; 302 to :url after countdown.
 - If no session: login form, which redirects to self on success.
+
+### /resume/:url
+
+Immediately redirect to the current position of the most specific bookmark that matches :url.
+
+If there aren't any matching bookmarks, offer a choice between creating a new bookmark or just returning to where you were.
+
+URL parameters:
+
+Name | Description
+-|-
+:url | The URL-encoded URL (yo dawg) to retrieve a bookmark for.
+
+Returns:
+
+Outcome | Response
+-|-
+Success | 302 "found" redirect to current location of bookmark.
+Can't find bookmark |
 
