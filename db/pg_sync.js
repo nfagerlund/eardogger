@@ -11,7 +11,7 @@ module.exports = {
       console.log(res);
       try {
         callback(err, res.rows)
-      } catch {
+      } catch (e) {
         callback(err, null)
       }
     });
