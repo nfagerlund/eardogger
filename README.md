@@ -6,7 +6,7 @@ This is a movable bookmarks service, for reading serialized content on the web.
 
 Bookmarks are like wood-space bookmarks, not browser bookmarks. That is: they're independent of their URL, and their URL changes over their lifespan.
 
-Bookmarks are identified by a URL prefix. Think of the prefix as identifying "this book." If a URL matches that prefix, then it's in _this book,_ and the bookmark can be moved to that spot. If not, then it's in a different book, which has a different bookmark (or no bookmark) in it.
+Bookmarks are identified by a URL prefix. Think of the prefix as identifying "this book." If a URL matches that prefix, then it's in _this book,_ and the bookmark can be moved to that spot. If not, then it's in a different book, which has a different bookmark in it (or no bookmark).
 
 If a URL matches multiple bookmarks' prefixes, they'll both get moved to that location on update. This is semi-intentional, because I can sorta see a use for it.
 
