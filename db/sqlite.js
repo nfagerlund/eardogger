@@ -1,5 +1,5 @@
 // glitch data dir, not in repo.
-const dbFile = '../.data/sqlite.db';
+const dbFile = '.data/sqlite.db'; // relative to top project dir
 const sqlite3 = require('sqlite3').verbose();
 const db = new sqlite3.Database(dbFile);
 
