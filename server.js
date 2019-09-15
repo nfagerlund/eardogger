@@ -66,10 +66,10 @@ app.post('/update', function(req, res){
   // TODO: that's fake auth
   if (req.cookies['test-session'] === 'aoeuhtns') {
     db.query(
-      'UPDATE Dogears ' +
-        'SET current = $current WHERE ' +
-        '$current LIKE "http://"  || prefix || "%" OR ' +
-        '$current LIKE "https://" || prefix || "%" ',
+      "UPDATE Dogears " +
+        "SET current = $current WHERE " +
+        "$current LIKE 'http://'  || prefix || '%' OR " +
+        "$current LIKE 'https://' || prefix || '%' ",
       {$current: req.body.current},
       function(err){
         if (err) {
@@ -92,10 +92,10 @@ app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
   // Hmm, no error handling, I guess...
-  db.query('INSERT INTO Dogears (prefix, current) VALUES (?, ?) ON CONFLICT DO UPDATE ' +
-      'SET current = $2 WHERE ' +
-      '$2 LIKE "http://"  || prefix || "%" OR ' +
-      '$2 LIKE "https://" || prefix || "%" ',
+  db.query("INSERT INTO Dogears (prefix, current) VALUES ($1, $2) ON CONFLICT DO UPDATE " +
+      "SET current = $2 WHERE " +
+      "$2 LIKE 'http://'  || prefix || '%' OR " +
+      "$2 LIKE 'https://' || prefix || '%' ",
     [prefix, current],
     (err, rows)=>{
       if (err) {
