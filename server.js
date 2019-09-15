@@ -42,27 +42,23 @@ var dbFile = './.data/sqlite.db';
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database(dbFile);
 
+// bad, replace later:
 
-// NF: init bookmarks table
-db.serialize(function(){
-  db.run('CREATE TABLE IF NOT EXISTS Dogears (prefix TEXT PRIMARY KEY NOT NULL, current TEXT)');
-});
-
-function getDogear(url) {
-  let ok = true;
-  let result = false;
-  db.serialize(function(){
-    db.get(
-      'SELECT current FROM Dogears WHERE ' +
-        '$url LIKE "http://"  || prefix || "%" OR ' +
-        '$url LIKE "https://" || prefix || "%" ' +
-        'ORDER BY length(prefix) DESC',
-      {$url: url}, function(err, row){
-      result = row.current;
-    });
-  });
-  return result;
-}
+// function getDogear(url) {
+//   let ok = true;
+//   let result = false;
+//   db.serialize(function(){
+//     db.get(
+//       'SELECT current FROM Dogears WHERE ' +
+//         '$url LIKE "http://"  || prefix || "%" OR ' +
+//         '$url LIKE "https://" || prefix || "%" ' +
+//         'ORDER BY length(prefix) DESC',
+//       {$url: url}, function(err, row){
+//       result = row.current;
+//     });
+//   });
+//   return result;
+// }
 
 // API: update
 // Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
