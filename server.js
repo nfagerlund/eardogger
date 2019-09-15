@@ -92,7 +92,7 @@ app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
   // Hmm, no error handling, I guess...
-  db.query('INSERT INTO Dogears (prefix, current) VALUES (?, ?) ON CONFLICT DO UPDATE ' +
+  db.query('INSERT INTO Dogears (prefix, current) VALUES ($1, $2) ON CONFLICT DO UPDATE ' +
       'SET current = $2 WHERE ' +
       '$2 LIKE "http://"  || prefix || "%" OR ' +
       '$2 LIKE "https://" || prefix || "%" ',
