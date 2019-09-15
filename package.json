@@ -7,11 +7,14 @@
   "description": "A simple Node app with SQLite as a database management system, instantly up and running.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "schema": "node db/schema.js"
   },
   "dependencies": {
     "express": "^4.16.3",
     "cookie-parser": "^1.4.4",
+    "express-promise-router": "^3.0.3",
+    "pg": "^7.12.1",
     "sqlite3": "^4.0.0"
   },
   "engines": {
