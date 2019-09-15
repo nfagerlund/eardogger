@@ -1,4 +1,5 @@
 // Update existing bookmark, or create a new bookmark.
+// TODO: use this to populate the bookmarklet install textarea
 
 (
   () => {
