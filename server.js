@@ -93,7 +93,7 @@ app.post('/create', function(req, res){
   let current = req.body.current || req.body.prefix;
   let display_name = req.body.display_name; // can be undefined
 
-  db.query("INSERT INTO dogears (prefix, current, current_protocol, display_name) VALUES ($1, $2, $3) " +
+  db.query("INSERT INTO dogears (prefix, current, current_protocol, display_name) VALUES ($1, $2, $3, $4) " +
       "ON CONFLICT (prefix) DO UPDATE " +
       "SET current = $2, current_protocol = $3 WHERE " +
       "$2 LIKE $3 || EXCLUDED.prefix || '%'",
