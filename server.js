@@ -68,9 +68,7 @@ app.post('/update', function(req, res){
     db.query(
       "UPDATE dogears " +
         "SET current = $1, current_protocol = $2 WHERE " +
-        "$1 LIKE current_protocol || '://' || prefix || '%' OR " +
-        "$1 LIKE 'http://'  || prefix || '%' OR " +
-        "$1 LIKE 'https://' || prefix || '%' ",
+        "$1 LIKE current_protocol || '://' || prefix || '%'",
       [req.body.current, req.body.current.match(/^https?/)[0]],
       function(err){
         if (err) {
@@ -94,11 +92,10 @@ app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
   // Hmm, no error handling, I guess...
-  db.query("INSERT INTO dogears (prefix, current, current_protocol) VALUES ($1, $2, $3) ON CONFLICT (prefix) DO UPDATE " +
-      "SET current = $2 WHERE " +
-      "$1 LIKE dogears.current_protocol || '://' || EXCLUDED.prefix || '%' OR " +
-      "$2 LIKE 'http://'  || EXCLUDED.prefix || '%' OR " +
-      "$2 LIKE 'https://' || EXCLUDED.prefix || '%' ",
+  db.query("INSERT INTO dogears (prefix, current, current_protocol) VALUES ($1, $2, $3) " +
+      "ON CONFLICT (prefix) DO UPDATE " +
+      "SET current = $2, current_protocol = $3 WHERE " +
+      "$1 LIKE dogears.current_protocol || '://' || EXCLUDED.prefix || '%'",
     [prefix, current, current.match(/^https?/)[0]],
     (err, rows)=>{
       if (err) {
