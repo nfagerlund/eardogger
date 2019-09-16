@@ -91,7 +91,8 @@ app.post('/update', function(req, res){
 app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
-  // Hmm, no error handling, I guess...
+  let display_name = req.body.display_name;
+
   db.query("INSERT INTO dogears (prefix, current, current_protocol) VALUES ($1, $2, $3) " +
       "ON CONFLICT (prefix) DO UPDATE " +
       "SET current = $2, current_protocol = $3 WHERE " +
@@ -110,7 +111,7 @@ app.post('/create', function(req, res){
 // API: list
 app.get('/list', function(req, res){
   db.query(
-    'SELECT current FROM dogears ORDER BY prefix ASC',
+    'SELECT prefix, current, display_name, updated FROM dogears ORDER BY updated DESC',
     [],
     (err, rows) => {
       res.send(JSON.stringify(rows));

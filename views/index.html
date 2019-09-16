@@ -34,9 +34,10 @@
       <p class="bold">Add Dogears:</p>
 
       <form>
-        <input name="prefix" type="text" maxlength="100" placeholder="Prefix" aria-labelledby="submit-dogear" />
-        <input name="current" type="text" maxlength="200" placeholder="Current URL" aria-labelledby="submit-dogear" />
-        <button type="submit" id="submit-dogear">Submit prefix and current URL</button>
+        <input name="prefix" type="text" maxlength="100" placeholder="Prefix" aria-label="URL prefix for this serial" />
+        <input name="current" type="text" maxlength="200" placeholder="Current URL" aria-label="Current URL for bookmark" />
+        <input name="display_name" type="text" maxlength="200" placeholder="Name (optional)" aria-label="Display name (optional)">
+        <button type="submit" id="submit-dogear">Create new dogear</button>
       </form>
 
       <p class="bold">Update Dogears:</p>
@@ -49,7 +50,7 @@
       <section class="dogears">
         <ul id="dogears"></ul>
       </section>
-      
+
       <h5>
         Updater bookmarklet
       </h5>
@@ -57,14 +58,14 @@
         (Right now, this can only update existing dogears. It can't create new ones yet.)
       </p>
       <textarea rows="3" cols="15">javascript:(()=>{var u=new XMLHttpRequest();u.open('post', 'https://eardogger.glitch.me/update');u.setRequestHeader("Content-Type", "application/json");u.send(JSON.stringify({current: document.location.href}));})();</textarea>
-      
+
       <button type="button" id="cookie">
         Cookie me
       </button>
       <button type="button" id="uncookie">
         Un-cookie me
       </button>
-      
+
     </main>
 
     <footer>

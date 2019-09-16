@@ -10,6 +10,7 @@ const bookmarksList = document.getElementById('dogears');
 const createForm = document.forms[0];
   const createPrefixInput = createForm.elements['prefix'];
   const createCurrentInput = createForm.elements['current'];
+  const createNameInput = createForm.elements['display_name'];
 const updateForm = document.forms[1];
   const updateCurrentInput = updateForm.elements['current'];
 const cookieButton = document.getElementById('cookie');
@@ -39,7 +40,7 @@ const refreshDogears = async () => {
     const bookmarks = await response.json();
     // Replace the whole bookmarks list
     bookmarksList.innerHTML = bookmarks
-      .map( mark => `<li><a href=${mark.current}>${mark.current}</a></li>` )
+      .map( mark => `<li><a href=${mark.current}>${mark.display_name || mark.current}</a></li>` )
       .join(' ');
   } catch (e) {
     bookmarksList.innerHTML = `<li>Something went wrong! Error: ${e}</li>`;
@@ -72,11 +73,13 @@ createForm.onsubmit = async function(e) {
   e.preventDefault();
   const success = await submitDogear('/create', {
     prefix: createPrefixInput.value,
-    current: createCurrentInput.value
+    current: createCurrentInput.value,
+    display_name: createNameInput.value
   });
   if (success) {
     createPrefixInput.value = '';
     createCurrentInput.value = '';
+    createNameInput.value = '';
   }
 };
 
