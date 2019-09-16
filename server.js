@@ -31,7 +31,7 @@ app.use(function(req, res, next){
     res.send(200);
   }
   else {
-  //move on
+    //move on
     next();
   }
 });
@@ -66,7 +66,7 @@ app.post('/update', function(req, res){
   // TODO: that's fake auth
   if (req.cookies['test-session'] === 'aoeuhtns') {
     db.query(
-      "UPDATE Dogears " +
+      "UPDATE dogears " +
         "SET current = $1 WHERE " +
         "$1 LIKE 'http://'  || prefix || '%' OR " +
         "$1 LIKE 'https://' || prefix || '%' ",
@@ -93,7 +93,7 @@ app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
   // Hmm, no error handling, I guess...
-  db.query("INSERT INTO Dogears (prefix, current) VALUES ($1, $2) ON CONFLICT (prefix) DO UPDATE " +
+  db.query("INSERT INTO dogears (prefix, current) VALUES ($1, $2) ON CONFLICT (prefix) DO UPDATE " +
       "SET current = $2 WHERE " +
       "$2 LIKE 'http://'  || EXCLUDED.prefix || '%' OR " +
       "$2 LIKE 'https://' || EXCLUDED.prefix || '%' ",
@@ -111,7 +111,7 @@ app.post('/create', function(req, res){
 // API: list
 app.get('/list', function(req, res){
   db.query(
-    'SELECT current FROM Dogears ORDER BY prefix ASC',
+    'SELECT current FROM dogears ORDER BY prefix ASC',
     [],
     (err, rows) => {
       res.send(JSON.stringify(rows));
