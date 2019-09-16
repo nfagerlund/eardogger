@@ -91,7 +91,7 @@ app.post('/update', function(req, res){
 app.post('/create', function(req, res){
   let prefix = req.body.prefix.replace(/^https?:\/\//, '');
   let current = req.body.current || req.body.prefix;
-  let display_name = req.body.display_name; // can be undefined
+  let display_name = req.body.display_name || null; // not undefined
 
   db.query("INSERT INTO dogears (prefix, current, current_protocol, display_name) VALUES ($1, $2, $3, $4) " +
       "ON CONFLICT (prefix) DO UPDATE " +
