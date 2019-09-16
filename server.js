@@ -96,7 +96,7 @@ app.post('/create', function(req, res){
   // Hmm, no error handling, I guess...
   db.query("INSERT INTO dogears (prefix, current, current_protocol) VALUES ($1, $2, $3) ON CONFLICT (prefix) DO UPDATE " +
       "SET current = $2 WHERE " +
-      "$1 LIKE current_protocol || '://' || EXCLUDED.prefix || '%' OR " +
+      "$1 LIKE dogears.current_protocol || '://' || EXCLUDED.prefix || '%' OR " +
       "$2 LIKE 'http://'  || EXCLUDED.prefix || '%' OR " +
       "$2 LIKE 'https://' || EXCLUDED.prefix || '%' ",
     [prefix, current, current.match(/^https?/)[0]],
