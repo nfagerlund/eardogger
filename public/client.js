@@ -6,7 +6,7 @@ console.log('hello world :o');
 let dogears = [];
 
 // define variables that reference elements on our page
-const dogearsList = document.getElementById('dogears');
+const bookmarksList = document.getElementById('dogears');
 const createForm = document.forms[0];
   const createPrefixInput = createForm.elements['prefix'];
   const createCurrentInput = createForm.elements['current'];
@@ -27,52 +27,62 @@ unCookieButton.addEventListener('click', e => {
   window.alert('k its dead');
 });
 
-// a helper function to call when our request for dogears is done
-const getDogearsListener = function() {
-  // parse our response to convert to JSON
-  dogears = JSON.parse(this.responseText);
 
-  // Replace the whole dogears list, fuck it
-  dogearsList.innerHTML = '';
-
-  // iterate through every dogear and add it to our page
-  dogears.forEach( function(row) {
-    const newLI = document.createElement('li');
-    newLI.innerHTML = `<a href=${row.current}>${row.current}</a>`
-    dogearsList.appendChild(newLI);
-  });
-}
-
-const refreshDogears = function() {
-  // request the dogears from our app's sqlite database
-  const dogearRequest = new XMLHttpRequest();
-  dogearRequest.onload = getDogearsListener;
-  dogearRequest.open('get', '/list');
-  dogearRequest.send();
+// Get the list of bookmarks from the API, and refresh the on-page list with current info.
+const refreshDogears = async () => {
+  try {
+    const response = await fetch('/update', {
+      method: 'GET',
+      credentials: 'include',
+      headers:{'Content-Type': 'application/json'}
+    });
+    const bookmarks = await response.json();
+    // Replace the whole bookmarks list
+    bookmarksList.innerHTML = bookmarks.map( mark => `<li><a href=${mark.current}>${mark.current}</a></li>` );
+  } catch (e) {
+    bookmarksList.innerHTML = `<li>Something went wrong! Error: ${e}</li>`;
+  }
 }
 
 refreshDogears();
 
 // semi-generic helper for submitting an object
-const submitDogear = function(dest, dogObj) {
-  let dogPost = new XMLHttpRequest();
-  dogPost.onload = refreshDogears;
-  dogPost.open('post', dest);
-  dogPost.setRequestHeader("Content-Type", "application/json");
-  dogPost.send(JSON.stringify(dogObj));
+const submitDogear = async (dest, dogObj) => {
+  try {
+    const response = await fetch(dest, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(dogObj)
+    });
+
+    refreshDogears();
+
+    return true;
+  } catch (e) {
+    // Later: give feedback that it failed?
+    return false;
+  }
 }
 
 // create form:
-createForm.onsubmit = function(e) {
+createForm.onsubmit = async function(e) {
   e.preventDefault();
-  submitDogear('/create', {prefix: createPrefixInput.value, current: createCurrentInput.value});
-  createPrefixInput.value = '';
-  createCurrentInput.value = '';
+  const success = await submitDogear('/create', {
+    prefix: createPrefixInput.value,
+    current: createCurrentInput.value
+  });
+  if (success) {
+    createPrefixInput.value = '';
+    createCurrentInput.value = '';
+  }
 };
 
 // update form:
-updateForm.onsubmit = function(e) {
+updateForm.onsubmit = async function(e) {
   e.preventDefault();
-  submitDogear('/update', {current: updateCurrentInput.value});
-  updateCurrentInput.value = '';
+  const success = await submitDogear('/update', {current: updateCurrentInput.value});
+  if (success) {
+    updateCurrentInput.value = '';
+  }
 };
