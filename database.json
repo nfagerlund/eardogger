@@ -1,5 +1,12 @@
 {
   "sql-file": true,
-  "prod": {"ENV": "DATABASE_URL"},
-  "dev": {"ENV": "DATABASE_URL"}
+  "prod": {
+    "url": {"ENV": "DATABASE_URL"},
+    "ssl": true
+  },
+  "dev": {
+    "url": {"ENV": "DATABASE_URL"},
+    "ssl": true
+  }
+
 }

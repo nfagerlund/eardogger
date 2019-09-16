@@ -1,1 +1,1 @@
-ALTER TABLE dogears DROP COLUMN current_noprotocol;
+ALTER TABLE dogears DROP COLUMN current_protocol, DROP COLUMN current_rest;
