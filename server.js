@@ -67,12 +67,13 @@ app.post('/update', function(req, res){
   if (req.cookies['test-session'] === 'aoeuhtns') {
     db.query(
       "UPDATE Dogears " +
-        "SET current = $current WHERE " +
-        "$current LIKE 'http://'  || prefix || '%' OR " +
-        "$current LIKE 'https://' || prefix || '%' ",
-      {$current: req.body.current},
+        "SET current = $1 WHERE " +
+        "$1 LIKE 'http://'  || prefix || '%' OR " +
+        "$1 LIKE 'https://' || prefix || '%' ",
+      [req.body.current],
       function(err){
         if (err) {
+          console.log(err);
           res.sendStatus(404);
         } else {
           res.sendStatus(200);
