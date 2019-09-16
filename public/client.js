@@ -56,6 +56,7 @@ refreshDogears();
 // semi-generic helper for submitting an object
 const submitDogear = function(dest, dogObj) {
   let dogPost = new XMLHttpRequest();
+  dogPost.onload = refreshDogears;
   dogPost.open('post', dest);
   dogPost.setRequestHeader("Content-Type", "application/json");
   dogPost.send(JSON.stringify(dogObj));
@@ -67,7 +68,6 @@ createForm.onsubmit = function(e) {
   submitDogear('/create', {prefix: createPrefixInput.value, current: createCurrentInput.value});
   createPrefixInput.value = '';
   createCurrentInput.value = '';
-  refreshDogears();
 };
 
 // update form:
@@ -75,5 +75,4 @@ updateForm.onsubmit = function(e) {
   e.preventDefault();
   submitDogear('/update', {current: updateCurrentInput.value});
   updateCurrentInput.value = '';
-  refreshDogears();
 };
