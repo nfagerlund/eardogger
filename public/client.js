@@ -38,7 +38,9 @@ const refreshDogears = async () => {
     });
     const bookmarks = await response.json();
     // Replace the whole bookmarks list
-    bookmarksList.innerHTML = bookmarks.map( mark => `<li><a href=${mark.current}>${mark.current}</a></li>` );
+    bookmarksList.innerHTML = bookmarks
+      .map( mark => `<li><a href=${mark.current}>${mark.current}</a></li>` )
+      .join(' ');
   } catch (e) {
     bookmarksList.innerHTML = `<li>Something went wrong! Error: ${e}</li>`;
   }
