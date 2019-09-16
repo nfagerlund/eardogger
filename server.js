@@ -67,7 +67,7 @@ app.post('/update', function(req, res){
   if (req.cookies['test-session'] === 'aoeuhtns') {
     db.query(
       "UPDATE dogears " +
-        "SET current = $1, current_protocol = $2 WHERE " +
+        "SET current = $1, current_protocol = $2, updated = current_timestamp WHERE " +
         "$1 LIKE $2 || prefix || '%'",
       [req.body.current, req.body.current.match(/^https?:\/\//)[0]],
       function(err){
