@@ -31,7 +31,7 @@ unCookieButton.addEventListener('click', e => {
 // Get the list of bookmarks from the API, and refresh the on-page list with current info.
 const refreshDogears = async () => {
   try {
-    const response = await fetch('/update', {
+    const response = await fetch('/list', {
       method: 'GET',
       credentials: 'include',
       headers:{'Content-Type': 'application/json'}
