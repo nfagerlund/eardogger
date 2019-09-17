@@ -10,9 +10,10 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
 
 // http://expressjs.com/en/starter/static-files.html
+// putting this before session middleware saves some db load.
 app.use(express.static('public'));
 app.use(express.json());
 
@@ -100,9 +101,10 @@ const db = require('./db/pg_sync');
 // string, I never specified it anywhere above, it's just tied to the local
 // authentication strategy, which I DID pass in as an object. Each strategy
 // plugin states its magic string in its docs, but good gravy. I hate this.
-app.post('/login', passport.authenticate('local'), (req, res) => {
-  res.redirect('/'); // home page has everything you want, bookmark list etc.
-});
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+}) );
 
 // bad, replace later:
 
