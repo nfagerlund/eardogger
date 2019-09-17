@@ -8,7 +8,7 @@ const pool = new Pool({
 module.exports = {
   query: (text, params, callback) => {
     pool.query(text, params, (err, res) => {
-      console.log(res);
+      // console.log(res);
       try {
         callback(err, res.rows)
       } catch (e) {
