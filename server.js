@@ -103,7 +103,7 @@ const db = require('./db/pg_sync');
 // plugin states its magic string in its docs, but good gravy. I hate this.
 app.post('/login', passport.authenticate('local', {
   successRedirect: '/',
-  failureRedirect: '/login',
+  failureRedirect: '/', // should be /login but I don't have that yet
 }) );
 
 // bad, replace later:
@@ -130,8 +130,7 @@ app.post('/login', passport.authenticate('local', {
 // btw I tried using sqlite's ORDER BY + LIMIT feature for update, but the version
 // linked into the nodejs module does not actually support that and just syntax errors. BOO.
 app.post('/update', function(req, res){
-  // TODO: that's fake auth
-  if (req.cookies['test-session'] === 'aoeuhtns') {
+  if ( req.isAuthenticated && req.isAuthenticated() ) {
     db.query(
       "UPDATE dogears " +
         "SET current = $1, current_protocol = $2, updated = current_timestamp WHERE " +
@@ -156,34 +155,42 @@ app.post('/update', function(req, res){
 
 // API: create
 app.post('/create', function(req, res){
-  let prefix = req.body.prefix.replace(/^https?:\/\//, '');
-  let current = req.body.current || req.body.prefix;
-  let display_name = req.body.display_name || null; // want real null, not undefined -> empty string
+  if ( req.isAuthenticated && req.isAuthenticated() ) {
+    let prefix = req.body.prefix.replace(/^https?:\/\//, '');
+    let current = req.body.current || req.body.prefix;
+    let display_name = req.body.display_name || null; // want real null, not undefined -> empty string
 
-  db.query("INSERT INTO dogears (prefix, current, current_protocol, display_name) VALUES ($1, $2, $3, $4) " +
-      "ON CONFLICT (prefix) DO UPDATE " +
-      "SET current = $2, current_protocol = $3 WHERE " +
-      "$2 LIKE $3 || EXCLUDED.prefix || '%'",
-    [prefix, current, current.match(/^https?:\/\//)[0], display_name],
-    (err, rows)=>{
-      if (err) {
-        console.log(err)
+    db.query("INSERT INTO dogears (prefix, current, current_protocol, display_name) VALUES ($1, $2, $3, $4) " +
+        "ON CONFLICT (prefix) DO UPDATE " +
+        "SET current = $2, current_protocol = $3 WHERE " +
+        "$2 LIKE $3 || EXCLUDED.prefix || '%'",
+      [prefix, current, current.match(/^https?:\/\//)[0], display_name],
+      (err, rows)=>{
+        if (err) {
+          console.log(err)
+        }
       }
-    }
-  );
+    );
 
-  res.sendStatus(201);
+    res.sendStatus(201);
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 // API: list
 app.get('/list', function(req, res){
-  db.query(
-    'SELECT prefix, current, display_name, updated FROM dogears ORDER BY updated DESC',
-    [],
-    (err, rows) => {
-      res.send(JSON.stringify(rows));
-    }
-  );
+  if ( req.isAuthenticated && req.isAuthenticated() ) {
+    db.query(
+      'SELECT prefix, current, display_name, updated FROM dogears ORDER BY updated DESC',
+      [],
+      (err, rows) => {
+        res.send(JSON.stringify(rows));
+      }
+    );
+  } else {
+    res.sendStatus(401);
+  }
 });
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
