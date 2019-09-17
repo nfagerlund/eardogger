@@ -24,6 +24,7 @@ const flakySession = session({
     httpOnly: false,
   },
   secret: "replace this with something good and probably get it from environment",
+  saveUninitialized: false,
 });
 
 app.use(flakySession);
