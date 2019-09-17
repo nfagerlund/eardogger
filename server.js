@@ -21,6 +21,7 @@ const flakySession = session({
   cookie: {
     expires: new Date('2099-01-05'),
     sameSite: false,
+    httpOnly: false,
   },
   secret: "replace this with something good and probably get it from environment",
 });
