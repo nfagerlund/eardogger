@@ -5,6 +5,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -12,6 +15,51 @@ app.use(cookieParser());
 // http://expressjs.com/en/starter/static-files.html
 app.use(express.static('public'));
 app.use(express.json());
+
+// session handling - kind of nervous about how much stuff I'm needing to enable at once here
+const flakySession = session({
+  cookie: {
+    expires: new Date('2099-01-05'),
+    sameSite: false,
+  },
+  secret: "replace this with something good and probably get it from environment",
+});
+
+app.use(flakySession);
+
+// OK, let's passport.js.
+passport.use(new LocalStrategy(
+  (username, password, done) => {
+    // Here comes the logic that checks whether the creds are any good,
+    // probably by checking the database:
+    if (username === 'nick' && password === 'aoeuhtns') {
+      done(null, {username: 'nick', id: 1, otherStuff: 'whatever'});
+      // ...but guess what, you're always Nick, so suck on that.
+      // I guess wherever you go, there you are.
+    } else {
+      done(null, false);
+      // ...unless u done fukked up.
+    }
+  }
+));
+// then there's session persistence helpers...
+// pluck an identifier out of the user object so we can stash it in the session:
+passport.serializeUser( (user, done) => {
+  done(null, user.id);
+});
+// use an identifier from a session to find and return a user:
+passport.deserializeUser( (id, done) => {
+  if (id === 1) {
+    done(null, {username: 'nick', id: 1, otherStuff: 'whatever'});
+  } else {
+    done("you got it wrong, your best friend is *Carlos.* // Carlos: 'I don't trust u.'")
+  }
+});
+
+// ok, and then finally,
+app.use(passport.initialize());
+app.use(passport.session());
+// and then down later, the /login endpoint actually calls the authentication thing.
 
 // corrrrrsssssssss
 // s/o to http://johnzhang.io/options-request-in-express
@@ -36,8 +84,22 @@ app.use(function(req, res, next){
   }
 });
 
-// Use sqlite for db
+// Use postgres with callbacks for db
 const db = require('./db/pg_sync');
+
+// AUTHENTICATION WITH PASSPORT, finally. ok, so it's using the multiple callbacks signature,
+// which just does them in sequence, but they can call next('route') to skip the rest
+// of the sequence, or just return immediately. Which Passport actually does; if
+// authentication fails, it just 401s. But now that I read more, the authenticate function
+// can also take an object with redirect properties as its second argument.... maybe
+// that's the move instead. Hmm.
+// Man, that authenticate('local') bit really gets my goat. 'local' is a magic
+// string, I never specified it anywhere above, it's just tied to the local
+// authentication strategy, which I DID pass in as an object. Each strategy
+// plugin states its magic string in its docs, but good gravy. I hate this.
+app.post('/login', passport.authenticate('local'), (req, res) => {
+  res.redirect('/'); // home page has everything you want, bookmark list etc.
+});
 
 // bad, replace later:
 
@@ -120,8 +182,14 @@ app.get('/list', function(req, res){
 });
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
+// Hey, do I have to call passport.authenticate on every route I want to protect?
+// it looks like not, but I guess we'll find out.
 app.get('/', function(request, response) {
-  response.sendFile(__dirname + '/views/index.html');
+  if (request.user) {
+    response.sendFile(__dirname + '/views/index.html');
+  } else {
+    response.sendFile(__dirname + '/views/login.html');
+  }
 });
 
 // listen for requests
