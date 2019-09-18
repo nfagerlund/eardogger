@@ -231,7 +231,7 @@ app.get('/list', function(req, res){
 // it looks like not, but I guess we'll find out.
 app.get('/', function(req, res) {
   if (req.user) {
-    res.render('index', {title: `${user.name}'s Dogears`});
+    res.render('index', {title: `${req.user.name}'s Dogears`});
   } else {
     res.sendFile(__dirname + '/views/login.html');
   }
