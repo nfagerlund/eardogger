@@ -15,5 +15,6 @@ module.exports = {
         callback(err, null)
       }
     });
-  }
+  },
+  pool: pool,
 };

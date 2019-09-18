@@ -3,6 +3,7 @@
 
 // init project
 const express = require('express');
+
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -11,6 +12,9 @@ const LocalStrategy = require('passport-local').Strategy;
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
+
+// Use postgres with callbacks for db
+const db = require('./db/pg_sync');
 
 // http://expressjs.com/en/starter/static-files.html
 // putting this before session middleware saves some db load.
@@ -87,9 +91,6 @@ app.use(function(req, res, next){
     next();
   }
 });
-
-// Use postgres with callbacks for db
-const db = require('./db/pg_sync');
 
 // AUTHENTICATION WITH PASSPORT, finally. ok, so it's using the multiple callbacks signature,
 // which just does them in sequence, but they can call next('route') to skip the rest
