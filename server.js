@@ -10,6 +10,8 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const expressHandlebars = require('express-handlebars');
+
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
@@ -21,6 +23,17 @@ const db = require('./db/pg_sync');
 // putting this before session middleware saves some db load.
 app.use(express.static('public'));
 app.use(express.json());
+
+// configure hbs view engine:
+const hbsViews = expressHandlebars.create({
+  extname: '.hbs',
+  // defaults for layoutsDir and partialsDir
+  defaultLayout: 'main', // that's the default but I hate magic and wonder
+
+});
+app.engine('hbs', hbsViews.engine); // register for extension
+app.set('view engine', 'hbs'); // the default for no-extension views
+
 
 // session handling - kind of nervous about how much stuff I'm needing to enable at once here
 // const flakySession = session({
@@ -216,11 +229,11 @@ app.get('/list', function(req, res){
 // GL: http://expressjs.com/en/starter/basic-routing.html
 // Hey, do I have to call passport.authenticate on every route I want to protect?
 // it looks like not, but I guess we'll find out.
-app.get('/', function(request, response) {
+app.get('/', function(req, res) {
   if (request.user) {
-    response.sendFile(__dirname + '/views/index.html');
+    res.render('index', {title: `${user.name}'s Dogears`});
   } else {
-    response.sendFile(__dirname + '/views/login.html');
+    res.sendFile(__dirname + '/views/login.html');
   }
 });
 
