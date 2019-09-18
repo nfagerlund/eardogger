@@ -7,6 +7,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const app = express();
@@ -22,17 +23,34 @@ app.use(express.static('public'));
 app.use(express.json());
 
 // session handling - kind of nervous about how much stuff I'm needing to enable at once here
-const flakySession = session({
+// const flakySession = session({
+//   cookie: {
+//     expires: new Date('2099-01-05'),
+//     sameSite: false,
+//     httpOnly: false,
+//   },
+//   secret: "replace this with something good and probably get it from environment",
+//   saveUninitialized: false,
+// });
+
+const wipSession = session({
+  name: 'eardogger.sessid',
   cookie: {
-    expires: new Date('2099-01-05'),
+    maxAge: 1000 * 60 * 60, // in milliseconds, start with an hour
     sameSite: false,
     httpOnly: false,
   },
+  store: new pgSession({
+    pool: db.pool,
+    pruneSessionInterval: 60, // in seconds, maybe change it to 5m or more later
+  }),
   secret: "replace this with something good and probably get it from environment",
   saveUninitialized: false,
+  rolling: true,
+  unset: 'destroy',
 });
 
-app.use(flakySession);
+app.use(wipSession);
 
 // OK, let's passport.js.
 passport.use(new LocalStrategy(
