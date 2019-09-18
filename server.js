@@ -230,7 +230,7 @@ app.get('/list', function(req, res){
 // Hey, do I have to call passport.authenticate on every route I want to protect?
 // it looks like not, but I guess we'll find out.
 app.get('/', function(req, res) {
-  if (request.user) {
+  if (req.user) {
     res.render('index', {title: `${user.name}'s Dogears`});
   } else {
     res.sendFile(__dirname + '/views/login.html');
