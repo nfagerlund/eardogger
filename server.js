@@ -36,13 +36,13 @@ app.use(express.json());
 const wipSession = session({
   name: 'eardogger.sessid',
   cookie: {
-    maxAge: 1000 * 60 * 60, // in milliseconds, start with an hour
+    maxAge: 1000 * 60 * 60 * 24 * 30 * 2, // two months, in milliseconds.
     sameSite: false,
     httpOnly: false,
   },
   store: new pgSession({
     pool: db.pool,
-    pruneSessionInterval: 60, // in seconds, maybe change it to 5m or more later
+    pruneSessionInterval: 60 * 60, // an hour, in seconds.
   }),
   secret: "replace this with something good and probably get it from environment",
   saveUninitialized: false,
