@@ -163,7 +163,7 @@ app.post('/login', passport.authenticate('local', {
 // btw I tried using sqlite's ORDER BY + LIMIT feature for update, but the version
 // linked into the nodejs module does not actually support that and just syntax errors. BOO.
 app.post('/update', function(req, res){
-  if ( req.isAuthenticated && req.isAuthenticated() ) {
+  if (req.user) {
     db.query(
       "UPDATE dogears " +
         "SET current = $1, current_protocol = $2, updated = current_timestamp WHERE " +
@@ -188,7 +188,7 @@ app.post('/update', function(req, res){
 
 // API: create
 app.post('/create', function(req, res){
-  if ( req.isAuthenticated && req.isAuthenticated() ) {
+  if (req.user) {
     let prefix = req.body.prefix.replace(/^https?:\/\//, '');
     let current = req.body.current || req.body.prefix;
     let display_name = req.body.display_name || null; // want real null, not undefined -> empty string
@@ -213,7 +213,7 @@ app.post('/create', function(req, res){
 
 // API: list
 app.get('/list', function(req, res){
-  if ( req.isAuthenticated && req.isAuthenticated() ) {
+  if (req.user) {
     db.query(
       'SELECT prefix, current, display_name, updated FROM dogears ORDER BY updated DESC',
       [],
