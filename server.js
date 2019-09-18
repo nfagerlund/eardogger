@@ -47,6 +47,7 @@ const wipSession = session({
   secret: "replace this with something good and probably get it from environment",
   saveUninitialized: false,
   rolling: true,
+  resave: false,
   unset: 'destroy',
 });
 
