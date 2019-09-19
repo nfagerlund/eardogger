@@ -16,6 +16,10 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.migrations DROP CONSTRAINT migrations_pkey;
+ALTER TABLE public.migrations ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.migrations_id_seq;
+DROP TABLE public.migrations;
 SET default_tablespace = '';
 
 SET default_with_oids = false;

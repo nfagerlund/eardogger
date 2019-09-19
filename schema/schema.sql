@@ -16,6 +16,11 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.session DROP CONSTRAINT session_pkey;
+ALTER TABLE ONLY public.dogears DROP CONSTRAINT dogears_pkey;
+DROP TABLE public.session;
+DROP SEQUENCE public.migrations_id_seq;
+DROP TABLE public.dogears;
 SET default_tablespace = '';
 
 SET default_with_oids = false;
