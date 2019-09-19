@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "schema": "node db/schema.js"
+    "schema": "node db/schema.js",
+    "test": "jest"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -35,7 +36,6 @@
     "express"
   ],
   "devDependencies": {
-    "chai": "^4.2.0",
-    "mocha": "^6.2.0"
+    "jest": "^24.9.0"
   }
 }
