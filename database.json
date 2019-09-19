@@ -7,6 +7,10 @@
   "dev": {
     "url": {"ENV": "DATABASE_URL"},
     "ssl": true
+  },
+  "test": {
+    "url": "postgres://localhost/eardogger",
+    "ssl": false
   }
 
 }
