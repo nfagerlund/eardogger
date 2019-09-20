@@ -1,5 +1,5 @@
 // load fully-configured express app
-app = require(./app);
+app = require('./app');
 
 // listen for requests
 var listener = app.listen(process.env.PORT, function() {
