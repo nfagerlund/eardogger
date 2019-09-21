@@ -16,11 +16,14 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-ALTER TABLE ONLY public.session DROP CONSTRAINT session_pkey;
-ALTER TABLE ONLY public.dogears DROP CONSTRAINT dogears_pkey;
-DROP TABLE public.session;
-DROP SEQUENCE public.migrations_id_seq;
-DROP TABLE public.dogears;
+ALTER TABLE IF EXISTS ONLY public.session DROP CONSTRAINT IF EXISTS session_pkey;
+ALTER TABLE IF EXISTS ONLY public.migrations DROP CONSTRAINT IF EXISTS migrations_pkey;
+ALTER TABLE IF EXISTS ONLY public.dogears DROP CONSTRAINT IF EXISTS dogears_pkey;
+ALTER TABLE IF EXISTS public.migrations ALTER COLUMN id DROP DEFAULT;
+DROP TABLE IF EXISTS public.session;
+DROP SEQUENCE IF EXISTS public.migrations_id_seq;
+DROP TABLE IF EXISTS public.migrations;
+DROP TABLE IF EXISTS public.dogears;
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -39,6 +42,17 @@ CREATE TABLE public.dogears (
 
 
 --
+-- Name: migrations; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.migrations (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    run_on timestamp without time zone NOT NULL
+);
+
+
+--
 -- Name: migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -49,6 +63,13 @@ CREATE SEQUENCE public.migrations_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
+
+
+--
+-- Name: migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.migrations_id_seq OWNED BY public.migrations.id;
 
 
 --
@@ -63,11 +84,26 @@ CREATE TABLE public.session (
 
 
 --
+-- Name: migrations id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.migrations_id_seq'::regclass);
+
+
+--
 -- Name: dogears dogears_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.dogears
     ADD CONSTRAINT dogears_pkey PRIMARY KEY (prefix);
+
+
+--
+-- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.migrations
+    ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
 
 
 --
