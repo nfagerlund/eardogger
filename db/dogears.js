@@ -10,18 +10,18 @@ module.exports = {
     current = current || prefix;
     displayName = displayName || null; // real null, not undefined.
 
-    await db.query("INSERT INTO dogears (prefix, current, current_protocol, display_name) VALUES ($1, $2, $3, $4) " +
+    await db.query("INSERT INTO dogears (prefix, current, display_name) VALUES ($1, $2, $3) " +
         "ON CONFLICT (prefix) DO UPDATE " +
-        "SET current = $2, current_protocol = $3, updated = current_timestamp WHERE " +
-        "$2 LIKE $3 || EXCLUDED.prefix || '%'",
-      [prefix, current, getProtocol(current), displayName]
+        "SET current = $2, updated = current_timestamp WHERE " +
+        "$2 LIKE $4 || EXCLUDED.prefix || '%'",
+      [prefix, current, displayName, getProtocol(current)]
     );
   },
 
   // TODO: same
   async update(userID, current) {
     await db.query("UPDATE dogears " +
-        "SET current = $1, current_protocol = $2, updated = current_timestamp WHERE " +
+        "SET current = $1, updated = current_timestamp WHERE " +
         "$1 LIKE $2 || prefix || '%'",
       [current, getProtocol(current)]
     );
