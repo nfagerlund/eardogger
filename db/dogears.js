@@ -5,7 +5,6 @@ const getProtocol = url => url.match(/^https?:\/\//)[0];
 module.exports = {
 
   // TODO: currently does nothing with userID
-  // UNKNOWN: I think this promise will reject if there's an error bc of await, but need to check. I'm not returning anything per se.
   async create(userID, prefix, current, displayName) {
     prefix = prefix.replace(/^https?:\/\//, '');
     current = current || prefix;
