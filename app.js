@@ -17,8 +17,7 @@ const expressHandlebars = require('express-handlebars');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
 
-// Use postgres with callbacks for db
-const db = require('./db/pg_sync');
+const db = require('./db/pg');
 
 // http://expressjs.com/en/starter/static-files.html
 // putting this before session middleware saves some db load.
@@ -140,23 +139,8 @@ app.post('/login', passport.authenticate('local', {
   failureRedirect: '/', // should be /login but I don't have that yet
 }) );
 
-// bad, replace later:
-
-// function getDogear(url) {
-//   let ok = true;
-//   let result = false;
-//   db.serialize(function(){
-//     db.get(
-//       'SELECT current FROM Dogears WHERE ' +
-//         '$url LIKE "http://"  || prefix || "%" OR ' +
-//         '$url LIKE "https://" || prefix || "%" ' +
-//         'ORDER BY length(prefix) DESC',
-//       {$url: url}, function(err, row){
-//       result = row.current;
-//     });
-//   });
-//   return result;
-// }
+// DB helper for API
+const dogears = require('./db/dogears');
 
 // API: update
 // Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
@@ -165,20 +149,12 @@ app.post('/login', passport.authenticate('local', {
 // linked into the nodejs module does not actually support that and just syntax errors. BOO.
 app.post('/update', function(req, res){
   if (req.user) {
-    db.query(
-      "UPDATE dogears " +
-        "SET current = $1, current_protocol = $2, updated = current_timestamp WHERE " +
-        "$1 LIKE $2 || prefix || '%'",
-      [req.body.current, req.body.current.match(/^https?:\/\//)[0]],
-      function(err){
-        if (err) {
-          console.log(err);
-          res.sendStatus(404);
-        } else {
-          res.sendStatus(200);
-        }
-      }
-    );
+    dogears.update(req.user.id, req.body.current).then( () => {
+      res.sendStatus(200);
+    }).catch(err => {
+      console.log(err);
+      res.sendStatus(404);
+    });
   } else {
     // Move this into a middleware once I have real sessions working
     res.status(401);
@@ -190,23 +166,12 @@ app.post('/update', function(req, res){
 // API: create
 app.post('/create', function(req, res){
   if (req.user) {
-    let prefix = req.body.prefix.replace(/^https?:\/\//, '');
-    let current = req.body.current || req.body.prefix;
-    let display_name = req.body.display_name || null; // want real null, not undefined -> empty string
-
-    db.query("INSERT INTO dogears (prefix, current, current_protocol, display_name) VALUES ($1, $2, $3, $4) " +
-        "ON CONFLICT (prefix) DO UPDATE " +
-        "SET current = $2, current_protocol = $3 WHERE " +
-        "$2 LIKE $3 || EXCLUDED.prefix || '%'",
-      [prefix, current, current.match(/^https?:\/\//)[0], display_name],
-      (err, rows)=>{
-        if (err) {
-          console.log(err)
-        }
-      }
-    );
-
-    res.sendStatus(201);
+    dogears.create(req.user.id, req.body.prefix, req.body.current, req.body.display_name).then( () => {
+      res.sendStatus(201);
+    }).catch(err => {
+      console.log(err)
+      res.sendStatus(400);
+    });
   } else {
     res.sendStatus(401);
   }
@@ -215,13 +180,12 @@ app.post('/create', function(req, res){
 // API: list
 app.get('/list', function(req, res){
   if (req.user) {
-    db.query(
-      'SELECT prefix, current, display_name, updated FROM dogears ORDER BY updated DESC',
-      [],
-      (err, rows) => {
-        res.send(JSON.stringify(rows));
-      }
-    );
+    dogears.list(req.user.id).then(data => {
+      res.send(JSON.stringify(data));
+    }).catch(err => {
+      console.log(err)
+      res.sendStatus(400);
+    });
   } else {
     res.sendStatus(401);
   }
