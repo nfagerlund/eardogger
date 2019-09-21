@@ -80,6 +80,9 @@ describe("database tests, jumping into the deep end", () => {
     const listWithOne = await dogears.list(1);
     expect(listWithOne).toHaveLength(1);
     expect(listWithOne[0]).toHaveProperty('current', 'https://example.com/comic/240');
+
+    // Hopefully create will throw an error if I just fuck it up completely
+    await expect(dogears.create(1)).rejects.toThrow();
   });
 
 });
