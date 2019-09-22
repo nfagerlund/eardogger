@@ -57,6 +57,9 @@ describe("database tests, jumping into the deep end", () => {
     // Luckily you can do a bunch of expects within one test. So that'll have to
     // do. Ugh, it really should be separate tests tho, with descriptions...
 
+    // TODO TEMP: gotta make sure a user exists before I can insert anything.
+    await db.query("INSERT INTO users (username) VALUES ('test_user')");
+
     // Also, I'm doing a couple different ways of balancing all the async terms, sorry.
     // first, just make sure we're not talking to prod and the dogears table is empty.
     expect(await dogears.list(1)).toStrictEqual([]);

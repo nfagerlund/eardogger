@@ -10,28 +10,34 @@ module.exports = {
     current = current || prefix;
     displayName = displayName || null; // real null, not undefined.
 
-    await db.query("INSERT INTO dogears (prefix, current, display_name) VALUES ($1, $2, $3) " +
-        "ON CONFLICT (prefix) DO UPDATE " +
-        "SET current = $2, updated = current_timestamp WHERE " +
-        "$2 LIKE $4 || EXCLUDED.prefix || '%'",
-      [prefix, current, displayName, getProtocol(current)]
+    await db.query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " ,
+//         "ON CONFLICT (user_id, prefix) DO UPDATE " +
+//         "SET current = $3, updated = current_timestamp WHERE " +
+//         "EXCLUDED.user_id = $1 AND $3 LIKE $5 || EXCLUDED.prefix || '%'",
+      [
+        userID,
+        prefix,
+        current,
+        displayName,
+//         getProtocol(current),
+      ]
     );
   },
 
   // TODO: same
   async update(userID, current) {
     await db.query("UPDATE dogears " +
-        "SET current = $1, updated = current_timestamp WHERE " +
-        "$1 LIKE $2 || prefix || '%'",
-      [current, getProtocol(current)]
+        "SET current = $2, updated = current_timestamp WHERE " +
+        "user_id = $1 AND $2 LIKE $3 || prefix || '%'",
+      [userID, current, getProtocol(current)]
     );
   },
 
   // TODO: same
   async list(userID) {
     let result = await db.query(
-      'SELECT prefix, current, display_name, updated FROM dogears ORDER BY updated DESC',
-      []
+      'SELECT id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC',
+      [userID]
     );
     return result.rows;
   },
