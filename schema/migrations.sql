@@ -25,13 +25,16 @@ INSERT INTO public.migrations VALUES (5, '/20190916064723-fill-protocols', '2019
 INSERT INTO public.migrations VALUES (6, '/20190916160019-add-slashes', '2019-09-16 09:04:51.495');
 INSERT INTO public.migrations VALUES (7, '/20190916161050-name-and-timestamp', '2019-09-16 09:16:34.562');
 INSERT INTO public.migrations VALUES (8, '/20190918010159-add-session-table', '2019-09-17 18:06:59.561');
+INSERT INTO public.migrations VALUES (9, '/20190921162004-drop-protocol-column', '2019-09-21 09:28:32.666');
+INSERT INTO public.migrations VALUES (12, '/20190922184344-dogears-id', '2019-09-22 13:10:41.53');
+INSERT INTO public.migrations VALUES (13, '/20190922184357-users-table', '2019-09-22 13:10:41.931');
 
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 8, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 13, true);
 
 
 --
