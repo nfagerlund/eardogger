@@ -14,14 +14,17 @@ module.exports = {
 
 // returns user
 async function create(username, password, email) {
-  if (!username || !password) {
-    throw new Error("Create user requires username and password");
+  if (!username) {
+    throw new Error("Create user requires username");
   }
   if (await getByName(username)) { // might be inefficient, but
     throw new Error("Username already exists");
   }
   email = email || null; // explicit sql null
-  const hashedPassword = await bcrypt.hash(password, 12);
+  let hashedPassword = null;
+  if (password) {
+    hashedPassword = await bcrypt.hash(password, 12);
+  }
   const result = await db.query("INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email, created", [username, hashedPassword, email]);
   return result.rows[0];
 }

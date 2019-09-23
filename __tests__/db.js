@@ -107,10 +107,12 @@ describe("User database layer", () => {
     });
     // Rest of this can go in any order tho.
     await Promise.all([
-      // No blanks when creating
+      // No blank usernames
       expect(users.create('', 'aoeua')).rejects.toThrow(/requires/),
       // But omitting email is ok
       expect(users.create('test_create_and_auth_noemail', 'aoeuhtns')).resolves.toBeDefined(),
+      // And blank password just disables login for a user
+      expect(users.create('test_create_and_auth_nopw')).resolves.toBeDefined(),
       // No blanks when validating
       expect(users.authenticate('test_create_and_auth', '')).rejects.toThrow(/requires/),
       // Pw validates
