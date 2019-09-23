@@ -5,6 +5,12 @@ const getProtocol = url => url.match(/^(https?:\/\/)?/)[0];
 module.exports = {
 
   async create(userID, prefix, current, displayName) {
+    if (typeof userID != 'number') {
+      throw new Error("Create dogear requires numeric userID");
+    }
+    if (!prefix) {
+      throw new Error("Create dogear requires at least a URL prefix");
+    }
     prefix = prefix.replace(/^https?:\/\//, '');
     current = current || prefix;
     displayName = displayName || null; // real null, not undefined.
@@ -24,6 +30,12 @@ module.exports = {
   },
 
   async update(userID, current) {
+    if (typeof userID != 'number') {
+      throw new Error("Update dogear requires numeric userID");
+    }
+    if (!prefix) {
+      throw new Error("Update dogear requires a URL");
+    }
     await db.query("UPDATE dogears " +
         "SET current = $2, updated = current_timestamp WHERE " +
         "user_id = $1 AND $2 LIKE $3 || prefix || '%'",
