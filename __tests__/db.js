@@ -72,6 +72,20 @@ describe("Dogears database layer", () => {
     await expect(dogears.list(userID)).resolves.toHaveLength(3);
   });
 
+  test("Update and load", async () => {
+    // Set up user
+    const {id: userID} = await users.create('dogears_update');
+
+    // Basic usage
+    await dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic');
+    await expect(dogears.currently(userID, 'https://example.com/comic/1')).resolves.toBe('https://example.com/comic/240');
+    await expect(dogears.currently(userID, 'example.com/comic/')).resolves.toBe('https://example.com/comic/240');
+    await expect(dogears.currently(userID, 'https://example.com/com')).resolves.toBe(false);
+
+    // Malformed call to currently()
+    await expect(dogears.currently('https://example.com/comic/1')).rejects.toThrow(/requires/);
+  });
+
   test.skip("Dogears models", async () => {
     // I basically have to cram all of these into one test, because I'm mutating
     // a real database here (because that's the only way to actually check my

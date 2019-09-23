@@ -47,8 +47,20 @@ module.exports = {
 
   },
 
-  async currently(url) {
-
+  // Returns bare url or false
+  async currently(userID, urlOrPrefix) {
+    if (!userID || !urlOrPrefix) {
+      throw new Error("Finding a dogear requires a userID");
+    }
+    const result = await db.query(
+      "SELECT current FROM dogears WHERE user_id = $1 AND $2 LIKE $3 || prefix || '%' ORDER BY LENGTH(prefix) DESC",
+      [userID, urlOrPrefix, getProtocol(urlOrPrefix)]
+    );
+    if (result.rows[0]) {
+      return result.rows[0].current;
+    } else {
+      return false;
+    }
   },
 
 
