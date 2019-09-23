@@ -127,4 +127,22 @@ describe("User database layer", () => {
     await expect(users.getByID(thatUser.id)).resolves.toHaveProperty('username', 'test_lookup');
   });
 
+  test("Edit", async () => {
+    // Need this before rest
+    await users.create('test_edit', 'htnsueoa');
+    // Do nothing, check return value of edit call
+    const first_edit = await users.editByName('test_edit', {});
+    expect(first_edit).toHaveProperty('username', 'test_edit');
+    expect(first_edit).toHaveProperty('email', null);
+    expect(await users.authenticate('test_edit', 'htnsueoa')).toBe(true);
+    // Edit password, add email, check looked-up object
+    await users.editByName('test_edit', {password: 'ueoahtns', email: 'nfff@example.com'});
+    const second_edit = await users.getByName('test_edit');
+    expect(second_edit.email).toBe('nfff@example.com');
+    expect(await users.authenticate('test_edit', 'ueoahtns')).toBe(true);
+    // Remove email
+    await users.editByName('test_edit', {email: ''});
+    expect(await users.getByName('test_edit')).toHaveProperty('email', null);
+  });
+
 });
