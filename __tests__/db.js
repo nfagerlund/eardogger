@@ -51,6 +51,14 @@ describe("Dogears database layer", () => {
 //     expect(res.rows.length).toBe(0);
 //   });
 //
+  test("Create and list", async () => {
+    // Set up a user, no pw/email
+    const {id: userID} = await users.create('dogears_create_and_list');
+    // No dogears
+    await expect(dogears.list(userID)).resolves.toStrictEqual([]);
+
+  });
+
   test("Dogears models", async () => {
     // I basically have to cram all of these into one test, because I'm mutating
     // a real database here (because that's the only way to actually check my
