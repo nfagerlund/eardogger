@@ -100,14 +100,17 @@ describe("Dogears database layer", () => {
 
 describe("User database layer", () => {
   test("Create and authenticate", async () => {
-    // Need this before anything else
-    await expect(users.create('test_create_and_auth', 'aoeuhtns', 'nf@example.com')).resolves.toBeUndefined();
+    // Setup, also create should return a user object
+    await expect(users.create('test_create_and_auth', 'aoeuhtns', 'nf@example.com')).resolves.toMatchObject({
+      username: 'test_create_and_auth',
+      email: 'nf@example.com',
+    });
     // Rest of this can go in any order tho.
     await Promise.all([
       // No blanks when creating
       expect(users.create('', 'aoeua')).rejects.toThrow(/requires/),
       // But omitting email is ok
-      expect(users.create('test_create_and_auth_noemail', 'aoeuhtns')).resolves.toBeUndefined(),
+      expect(users.create('test_create_and_auth_noemail', 'aoeuhtns')).resolves.toBeDefined(),
       // No blanks when validating
       expect(users.authenticate('test_create_and_auth', '')).rejects.toThrow(/requires/),
       // Pw validates

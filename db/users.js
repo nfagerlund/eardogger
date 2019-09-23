@@ -12,6 +12,7 @@ module.exports = {
   purgeByName,
 };
 
+// returns user
 async function create(username, password, email) {
   if (!username || !password) {
     throw new Error("Create user requires username and password");
@@ -21,7 +22,8 @@ async function create(username, password, email) {
   }
   email = email || null; // explicit sql null
   const hashedPassword = await bcrypt.hash(password, 12);
-  await db.query("INSERT INTO users (username, password, email) VALUES ($1, $2, $3)", [username, hashedPassword, email]);
+  const result = await db.query("INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email, created", [username, hashedPassword, email]);
+  return result.rows[0];
 }
 
 async function authenticate(username, password) {
