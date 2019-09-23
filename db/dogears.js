@@ -32,7 +32,7 @@ module.exports = {
     if (typeof userID != 'number') {
       throw new Error("Update dogear requires numeric userID");
     }
-    if (!prefix) {
+    if (!current) {
       throw new Error("Update dogear requires a URL");
     }
     await db.query("UPDATE dogears " +
