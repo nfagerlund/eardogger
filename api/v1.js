@@ -6,8 +6,8 @@ const router = express.Router({mergeParams: true});
 module.exports = router;
 
 // Application object DB helpers
-const dogears = require('./db/dogears');
-const users = require('./db/users');
+const dogears = require('../db/dogears');
+const users = require('../db/users');
 
 // API: update
 // Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
