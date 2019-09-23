@@ -86,6 +86,9 @@ describe("database tests, jumping into the deep end", () => {
 
     // Hopefully create will throw an error if I just fuck it up completely
     await expect(dogears.create(1)).rejects.toThrow();
+
+    // Prove that I fucked up the upsert as part of that migration:
+    await expect(dogears.create(1, 'example.com/comic/', 'https://example.com/comic/250', 'Example Comic')).rejects.toThrow();
   });
 
 });
