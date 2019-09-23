@@ -10,16 +10,16 @@ module.exports = {
     current = current || prefix;
     displayName = displayName || null; // real null, not undefined.
 
-    await db.query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " ,
-//         "ON CONFLICT (user_id, prefix) DO UPDATE " +
-//         "SET current = $3, updated = current_timestamp WHERE " +
-//         "EXCLUDED.user_id = $1 AND $3 LIKE $5 || EXCLUDED.prefix || '%'",
+    await db.query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " +
+        "ON CONFLICT (user_id, prefix) DO UPDATE " +
+        "SET current = $3, updated = current_timestamp WHERE " +
+        "EXCLUDED.user_id = $1 AND $3 LIKE $5 || EXCLUDED.prefix || '%'",
       [
         userID,
         prefix,
         current,
         displayName,
-//         getProtocol(current),
+        getProtocol(current),
       ]
     );
   },

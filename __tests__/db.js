@@ -87,8 +87,11 @@ describe("database tests, jumping into the deep end", () => {
     // Hopefully create will throw an error if I just fuck it up completely
     await expect(dogears.create(1)).rejects.toThrow();
 
-    // Prove that I fucked up the upsert as part of that migration:
-    await expect(dogears.create(1, 'example.com/comic/', 'https://example.com/comic/250', 'Example Comic')).rejects.toThrow();
+    // Prove that I re-enabled the upsert:
+    await expect(dogears.create(1, 'example.com/comic/', 'https://example.com/comic/250', 'Example Comic')).resolves.toBeUndefined();
+    const stillOnlyOne = await dogears.list(1);
+    expect(stillOnlyOne).toHaveLength(1); // because upsert
+    expect(stillOnlyOne[0]).toHaveProperty('current', 'https://example.com/comic/250');
   });
 
 });
