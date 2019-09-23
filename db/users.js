@@ -50,18 +50,26 @@ async function getByEmail(email) {
   return db.query("SELECT id, username, email, created FROM users WHERE email = $1", [email]).then(result => result.rows);
 }
 
-// I don't think I'll ever want to edit by ID?
-async function editByName(username, {email, password}) {
-  email = email || null; // explicit sql null
-  let hashedPassword = null;
+// application logic is in charge of validating, this is raw
+async function setPassword(username, password) {
+  if (!username) {
+    throw new Error("setPassword requires username"); // but blanking pw is ok
+  }
+  let hashedPassword = null; // explicit sql null
   if (password) {
     hashedPassword = await bcrypt.hash(password, 12);
   }
-  return db.query("UPDATE users SET email = COALESCE($2, email), password = COALESCE($3, password) WHERE username = $1 RETURNING id, username, email, created", [username, email, hashedPassword]).then(result => result.rows[0]);
+  await db.query("UPDATE users SET password = $2 WHERE username = $1", [username, hashedPassword]);
 }
 
+// returns user
+async function setEmail(username, email) {
+  email = email || null; // explicit sql null
+  return db.query("UPDATE users SET email = $2 WHERE username = $1 RETURNING id, username, email, created", [username, email]).then(result => result.rows[0]);
+}
+
+// schema should just make this cascade to dogears.
 async function purgeByName(username) {
   await db.query("DELETE FROM users WHERE username = $1", [username]);
-  // schema should just make this cascade to dogears.
 }
 

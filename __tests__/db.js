@@ -127,22 +127,42 @@ describe("User database layer", () => {
     await expect(users.getByID(thatUser.id)).resolves.toHaveProperty('username', 'test_lookup');
   });
 
-  test("Edit", async () => {
+  test("Edit password", async () => {
     // Need this before rest
-    await users.create('test_edit', 'htnsueoa');
-    // Do nothing, check return value of edit call
-    const first_edit = await users.editByName('test_edit', {});
-    expect(first_edit).toHaveProperty('username', 'test_edit');
-    expect(first_edit).toHaveProperty('email', null);
-    expect(await users.authenticate('test_edit', 'htnsueoa')).toBe(true);
-    // Edit password, add email, check looked-up object
-    await users.editByName('test_edit', {password: 'ueoahtns', email: 'nfff@example.com'});
-    const second_edit = await users.getByName('test_edit');
-    expect(second_edit.email).toBe('nfff@example.com');
-    expect(await users.authenticate('test_edit', 'ueoahtns')).toBe(true);
-    // Remove email
-    await users.editByName('test_edit', {email: ''});
-    expect(await users.getByName('test_edit')).toHaveProperty('email', null);
+    await users.create('test_edit_pw', 'htnsueoa');
+    await expect(users.setPassword('test_edit_pw', 'ueoahtns')).resolves.toBeUndefined();
+    // New pw works
+    await expect(users.authenticate('test_edit_pw', 'ueoahtns')).resolves.toBe(true);
+
+    await users.setPassword('test_edit_pw', '');
+    // Can't log in anymore
+    await expect(users.authenticate('test_edit_pw', '')).resolves.toBe(false);
+    await expect(users.authenticate('test_edit_pw', 'ueoahtns')).resolves.toBe(false);
+
+    await users.setPassword('test_edit_pw');
+    // same deal
+    await expect(users.authenticate('test_edit_pw', '')).resolves.toBe(false);
+    await expect(users.authenticate('test_edit_pw', 'ueoahtns')).resolves.toBe(false);
+  });
+
+  test("Edit email", async () => {
+    await Promise.all([
+      users.create('test_edit_email', 'aaaaaaaa', 'has_email@example.com'),
+      users.create('test_edit_email2', 'aaaaaaaa'),
+    ]);
+
+    await Promise.all([
+      expect(users.getByName('test_edit_email')).resolves.toHaveProperty('email', 'has_email@example.com'),
+      expect(users.getByName('test_edit_email2')).resolves.toHaveProperty('email', null),
+    ]);
+
+    await Promise.all([
+      expect(users.setEmail('test_edit_email', '')).resolves.toMatchObject({username: 'test_edit_email', email: null}),
+      expect(users.setEmail('test_edit_email2', 'now_has@example.com')).resolves.toHaveProperty('email', 'now_has@example.com'),
+    ]);
+
+    // it persisted
+    await expect(users.getByName('test_edit_email2')).resolves.toHaveProperty('email', 'now_has@example.com'),
   });
 
 });
