@@ -7,7 +7,8 @@ module.exports = {
   getByName,
   getByID,
   getByEmail,
-  editByName,
+  setPassword,
+  setEmail,
   purgeByName,
 };
 
@@ -30,7 +31,11 @@ async function authenticate(username, password) {
   const result = await db.query("SELECT password FROM users WHERE username = $1", [username]);
   try {
     const hashedPassword = result.rows[0].password;
-    return bcrypt.compare(password, hashedPassword);
+    if (hashedPassword) {
+      return bcrypt.compare(password, hashedPassword);
+    } else {
+      return false;
+    }
   } catch(err) { // user doesn't exist, probably
     return false;
   }

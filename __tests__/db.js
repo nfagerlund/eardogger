@@ -136,12 +136,11 @@ describe("User database layer", () => {
 
     await users.setPassword('test_edit_pw', '');
     // Can't log in anymore
-    await expect(users.authenticate('test_edit_pw', '')).resolves.toBe(false);
     await expect(users.authenticate('test_edit_pw', 'ueoahtns')).resolves.toBe(false);
+    // ...and authenticating with empty string or other falsy value just throws.
 
     await users.setPassword('test_edit_pw');
     // same deal
-    await expect(users.authenticate('test_edit_pw', '')).resolves.toBe(false);
     await expect(users.authenticate('test_edit_pw', 'ueoahtns')).resolves.toBe(false);
   });
 
@@ -162,7 +161,7 @@ describe("User database layer", () => {
     ]);
 
     // it persisted
-    await expect(users.getByName('test_edit_email2')).resolves.toHaveProperty('email', 'now_has@example.com'),
+    await expect(users.getByName('test_edit_email2')).resolves.toHaveProperty('email', 'now_has@example.com');
   });
 
 });
