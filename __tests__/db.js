@@ -54,9 +54,22 @@ describe("Dogears database layer", () => {
   test("Create and list", async () => {
     // Set up a user, no pw/email
     const {id: userID} = await users.create('dogears_create_and_list');
-    // No dogears
+
+    // No dogears for new user
     await expect(dogears.list(userID)).resolves.toStrictEqual([]);
 
+    // Make sure creating a dogear works.
+    await Promise.all([
+      // A normal one.
+      expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).resolves.toBeUndefined(),
+      // A second one, with no title.
+      expect(dogears.create(userID, 'example.com/story/', 'https://example.com/story/2')).resolves.toBeUndefined(),
+      // A third, with no current.
+      expect(dogears.create(userID, 'example.com/extras/')).resolves.toBeUndefined(),
+    ]);
+
+    // Three dogears now
+    await expect(dogears.list(userID)).resolves.toHaveLength(3);
   });
 
   test("Dogears models", async () => {

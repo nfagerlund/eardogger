@@ -1,6 +1,6 @@
 const db = require('./pg');
 
-const getProtocol = url => url.match(/^https?:\/\//)[0];
+const getProtocol = url => url.match(/^(https?:\/\/)?/)[0];
 
 module.exports = {
 
