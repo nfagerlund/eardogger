@@ -45,7 +45,7 @@ beforeAll( async () => {
   await dbmigrate.up();
 });
 
-describe("database tests, jumping into the deep end", () => {
+describe("Dogears database layer", () => {
 //   test("just query something and make sure we have the right db", async () => {
 //     const res = await db.query("SELECT * FROM dogears", []);
 //     expect(res.rows.length).toBe(0);
@@ -95,18 +95,36 @@ describe("database tests, jumping into the deep end", () => {
     expect(stillOnlyOne[0]).toHaveProperty('current', 'https://example.com/comic/250');
   });
 
-  describe("User model layer", () => {
-    test("Create and authenticate", async () => {
-      await expect(users.create('create_and_auth', 'aoeuhtns', 'nf@example.com')).resolves.toBeUndefined();
-      await Promise.all([
-        expect(users.create('', '')).rejects.toThrow(/requires/),
-        expect(users.authenticate('create_and_auth', 'aoeuhtns')).resolves.toBe(true),
-        expect(users.authenticate('create_and_auth', 'snthueoa')).resolves.toBe(false),
-        expect(users.authenticate('create_and_auth_doesnt_exist', 'aoeuhtns')).resolves.toBe(false), // doesn't throw
-        expect(users.authenticate('')).rejects.toThrow(/requires/),
-      ]);
-    });
-  });
 
 });
 
+describe("User database layer", () => {
+  test("Create and authenticate", async () => {
+    // Need this before anything else
+    await expect(users.create('test_create_and_auth', 'aoeuhtns', 'nf@example.com')).resolves.toBeUndefined();
+    // Rest of this can go in any order tho.
+    await Promise.all([
+      // No blanks when creating
+      expect(users.create('', 'aoeua')).rejects.toThrow(/requires/),
+      // But omitting email is ok
+      expect(users.create('test_create_and_auth_noemail', 'aoeuhtns')).resolves.toBeUndefined(),
+      // No blanks when validating
+      expect(users.authenticate('test_create_and_auth', '')).rejects.toThrow(/requires/),
+      // Pw validates
+      expect(users.authenticate('test_create_and_auth', 'aoeuhtns')).resolves.toBe(true),
+      // Wrong pw doesn't validate
+      expect(users.authenticate('test_create_and_auth', 'snthueoa')).resolves.toBe(false),
+      // Nonexistent user indistinguishable from wrong pw, doesn't throw
+      expect(users.authenticate('test_create_and_auth_doesnt_exist', 'aoeuhtns')).resolves.toBe(false),
+    ]);
+  });
+
+  test("Lookup", async () => {
+    // Need this before rest
+    await users.create('test_lookup', 'aoeusnth', 'nff@example.com');
+    const thatUser = await users.getByName('test_lookup');
+    expect(thatUser.username).toBe('test_lookup');
+    await expect(users.getByID(thatUser.id)).resolves.toHaveProperty('username', 'test_lookup');
+  });
+
+});
