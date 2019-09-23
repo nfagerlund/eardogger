@@ -17,6 +17,7 @@ db.query.mockImplementation( (text, params) => pool.query(text, params) );
 
 // stuff I'm actually testing:
 const dogears = require('../db/dogears');
+const users = require('../db/users');
 
 const readTextFilePromise = file => {
   return new Promise((resolve, reject) => {
@@ -92,6 +93,19 @@ describe("database tests, jumping into the deep end", () => {
     const stillOnlyOne = await dogears.list(1);
     expect(stillOnlyOne).toHaveLength(1); // because upsert
     expect(stillOnlyOne[0]).toHaveProperty('current', 'https://example.com/comic/250');
+  });
+
+  describe("User model layer", () => {
+    test("Create and authenticate", async () => {
+      await expect(users.create('create_and_auth', 'aoeuhtns', 'nf@example.com')).resolves.toBeUndefined();
+      await Promise.all([
+        expect(users.create('', '')).rejects.toThrow(/requires/),
+        expect(users.authenticate('create_and_auth', 'aoeuhtns')).resolves.toBe(true),
+        expect(users.authenticate('create_and_auth', 'snthueoa')).resolves.toBe(false),
+        expect(users.authenticate('create_and_auth_doesnt_exist', 'aoeuhtns')).resolves.toBe(false), // doesn't throw
+        expect(users.authenticate('')).rejects.toThrow(/requires/),
+      ]);
+    });
   });
 
 });
