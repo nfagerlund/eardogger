@@ -17,7 +17,12 @@ const expressHandlebars = require('express-handlebars');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
 
+// Main DB helper (session store needs this)
 const db = require('./db/pg');
+
+// Application object DB helpers
+const dogears = require('./db/dogears');
+const users = require('./db/users');
 
 // http://expressjs.com/en/starter/static-files.html
 // putting this before session middleware saves some db load.
@@ -35,17 +40,7 @@ app.engine('hbs', hbsViews.engine); // register for extension
 app.set('view engine', 'hbs'); // the default for no-extension views
 
 
-// session handling - kind of nervous about how much stuff I'm needing to enable at once here
-// const flakySession = session({
-//   cookie: {
-//     expires: new Date('2099-01-05'),
-//     sameSite: false,
-//     httpOnly: false,
-//   },
-//   secret: "replace this with something good and probably get it from environment",
-//   saveUninitialized: false,
-// });
-
+// session handling
 const wipSession = session({
   name: 'eardogger.sessid',
   cookie: {
@@ -69,16 +64,18 @@ app.use(wipSession);
 // OK, let's passport.js.
 passport.use(new LocalStrategy(
   (username, password, done) => {
-    // Here comes the logic that checks whether the creds are any good,
-    // probably by checking the database:
-    if (username === 'nick' && password === 'aoeuhtns') {
-      done(null, {username: 'nick', id: 1, otherStuff: 'whatever'});
-      // ...but guess what, you're always Nick, so suck on that.
-      // I guess wherever you go, there you are.
-    } else {
-      done(null, false);
-      // ...unless u done fukked up.
-    }
+    // Authenticate password and return user object
+    users.authenticate(username, password).then(success => {
+      if (success) {
+        users.getByName(username).then(userObj => {
+          done(null, userObj);
+        })
+      } else {
+        done(null, false);
+      }
+    }).catch(err => {
+      done(err);
+    });
   }
 ));
 // then there's session persistence helpers...
@@ -88,11 +85,15 @@ passport.serializeUser( (user, done) => {
 });
 // use an identifier from a session to find and return a user:
 passport.deserializeUser( (id, done) => {
-  if (id === 1) {
-    done(null, {username: 'nick', id: 1, otherStuff: 'whatever'});
-  } else {
-    done("you got it wrong, your best friend is *Carlos.* // Carlos: 'I don't trust u.'")
-  }
+  users.getByID(id).then(userObj => {
+    if (userObj) {
+      done(null, userObj);
+    } else {
+      done(null, false);
+    }
+  }).catch(err => {
+    done(err);
+  });
 });
 
 // ok, and then finally,
@@ -138,9 +139,6 @@ app.post('/login', passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/', // should be /login but I don't have that yet
 }) );
-
-// DB helper for API
-const dogears = require('./db/dogears');
 
 // API: update
 // Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
