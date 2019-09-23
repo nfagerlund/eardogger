@@ -95,6 +95,19 @@ describe("Dogears database layer", () => {
     await expect(dogears.currently(userID, 'example.com/comic/')).resolves.toBe('https://example.com/comic/241');
     await expect(dogears.update(userID, 'https://example.com/com/not-dogeared')).rejects.toThrow();
 
+    // Updating w/ create()'s fallback behavior
+    // also stripping protocol from prefix
+    await expect(dogears.create(userID, 'http://example.com/comic/', 'https://example.com/comic/242', 'New Name')).resolves.toBeUndefined();
+    let list = await dogears.list(userID);
+    await Promise.all([
+      expect(list).toHaveLength(1),
+      expect(list[0]).toMatchObject({
+        current: 'https://example.com/comic/242',
+        display_name: 'New Name',
+        prefix: 'example.com/comic/',
+      }),
+    ]);
+
   });
 
   test.skip("Dogears models", async () => {
