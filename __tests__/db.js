@@ -72,7 +72,7 @@ describe("Dogears database layer", () => {
     await expect(dogears.list(userID)).resolves.toHaveLength(3);
   });
 
-  test("Dogears models", async () => {
+  test.skip("Dogears models", async () => {
     // I basically have to cram all of these into one test, because I'm mutating
     // a real database here (because that's the only way to actually check my
     // sql), and so I'll basically go to hell if I try to run these in parallel.
