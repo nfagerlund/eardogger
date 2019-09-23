@@ -14,7 +14,7 @@ const users = require('../db/users');
 // so, uhhhh for the prototype just don't do that.
 // btw I tried using sqlite's ORDER BY + LIMIT feature for update, but the version
 // linked into the nodejs module does not actually support that and just syntax errors. BOO.
-app.post('/update', function(req, res){
+router.post('/update', function(req, res){
   if (req.user) {
     dogears.update(req.user.id, req.body.current).then( () => {
       res.sendStatus(200);
@@ -31,7 +31,7 @@ app.post('/update', function(req, res){
 });
 
 // API: create
-app.post('/create', function(req, res){
+router.post('/create', function(req, res){
   if (req.user) {
     dogears.create(req.user.id, req.body.prefix, req.body.current, req.body.display_name).then( () => {
       res.sendStatus(201);
@@ -45,7 +45,7 @@ app.post('/create', function(req, res){
 });
 
 // API: list
-app.get('/list', function(req, res){
+router.get('/list', function(req, res){
   if (req.user) {
     dogears.list(req.user.id).then(data => {
       res.send(JSON.stringify(data));
