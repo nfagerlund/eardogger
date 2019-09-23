@@ -115,6 +115,20 @@ describe("Dogears database layer", () => {
 
   });
 
+  test("Deletion, access control", async () => {
+    // Set up users
+    const {id: userOne} = await users.create('dogears_delete_one');
+    const {id: userTwo} = await users.create('dogears_delete_two');
+
+    const {id: dogearID} = await dogears.create(userOne, 'example.com/comic/', 'https://example.com/comic/1');
+
+    // User two can't delete
+    await expect(dogears.delete(userTwo, dogearID)).rejects.toThrow();
+    // User one can delete
+    await expect(dogears.delete(userOne, dogearID)).resolves.toBeUndefined();
+    await expect(dogears.list(userOne)).resolves.toHaveLength(0);
+  });
+
 });
 
 describe("User database layer", () => {

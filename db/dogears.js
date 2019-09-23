@@ -59,8 +59,14 @@ module.exports = {
     return result.rows;
   },
 
-  async delete(id) {
-
+  async delete(userID, id) {
+    const result = await db.query(
+      "DELETE FROM dogears WHERE id = $2 AND user_id = $1",
+      [userID, id]
+    );
+    if (result.rowCount === 0) {
+      throw new Error("Can't delete that");
+    }
   },
 
   async edit(id, editFields) {
