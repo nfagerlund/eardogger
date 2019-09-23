@@ -66,6 +66,8 @@ describe("Dogears database layer", () => {
       expect(dogears.create(userID, 'example.com/story/', 'https://example.com/story/2')).resolves.toBeUndefined(),
       // A third, with no current.
       expect(dogears.create(userID, 'example.com/extras/')).resolves.toBeUndefined(),
+      // A malformed one
+      expect(dogears.create('example.com/explodes/')).rejects.toThrow(),
     ]);
 
     // Three dogears now
@@ -109,51 +111,6 @@ describe("Dogears database layer", () => {
     ]);
 
   });
-
-  test.skip("Dogears models", async () => {
-    // I basically have to cram all of these into one test, because I'm mutating
-    // a real database here (because that's the only way to actually check my
-    // sql), and so I'll basically go to hell if I try to run these in parallel.
-    // Luckily you can do a bunch of expects within one test. So that'll have to
-    // do. Ugh, it really should be separate tests tho, with descriptions...
-
-    // Set up a user, no pw/email
-    const {id: userID} = await users.create('dogears_old_tests');
-
-    // Also, I'm doing a couple different ways of balancing all the async terms, sorry.
-    // first, just make sure we're not talking to prod and the dogears table is empty.
-    expect(await dogears.list(userID)).toStrictEqual([]);
-
-    // Next just make sure creating a dogear works.
-    await expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).resolves.toBeUndefined();
-    // I tried a bunch of things, and that IS the expected result from an async
-    // function that doesn't throw but also doesn't return anything.
-
-    // TODO:
-    // - once there's an ID field, return the ID from that create call, using "RETURNING"
-    // - make another create test with a duplicate prefix, and confirm that it returns the same ID.
-    // - normalize trailing slashes in the prefix, and guarantee behavior with another duplicate create test.
-
-    // TODO:
-    // - make update return ID too.
-    // - Test that updating a URL returns the right dogear from the previously created ones.
-    // - add error handling to update, test against a nonexistent prefix.
-
-    // Next, make sure the dogear actually got created.
-    const listWithOne = await dogears.list(userID);
-    expect(listWithOne).toHaveLength(1);
-    expect(listWithOne[0]).toHaveProperty('current', 'https://example.com/comic/240');
-
-    // Hopefully create will throw an error if I just fuck it up completely
-    await expect(dogears.create(userID)).rejects.toThrow();
-
-    // Prove that I re-enabled the upsert:
-    await expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/250', 'Example Comic')).resolves.toBeUndefined();
-    const stillOnlyOne = await dogears.list(userID);
-    expect(stillOnlyOne).toHaveLength(1); // because upsert
-    expect(stillOnlyOne[0]).toHaveProperty('current', 'https://example.com/comic/250');
-  });
-
 
 });
 
