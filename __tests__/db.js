@@ -72,18 +72,29 @@ describe("Dogears database layer", () => {
     await expect(dogears.list(userID)).resolves.toHaveLength(3);
   });
 
-  test("Update and load", async () => {
+  test("Save and restore", async () => {
     // Set up user
     const {id: userID} = await users.create('dogears_update');
 
     // Basic usage
     await dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic');
-    await expect(dogears.currently(userID, 'https://example.com/comic/1')).resolves.toBe('https://example.com/comic/240');
-    await expect(dogears.currently(userID, 'example.com/comic/')).resolves.toBe('https://example.com/comic/240');
-    await expect(dogears.currently(userID, 'https://example.com/com')).resolves.toBe(false);
+    await Promise.all([
+      expect(dogears.currently(userID, 'https://example.com/comic/1'))
+        .resolves.toBe('https://example.com/comic/240'),
+      expect(dogears.currently(userID, 'example.com/comic/'))
+        .resolves.toBe('https://example.com/comic/240'),
+      expect(dogears.currently(userID, 'https://example.com/com'))
+        .resolves.toBe(false),
+      // Malformed call to currently()
+      expect(dogears.currently('https://example.com/comic/1'))
+        .rejects.toThrow(/requires/),
+    ]);
 
-    // Malformed call to currently()
-    await expect(dogears.currently('https://example.com/comic/1')).rejects.toThrow(/requires/);
+    // Updating w/ update()
+    await expect(dogears.update(userID, 'https://example.com/comic/241')).resolves.toBeUndefined();
+    await expect(dogears.currently(userID, 'example.com/comic/')).resolves.toBe('https://example.com/comic/241');
+    await expect(dogears.update(userID, 'https://example.com/com/not-dogeared')).rejects.toThrow();
+
   });
 
   test.skip("Dogears models", async () => {

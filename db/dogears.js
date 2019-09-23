@@ -35,11 +35,14 @@ module.exports = {
     if (!current) {
       throw new Error("Update dogear requires a URL");
     }
-    await db.query("UPDATE dogears " +
+    const result = await db.query("UPDATE dogears " +
         "SET current = $2, updated = current_timestamp WHERE " +
         "user_id = $1 AND $2 LIKE $3 || prefix || '%'",
       [userID, current, getProtocol(current)]
     );
+    if (result.rowCount === 0) {
+      throw new Error("No dogears match that URL");
+    }
   },
 
   async list(userID) {
