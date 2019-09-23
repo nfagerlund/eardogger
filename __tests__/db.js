@@ -58,15 +58,15 @@ describe("Dogears database layer", () => {
     // Luckily you can do a bunch of expects within one test. So that'll have to
     // do. Ugh, it really should be separate tests tho, with descriptions...
 
-    // TODO TEMP: gotta make sure a user exists before I can insert anything.
-    await db.query("INSERT INTO users (username) VALUES ('test_user')");
+    // Set up a user, no pw/email
+    const {id: userID} = await users.create('dogears_old_tests');
 
     // Also, I'm doing a couple different ways of balancing all the async terms, sorry.
     // first, just make sure we're not talking to prod and the dogears table is empty.
-    expect(await dogears.list(1)).toStrictEqual([]);
+    expect(await dogears.list(userID)).toStrictEqual([]);
 
     // Next just make sure creating a dogear works.
-    await expect(dogears.create(1, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).resolves.toBeUndefined();
+    await expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).resolves.toBeUndefined();
     // I tried a bunch of things, and that IS the expected result from an async
     // function that doesn't throw but also doesn't return anything.
 
@@ -81,16 +81,16 @@ describe("Dogears database layer", () => {
     // - add error handling to update, test against a nonexistent prefix.
 
     // Next, make sure the dogear actually got created.
-    const listWithOne = await dogears.list(1);
+    const listWithOne = await dogears.list(userID);
     expect(listWithOne).toHaveLength(1);
     expect(listWithOne[0]).toHaveProperty('current', 'https://example.com/comic/240');
 
     // Hopefully create will throw an error if I just fuck it up completely
-    await expect(dogears.create(1)).rejects.toThrow();
+    await expect(dogears.create(userID)).rejects.toThrow();
 
     // Prove that I re-enabled the upsert:
-    await expect(dogears.create(1, 'example.com/comic/', 'https://example.com/comic/250', 'Example Comic')).resolves.toBeUndefined();
-    const stillOnlyOne = await dogears.list(1);
+    await expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/250', 'Example Comic')).resolves.toBeUndefined();
+    const stillOnlyOne = await dogears.list(userID);
     expect(stillOnlyOne).toHaveLength(1); // because upsert
     expect(stillOnlyOne[0]).toHaveProperty('current', 'https://example.com/comic/250');
   });
