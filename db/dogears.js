@@ -4,7 +4,6 @@ const getProtocol = url => url.match(/^(https?:\/\/)?/)[0];
 
 module.exports = {
 
-  // TODO: currently does nothing with userID
   async create(userID, prefix, current, displayName) {
     prefix = prefix.replace(/^https?:\/\//, '');
     current = current || prefix;
@@ -24,7 +23,6 @@ module.exports = {
     );
   },
 
-  // TODO: same
   async update(userID, current) {
     await db.query("UPDATE dogears " +
         "SET current = $2, updated = current_timestamp WHERE " +
@@ -33,7 +31,6 @@ module.exports = {
     );
   },
 
-  // TODO: same
   async list(userID) {
     let result = await db.query(
       'SELECT id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC',
