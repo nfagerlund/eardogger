@@ -1,14 +1,16 @@
-test("I literally have no idea what I'm doing", () => {
-  expect(process.env.NODE_ENV).toBe('test');
-});
+describe.skip("The first rule of tautology club is the first rule of tautology club", () => {
+  test("I literally have no idea what I'm doing", () => {
+    expect(process.env.NODE_ENV).toBe('test');
+  });
 
-test("how about deep object matching", () => {
-  expect({hi: {yo: 'hey'}}).toEqual({hi: {yo: 'hey'} });
+  test("how about deep object matching", () => {
+    expect({hi: {yo: 'hey'}}).toEqual({hi: {yo: 'hey'} });
+  });
 });
 
 const fakeDB = {};
 
-describe("here's some async stuff that needs to actually finish", () => {
+describe.skip("here's some async stuff that needs to actually finish", () => {
   beforeAll( async () => {
     const thing = await Promise.resolve('just sitting here, not returning anything');
     console.log('LOGGED FROM SPACE');
