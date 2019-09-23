@@ -125,6 +125,10 @@ app.use(function(req, res, next){
   }
 });
 
+// API routes live in their own little thing.
+const v1api = require('./api/v1');
+app.use('/api/v1', v1api);
+
 // AUTHENTICATION WITH PASSPORT, finally. ok, so it's using the multiple callbacks signature,
 // which just does them in sequence, but they can call next('route') to skip the rest
 // of the sequence, or just return immediately. Which Passport actually does; if
