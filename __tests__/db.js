@@ -61,11 +61,11 @@ describe("Dogears database layer", () => {
     // Make sure creating a dogear works.
     await Promise.all([
       // A normal one.
-      expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).resolves.toBeUndefined(),
+      expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).resolves.toMatchObject({prefix: 'example.com/comic/'}),
       // A second one, with no title.
-      expect(dogears.create(userID, 'example.com/story/', 'https://example.com/story/2')).resolves.toBeUndefined(),
+      expect(dogears.create(userID, 'example.com/story/', 'https://example.com/story/2')).resolves.toBeDefined(),
       // A third, with no current.
-      expect(dogears.create(userID, 'example.com/extras/')).resolves.toBeUndefined(),
+      expect(dogears.create(userID, 'example.com/extras/')).resolves.toBeDefined(),
       // A malformed one
       expect(dogears.create('example.com/explodes/')).rejects.toThrow(),
     ]);
@@ -93,13 +93,16 @@ describe("Dogears database layer", () => {
     ]);
 
     // Updating w/ update()
-    await expect(dogears.update(userID, 'https://example.com/comic/241')).resolves.toBeUndefined();
-    await expect(dogears.currently(userID, 'example.com/comic/')).resolves.toBe('https://example.com/comic/241');
-    await expect(dogears.update(userID, 'https://example.com/com/not-dogeared')).rejects.toThrow();
+    await expect(dogears.update(userID, 'https://example.com/comic/241'))
+      .resolves.toHaveLength(1);
+    await expect(dogears.currently(userID, 'example.com/comic/'))
+      .resolves.toBe('https://example.com/comic/241');
+    await expect(dogears.update(userID, 'https://example.com/com/not-dogeared'))
+      .rejects.toThrow();
 
     // Updating w/ create()'s fallback behavior
     // also stripping protocol from prefix
-    await expect(dogears.create(userID, 'http://example.com/comic/', 'https://example.com/comic/242', 'New Name')).resolves.toBeUndefined();
+    await expect(dogears.create(userID, 'http://example.com/comic/', 'https://example.com/comic/242', 'New Name')).resolves.toBeDefined();
     let list = await dogears.list(userID);
     await Promise.all([
       expect(list).toHaveLength(1),

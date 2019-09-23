@@ -4,6 +4,7 @@ const getProtocol = url => url.match(/^(https?:\/\/)?/)[0];
 
 module.exports = {
 
+  // Returns created dogear
   async create(userID, prefix, current, displayName) {
     if (typeof userID != 'number') {
       throw new Error("Create dogear requires numeric userID");
@@ -15,10 +16,11 @@ module.exports = {
     current = current || prefix;
     displayName = displayName || null; // real null, not undefined.
 
-    await db.query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " +
+    const result = await db.query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " +
         "ON CONFLICT (user_id, prefix) DO UPDATE SET " +
         "current = $3, updated = current_timestamp, display_name = $4 WHERE " +
-        "EXCLUDED.user_id = $1 AND EXCLUDED.prefix = $2",
+        "EXCLUDED.user_id = $1 AND EXCLUDED.prefix = $2 " +
+        "RETURNING id, user_id, prefix, current, display_name, updated",
       [
         userID,
         prefix,
@@ -26,8 +28,10 @@ module.exports = {
         displayName,
       ]
     );
+    return result.rows[0];
   },
 
+  // Returns array of updated dogears
   async update(userID, current) {
     if (typeof userID != 'number') {
       throw new Error("Update dogear requires numeric userID");
@@ -37,17 +41,19 @@ module.exports = {
     }
     const result = await db.query("UPDATE dogears " +
         "SET current = $2, updated = current_timestamp WHERE " +
-        "user_id = $1 AND $2 LIKE $3 || prefix || '%'",
+        "user_id = $1 AND $2 LIKE $3 || prefix || '%' " +
+        "RETURNING id, user_id, prefix, current, display_name, updated",
       [userID, current, getProtocol(current)]
     );
     if (result.rowCount === 0) {
       throw new Error("No dogears match that URL");
     }
+    return result.rows;
   },
 
   async list(userID) {
-    let result = await db.query(
-      'SELECT id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC',
+    const result = await db.query(
+      "SELECT id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC",
       [userID]
     );
     return result.rows;
