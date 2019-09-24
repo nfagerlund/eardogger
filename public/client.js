@@ -82,7 +82,7 @@ if (countdownIndicator) {
   function tick() {
     if (count > 0) {
       countdownIndicator.innerHTML = count.toString();
-      setTimeout(tick, count * 1000);
+      setTimeout(tick, count * 500);
     } else {
       document.location.href = countdownIndicator.getAttribute('data-returnto');
     }
