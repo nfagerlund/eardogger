@@ -4,6 +4,7 @@
 const bookmarksList = document.getElementById('dogears');
 const createForm = document.getElementById('create-dogear');
 const updateForm = document.getElementById('update-dogear');
+const countdownIndicator = document.getElementById('countdown');
 
 if (bookmarksList) {
   // Then we're on the front page and you're logged in.
@@ -72,4 +73,19 @@ if (bookmarksList) {
       this.elements['current'].value = '';
     });
   });
+}
+
+
+if (countdownIndicator) {
+  // we're redirecting soon.
+  var count = 3;
+  function tick() {
+    if (count > 0) {
+      countdownIndicator.innerHTML = count.toString();
+      setTimeout(tick, count * 1000);
+    } else {
+      document.location.href = countdownIndicator.getAttribute('data-returnto');
+    }
+    count--;
+  }
 }
