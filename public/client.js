@@ -3,7 +3,7 @@
 // define variables that reference elements on our page
 const bookmarksList = document.getElementById('dogears');
 const createForm = document.getElementById('create-dogear');
-const updateForm = document.createElementById('update-dogear');
+const updateForm = document.getElementById('update-dogear');
 
 if (bookmarksList) {
   // Then we're on the front page and you're logged in.
