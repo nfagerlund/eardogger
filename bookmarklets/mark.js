@@ -26,7 +26,7 @@
         window.setTimeout(()=>{m.remove()}, 3000);
       }
     };
-    fetch('https://eardogger.glitch.me/update', {
+    fetch('https://eardogger.glitch.me/api/v1/update', {
       method:'POST',
       mode:'cors',
       credentials:'include',

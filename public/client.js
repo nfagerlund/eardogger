@@ -32,10 +32,10 @@ unCookieButton.addEventListener('click', e => {
 // Get the list of bookmarks from the API, and refresh the on-page list with current info.
 const refreshDogears = async () => {
   try {
-    const response = await fetch('/list', {
+    const response = await fetch('/api/v1/list', {
       method: 'GET',
       credentials: 'include',
-      headers:{'Content-Type': 'application/json'}
+      headers:{'Content-Type': 'application/json', 'Accept': 'application/json'}
     });
     const bookmarks = await response.json();
     // Replace the whole bookmarks list
@@ -55,7 +55,7 @@ const submitDogear = async (dest, dogObj) => {
     const response = await fetch(dest, {
       method: 'POST',
       credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       body: JSON.stringify(dogObj)
     });
 
@@ -71,7 +71,7 @@ const submitDogear = async (dest, dogObj) => {
 // create form:
 createForm.onsubmit = async function(e) {
   e.preventDefault();
-  const success = await submitDogear('/create', {
+  const success = await submitDogear('/api/v1/create', {
     prefix: createPrefixInput.value,
     current: createCurrentInput.value,
     display_name: createNameInput.value
@@ -86,7 +86,7 @@ createForm.onsubmit = async function(e) {
 // update form:
 updateForm.onsubmit = async function(e) {
   e.preventDefault();
-  const success = await submitDogear('/update', {current: updateCurrentInput.value});
+  const success = await submitDogear('/api/v1/update', {current: updateCurrentInput.value});
   if (success) {
     updateCurrentInput.value = '';
   }
