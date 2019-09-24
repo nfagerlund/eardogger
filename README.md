@@ -1,31 +1,38 @@
-# Eardogger prototype
+# Eardogger
 
 This is a movable bookmarks service, for reading serialized content on the web.
 
 ## Concepts
 
-Bookmarks are like wood-space bookmarks, not browser bookmarks. That is: they're independent of their URL, and their URL changes over their lifespan.
+- Dogears are bookmarks that act like a cursor. Their permanent identifier is a URL prefix, but the full URL they point to can change frequently.
+- Updating a dogear involves sending a URL. Any dogears whose prefixes match it will update.
+- That's about it.
 
-Bookmarks are identified by a URL prefix. Think of the prefix as identifying "this book." If a URL matches that prefix, then it's in _this book,_ and the bookmark can be moved to that spot. If not, then it's in a different book, which has a different bookmark in it (or no bookmark).
+## Environment Variables
 
-If a URL matches multiple bookmarks' prefixes, they'll both get moved to that location on update. This is semi-intentional, because I can sorta see a use for it.
-
-## Required Environment Variables
+The app needs these in order to run properly.
 
 - `DATABASE_URL` — Postgres connection string.
 - `SESSION_SECRET` — Arbitrary secret used for securing user login sessions.
 
 ## v1 API
 
-All API calls require a session cookie for auth, because they're meant to be called by bookmarklets or browser extensions or the UI.
+- [POST /api/v1/create](#post-api-v1-create)
+- [POST /api/v1/update](#post-api-v1-update)
+- [GET /api/v1/list](#get-api-v1-list)
+- [DELETE /api/v1/dogear/:id](#delete-api-v1-dogear-id)
 
-### Shared Status Codes
+All API calls require a session cookie for auth, because they're meant to be called by bookmarklets or browser extensions or the UI. API calls only act on the authenticated user's objects; there's no admin API.
 
-All methods return 401 with empty body if there's no session cookie. Can't do anything with your bookmarks if I don't know who you are.
+Most endpoints are not available for CORS.
 
-### Bookmark Objects
+Everything expects `application/json`, and returns `application/json` if it has anything to return.
 
-A few endpoints can return bookmark objects, which look like this:
+- 401 means the request wasn't authenticated, which right now means there was no session cookie. Can't do anything with your dogears if I don't know who you are.
+- 404 either means 404 for real, or the thing exists but you're not allowed to mess with it.
+- 400 usually comes with an `{error: "description"}` object.
+
+A few endpoints can return dogear objects, which look like this:
 
 ```javascript
 {
@@ -33,120 +40,110 @@ A few endpoints can return bookmark objects, which look like this:
   "current": "URL",
   "display_name": "display name", // optional
   "updated": "last update time", // whatever JSON.serialize does with Date objects. "2019-09-17T16:14:40.999Z".
-  "id": "opaque ID" // maybe
+  "user_id": integer,
+  "id": integer
 }
 ```
 
-### POST /v1/create
+### POST /api/v1/create
 
-Make a new bookmark at the specified prefix. If one already exists, update it.
+Make a new dogear at the specified prefix. If one already exists, update it instead.
 
-Body:
+#### Body:
 
-```javascript
+```json
 {
   "prefix": "http://example.com/comic",
-  "current": "http://example.com/comic/24"
+  "current": "http://example.com/comic/24",
+  "display_name": "Example Comic"
 }
 ```
 
-Body parameters:
+#### Body parameters:
 
 Name | Type | Desc
 -|-|-
-prefix | string | The URL prefix that identifies this bookmark. Protocol is optional, and gets stripped during creation. Prefix matching against URLs always ignores protocol.
-current | URL | (optional) A full URL to the bookmark's current position. If omitted, defaults to the provided prefix (before the protocol gets stripped).
+`prefix` | string (URL) | The URL prefix that identifies this dogear. Protocol is optional, and gets stripped during creation.
+`current` | string (URL) | (optional) Full URL to the dogear's current position. If omitted, defaults to the prefix.
+`display_name` | string | (optional) Display name for this dogear.
 
-Returns:
+#### Returns:
 
 Outcome | Response
 -|-
-Success | 201, empty body.
-Syntax error, API version decommissioned, etc. | 400, optional JSON object with `{error: "error name", help: "HTML explanation"}`
+Success | 201, dogear object.
+Malformed, bad API version, etc. | 400, JSON object with `{error: "error message"}`
 
 
-### POST /v1/update
+### POST /api/v1/update
 
-Find all bookmarks that match the provided URL and update their current positions.
+Update position of any dogears that match the provided URL.
 
-This is the fire-and-forget version; there's also a UI method to update a bookmark, which falls back to offering a new-bookmark form if the bookmark doesn't exist.
+This is the fire-and-forget version; there's also a UI method to update a dogear, which falls back to offering a create form if the dogear doesn't exist.
 
-Body:
+#### Body:
 
-```javascript
+```json
 {
   "current": "http://example.com/comic/24"
 }
 ```
 
-Body parameters:
+#### Body parameters:
 
 Name | Type | Desc
 -|-|-
-current | URL | Full URL to the bookmark's new position.
+`current` | string (URL) | Full URL to the dogear's new position.
 
-Returns:
-
-Outcome | Response
--|-
-Success | 200, empty body
-Can't find bookmark | 404, JSON object with `{error: "no matching bookmark"}`
-Syntax error, API version decommissioned, etc. | 400, JSON object with `{error: "error name", help: "optional HTML explanation"}`
-
-### GET /v1/current/:url
-
-(The informational version.)
-
-Get the current position of the most specific bookmark that matches the provided URL. Returns JSON.
-
-URL parameters:
-
-Name | Description
--|-
-:url | The URL-encoded URL (yo dawg) to retrieve a bookmark for.
-
-Returns:
+#### Returns:
 
 Outcome | Response
 -|-
-Success | 200, JSON bookmark object
-Can't find bookmark | 404, JSON object with `{error: "no matching bookmark"}`
-Syntax error, API version decommissioned, etc. | 400, JSON object with `{error: "error name", help: "optional HTML explanation"}`
+Success | 200, array of dogear objects
+Can't find dogear | 404, empty
+Malformed, bad API version, etc. | 400, JSON object with `{error: "error message"}`
 
-### GET /v1/list
 
-List all bookmarks.
+### GET /api/v1/list
 
-This one ain't long for this world, bc I'll need pagination at some point. If the user is beyond the pagination limit, it'll just 400 and you'll need to upgrade to v2 api. Oh, v2 will also want to be able to query by update time, for cheaper refreshes in the extension/app. Hmm, should it list deletions as well? How would I do that?
+List all dogears.
 
 No parameters.
 
-Returns:
+#### Returns
 
-```javascript
-[
-  { bookmark_object }, // see above for format
-  // ...
-]
-```
+Outcome | Response
+-|-
+Success | 200, array of dogear objects
+Malformed, bad API version, etc. | 400, JSON object with `{error: "error message"}`
 
-Actually, this'll need to return a lot more info, but that's not implemented yet so I don't know the property/column names.
 
-### GET /v1/bookmark/:id
+### DELETE /api/v1/dogear/:id
 
-Returns a bookmark object for that ID, if it exists and belongs to the user. Otherwise returns a 404.
+Deletes the dogear with the specified ID, if it exists and belongs to the current user.
 
-I don't expect to actually use this.
+#### URL parameters:
 
-### DELETE /v1/bookmark/:id
+Name | Type | Desc
+-|-|-
+`:id` | integer | The ID of a dogear. Currently, you need to get the ID from the /list, /update, or /create endpoint (probably /list).
 
-Deletes a bookmark object for that ID, if it exists and belongs to the user, and returns 204 "no content". Otherwise returns a 404.
+#### Returns
 
-### GET /v1/account
+Outcome | Response
+-|-
+Success | 204, empty
+Can't find dogear | 404, empty
 
-Return info about the logged-in user. Will be used by the browser extension or app, I guess.
 
-IDK what this needs to return yet. Probably just `{username: "name"}`.
+## Future API
+
+Here are some endpoints I might need at some point, but don't currently.
+
+- `GET /api/v1/current/:url`
+- `GET /api/v1/dogear/:id`
+- `GET /api/v1/account`
+
 
 ## Not Really API or UI
 
@@ -194,7 +191,7 @@ If logged in, returns 403 forbidden w/ message saying you need to log out before
     - display login form
     - display signup form
 - If logged in:
-    - Display list of bookmarks
+    - Display list of dogears
     - Display logout button
     - Display bookmarklet install instructions
     - Display create and update forms (maybe??? they're bad ui, but also why not, put them somewhere out of the way.)
@@ -210,40 +207,40 @@ If logged in, returns 403 forbidden w/ message saying you need to log out before
 
 ### /mark/:url
 
-Update any matching bookmarks for :url, then redirect back to :url.
+Update any matching dogears for :url, then redirect back to :url.
 
-If there aren't any matching bookmarks, offer to create a new bookmark and ask for a prefix to use. Then redirect back to :url.
+If there aren't any matching dogears, offer to create a new one and ask for a prefix to use. Then redirect back to :url.
 
 URL parameters:
 
 Name | Description
 -|-
-:url | URL-encoded URL (yo dawg) of the URL you want to bookmark.
+:url | URL-encoded URL (yo dawg) of the URL you want to dogear.
 
-- If it found and updated existing bookmarks:
-    - Display "Bookmarks updated" page w/ 3-sec countdown; 302 to :url after countdown.
-- If no bookmarks matched:
-    - Display create bookmark form
+- If it found and updated existing dogears:
+    - Display "Dogears updated" page w/ 3-sec countdown; 302 to :url after countdown.
+- If no dogears matched:
+    - Display create form
         - Only offer prefix; display :url but leave it hardcoded.
-        - On success: display "Bookmark created" page w/ 3-sec countdown; 302 to :url after countdown.
+        - On success: display "Dogear created" page w/ 3-sec countdown; 302 to :url after countdown.
 - If no session: login form, which redirects to self on success.
 
 ### /resume/:url
 
-Immediately redirect to the current position of the most specific bookmark that matches :url.
+Immediately redirect to the current position of the most specific dogear that matches :url.
 
-If there aren't any matching bookmarks, offer a choice between creating a new bookmark or just returning to where you were.
+If there aren't any matching dogears, offer a choice between creating a new one or just returning to where you were.
 
 URL parameters:
 
 Name | Description
 -|-
-:url | The URL-encoded URL (yo dawg) to retrieve a bookmark for.
+:url | The URL-encoded URL (yo dawg) to retrieve a dogear for.
 
 Returns:
 
 Outcome | Response
 -|-
-Success | 302 "found" redirect to current location of bookmark.
-Can't find bookmark |
+Success | 302 "found" redirect to current location of dogear.
+Can't find bookmark | 404, but probably like, a nice 404.
 
