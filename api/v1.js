@@ -8,7 +8,7 @@ module.exports = router;
 
 // Application object DB helpers
 const dogears = require('../db/dogears');
-const users = require('../db/users');
+// const users = require('../db/users');
 
 // 401 unless logged in middleware
 router.use(function(req, res, next) {
@@ -20,7 +20,7 @@ router.use(function(req, res, next) {
 });
 
 // Parse json request bodies
-app.use(express.json());
+router.use(express.json());
 
 // API: create
 router.post('/create', function(req, res){
