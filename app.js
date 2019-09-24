@@ -41,7 +41,7 @@ app.set('view engine', 'hbs'); // the default for no-extension views
 
 
 // session handling
-const wipSession = session({
+const sessionPersist = session({
   name: 'eardogger.sessid',
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 30 * 2, // two months, in milliseconds.
@@ -52,14 +52,14 @@ const wipSession = session({
     pool: db.pool,
     pruneSessionInterval: 60 * 60, // an hour, in seconds.
   }),
-  secret: "replace this with something good and probably get it from environment",
+  secret: process.env.SESSION_SECRET,
   saveUninitialized: false,
   rolling: true,
   resave: false,
   unset: 'destroy',
 });
 
-app.use(wipSession);
+app.use(sessionPersist);
 
 // OK, let's passport.js.
 passport.use(new LocalStrategy(

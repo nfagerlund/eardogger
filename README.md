@@ -10,6 +10,11 @@ Bookmarks are identified by a URL prefix. Think of the prefix as identifying "th
 
 If a URL matches multiple bookmarks' prefixes, they'll both get moved to that location on update. This is semi-intentional, because I can sorta see a use for it.
 
+## Required Environment Variables
+
+- `DATABASE_URL` — Postgres connection string.
+- `SESSION_SECRET` — Arbitrary secret used for securing user login sessions.
+
 ## v1 API
 
 All API calls require a session cookie for auth, because they're meant to be called by bookmarklets or browser extensions or the UI.
