@@ -1,12 +1,15 @@
 // client-side js
 
-// define variables that reference elements on our page
+// some important elements:
 const bookmarksList = document.getElementById('dogears');
 const createForm = document.getElementById('create-dogear');
 const updateForm = document.getElementById('update-dogear');
 
 if (bookmarksList) {
   // Then we're on the front page and you're logged in.
+
+  // Build a dogear list item
+  const makeDogear = mark => `<li><a href=${mark.current}>${mark.display_name || mark.current}</a> ${mark.display_name ? '<span class="current">(' + mark.current + ')</span>' : ''} <span class="date">Last read: ${mark.updated.toLocaleDateString()}</span></li>`;
 
   // Get the list of bookmarks from the API, and refresh the on-page list with current info.
   const refreshDogears = () => {
@@ -16,9 +19,7 @@ if (bookmarksList) {
       headers:{'Content-Type': 'application/json', 'Accept': 'application/json'}
     }).then(response => {
       response.json().then(dogears => {
-        bookmarksList.innerHTML = dogears
-          .map(mark => `<li><a href=${mark.current}>${mark.display_name || mark.current}</a></li>`)
-          .join(' ');
+        bookmarksList.innerHTML = dogears.map(makeDogear).join(' ');
       });
     }).catch(err => {
       bookmarksList.innerHTML = `<li>Something went wrong! Error: ${err}</li>`;
