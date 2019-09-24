@@ -88,4 +88,5 @@ if (countdownIndicator) {
     }
     count--;
   }
+  tick();
 }
