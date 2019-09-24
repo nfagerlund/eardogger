@@ -152,7 +152,7 @@ app.get('/', function(req, res) {
   if (req.user) {
     res.render('index', {title: `${req.user.username}'s Dogears`});
   } else {
-    res.sendFile(__dirname + '/views/login.html');
+    res.render('login', {title: 'Log in'});
   }
 });
 
