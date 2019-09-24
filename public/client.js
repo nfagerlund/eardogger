@@ -9,7 +9,13 @@ if (bookmarksList) {
   // Then we're on the front page and you're logged in.
 
   // Build a dogear list item
-  const makeDogear = mark => `<li><a href=${mark.current}>${mark.display_name || mark.current}</a> ${mark.display_name ? '<span class="current">(' + mark.current + ')</span>' : ''} <span class="date">Last read: ${(new Date(mark.updated)).toLocaleDateString()}</span></li>`;
+  const makeDogear = mark => {
+    const lastDate = (new Date(mark.updated)).toLocaleDateString();
+    const display = mark.display_name || mark.prefix;
+    const urlHint = `<span class="current">(${mark.current})</span>`;
+
+    return `<li><a href=${mark.current}>${display}</a> ${urlHint} <span class="date">Last read: ${lastDate}</span></li>`;
+  }
 
   // Get the list of bookmarks from the API, and refresh the on-page list with current info.
   const refreshDogears = () => {
