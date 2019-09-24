@@ -53,7 +53,7 @@ module.exports = {
 
   async list(userID) {
     const result = await db.query(
-      "SELECT id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC",
+      "SELECT id, user_id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC",
       [userID]
     );
     return result.rows;
