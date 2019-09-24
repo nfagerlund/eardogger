@@ -156,3 +156,8 @@ app.get('/', function(req, res) {
   }
 });
 
+app.get('/mark/:url', function(req, res){
+  if (req.user) {
+    res.render('mark', {title: 'fix this later', url: req.params.url});
+  }
+});
