@@ -26,7 +26,7 @@ router.post('/update', function(req, res){
     // Move this into a middleware once I have real sessions working
     res.status(401);
     // debug:
-    res.send(JSON.stringify(req.cookies));
+    res.json(req.cookies);
   }
 });
 
@@ -48,7 +48,7 @@ router.post('/create', function(req, res){
 router.get('/list', function(req, res){
   if (req.user) {
     dogears.list(req.user.id).then(data => {
-      res.send(JSON.stringify(data));
+      res.json(data);
     }).catch(err => {
       console.log(err)
       res.sendStatus(400);
