@@ -13,21 +13,6 @@ const createForm = document.forms[0];
   const createNameInput = createForm.elements['display_name'];
 const updateForm = document.forms[1];
   const updateCurrentInput = updateForm.elements['current'];
-const cookieButton = document.getElementById('cookie');
-const unCookieButton = document.getElementById('uncookie');
-
-// fake a session cookie
-cookieButton.addEventListener('click', e => {
-  document.cookie = "test-session=aoeuhtns;expires=Fri, 31 Dec 9999 23:59:59 GMT;path=/";
-  window.alert('ok, set your cookie to aoeuhtns');
-});
-
-// kill it
-unCookieButton.addEventListener('click', e => {
-  document.cookie = "test-session=";
-  window.alert('k its dead');
-});
-
 
 // Get the list of bookmarks from the API, and refresh the on-page list with current info.
 const refreshDogears = async () => {
