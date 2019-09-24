@@ -29,7 +29,7 @@ if (bookmarksList) {
 
   // semi-generic helper for submitting a dogear
   const submitDogear = (dest, dogObj) => {
-    fetch(dest, {
+    return fetch(dest, {
       method: 'POST',
       credentials: 'include',
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
@@ -40,7 +40,7 @@ if (bookmarksList) {
     }).catch(err => {
       return false;
     });
-  }
+  };
 
   // Set up create form:
   createForm.addEventListener('submit', function(e) {
