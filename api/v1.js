@@ -2,6 +2,7 @@
 const express = require('express');
 
 const router = express.Router({mergeParams: true});
+  // TODO: Once I move to token auth, I might want to set this to false? IDK.
 
 module.exports = router;
 
@@ -18,36 +19,44 @@ router.use(function(req, res, next) {
   }
 });
 
-// API: update
-// Hmm, this probably breaks if there are multiple matching prefixes. Or, just blitzes one of them.
-// so, uhhhh for the prototype just don't do that.
-// btw I tried using sqlite's ORDER BY + LIMIT feature for update, but the version
-// linked into the nodejs module does not actually support that and just syntax errors. BOO.
-router.post('/update', function(req, res){
-  dogears.update(req.user.id, req.body.current).then( () => {
-    res.sendStatus(200);
-  }).catch(err => {
-    console.log(err);
-    res.sendStatus(404);
-  });
-});
+// Parse json request bodies
+app.use(express.json());
 
 // API: create
 router.post('/create', function(req, res){
-  dogears.create(req.user.id, req.body.prefix, req.body.current, req.body.display_name).then( () => {
-    res.sendStatus(201);
+  const {prefix, current, display_name} = req.body;
+  dogears.create(req.user.id, prefix, current, display_name).then(dogear => {
+    res.status(201).json(dogear);
   }).catch(err => {
-    console.log(err)
-    res.sendStatus(400);
+    res.status(400).json({error: err.toString()});
+  });
+});
+
+// API: update
+router.post('/update', function(req, res){
+  const {current} = req.body;
+  dogears.update(req.user.id, current).then(dogears => {
+    res.status(200).json(dogears);
+  }).catch(err => {
+    res.sendStatus(404);
   });
 });
 
 // API: list
 router.get('/list', function(req, res){
-  dogears.list(req.user.id).then(data => {
-    res.json(data);
+  dogears.list(req.user.id).then(dogears => {
+    res.status(200).json(dogears);
   }).catch(err => {
-    console.log(err)
-    res.sendStatus(400);
+    res.status(400).json({error: err.toString()});
+  });
+});
+
+// API: delete
+router.delete('/dogear/:id', function(req, res){
+  const id = req.params.id;
+  dogears.destroy(req.user.id, id).then(() => {
+    res.sendStatus(204);
+  }).catch(err => {
+    res.sendStatus(404);
   });
 });
