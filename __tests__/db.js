@@ -122,10 +122,10 @@ describe("Dogears database layer", () => {
 
     const {id: dogearID} = await dogears.create(userOne, 'example.com/comic/', 'https://example.com/comic/1');
 
-    // User two can't delete
-    await expect(dogears.delete(userTwo, dogearID)).rejects.toThrow();
-    // User one can delete
-    await expect(dogears.delete(userOne, dogearID)).resolves.toBeUndefined();
+    // User two can't destroy
+    await expect(dogears.destroy(userTwo, dogearID)).rejects.toThrow();
+    // User one can destroy
+    await expect(dogears.destroy(userOne, dogearID)).resolves.toBeUndefined();
     await expect(dogears.list(userOne)).resolves.toHaveLength(0);
   });
 

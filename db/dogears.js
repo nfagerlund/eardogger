@@ -6,12 +6,10 @@ module.exports = {
   create,
   update,
   list,
-  delete,
+  destroy,
 //   edit,
   currently,
 }
-
-
 
 
 // Returns created dogear
@@ -69,7 +67,7 @@ async function list(userID) {
   return result.rows;
 }
 
-async function delete(userID, id) {
+async function destroy(userID, id) {
   const result = await db.query(
     "DELETE FROM dogears WHERE id = $2 AND user_id = $1",
     [userID, id]
