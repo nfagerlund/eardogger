@@ -3,7 +3,7 @@
 
   <p>Saved your place in
     {{#each updatedDogears}}
-      {{this.display_name || this.prefix}}{{#unless @last}}, {{/unless}}
+      {{#if this.display_name}}{{this.display_name}}{{else}}{{this.prefix}}{{/if}}{{#unless @last}}, {{/unless}}
     {{/each}}
   </p>
 
