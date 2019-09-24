@@ -158,8 +158,8 @@ app.get('/', function(req, res) {
 
 app.get('/mark/:url', function(req, res){
   if (req.user) {
-    dogears.update(req.user.id, req.params.url).then(result => {
-      res.render('mark', {title: 'success', url: req.params.url, result: JSON.stringify(result)});
+    dogears.update(req.user.id, req.params.url).then(updatedDogears => {
+      res.render('mark', {title: 'Marked your place', url: req.params.url, updatedDogears});
     }).catch(err => {
       res.render('mark', {title: 'fail', url: req.params.url, result: JSON.stringify(err.toString())});
     })
