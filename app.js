@@ -34,8 +34,8 @@ const hbsViews = expressHandlebars.create({
   extname: '.hbs',
   // defaults for layoutsDir and partialsDir
   defaultLayout: 'main', // that's the default but I hate magic and wonder
-
 });
+
 app.engine('hbs', hbsViews.engine); // register for extension
 app.set('view engine', 'hbs'); // the default for no-extension views
 
@@ -101,6 +101,13 @@ app.use(passport.initialize());
 app.use(passport.session());
 // and then down later, the /login endpoint actually calls the authentication thing.
 
+// Make sure user object is available in templates
+app.use(function(req, res, next){
+  if (req.user) {
+    res.locals.user = req.user;
+    next();
+  }
+});
 
 // API routes live in their own little thing.
 const v1api = require('./api/v1');
