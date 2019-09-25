@@ -192,7 +192,7 @@ app.post('/mark', function(req, res){
 app.get('/resume/:url', function(req, res){
   if (req.user) {
     dogears.currently(req.user.id, req.params.url).then(current => {
-      req.redirect(current);
+      res.redirect(current);
     }).catch(err => {
       res.render('error', {title: 'Tried but failed', error: err.toString()});
     })
