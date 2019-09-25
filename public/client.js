@@ -114,7 +114,7 @@ if (bookmarksList) {
 
 if (countdownIndicator) {
   // we're redirecting soon.
-  var count = 3;
+  var count = 30;
   function tick() {
     if (count > 0) {
       countdownIndicator.innerText = count.toString();
