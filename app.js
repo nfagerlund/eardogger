@@ -158,7 +158,7 @@ app.get('/mark/:url', function(req, res){
       res.render('marked', {title: 'Saved your place', url: req.params.url, updatedDogears});
     }).catch(err => {
       if (err instanceof dogears.NoMatchError) {
-        res.render('create', {title: 'Make a new dogear', url: req.params.url});
+        res.render('create', {title: 'Dogear this?', url: req.params.url});
       } else {
         res.render('error', {title: 'Tried but failed', error: err.toString()});
       }
@@ -195,7 +195,7 @@ app.get('/resume/:url', function(req, res){
       } else {
         // currently() returns false if no dogear matched. Could probably stand
         // to make that more consistent w/ update().
-        res.render('create', {title: 'Make a new dogear', url: req.params.url});
+        res.render('create', {title: 'Dogear this?', url: req.params.url});
       }
     }).catch(err => {
       res.render('error', {title: 'Tried but failed', error: err.toString()});

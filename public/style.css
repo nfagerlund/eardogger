@@ -96,6 +96,12 @@ header {
   flex-wrap: wrap-reverse;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1em;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 form#logout {
