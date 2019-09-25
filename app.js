@@ -188,3 +188,16 @@ app.post('/mark', function(req, res){
     res.redirect('/');
   }
 });
+
+app.get('/resume/:url', function(req, res){
+  if (req.user) {
+    dogears.currently(req.user.id, req.params.url).then(current => {
+      req.redirect(current);
+    }).catch(err => {
+      res.render('error', {title: 'Tried but failed', error: err.toString()});
+    })
+  } else {
+    req.session.returnTo = req.originalUrl;
+    res.render('login', {title: 'Log in'});
+  }
+});
