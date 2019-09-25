@@ -22,6 +22,27 @@ router.use(function(req, res, next) {
 // Parse json request bodies
 router.use(express.json());
 
+// CORS is good, actually. But only enable it per-endpoint.
+// s/o to http://johnzhang.io/options-request-in-express
+// (via https://support.glitch.com/t/how-do-i-do-a-cors-on-my-api/7497/8)
+function allowCorsWithCredentials(methods) {
+  return function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Vary', 'Origin');
+    res.header('Access-Control-Allow-Methods', methods);
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    // Bail early for OPTIONS requests
+    if ('OPTIONS' === req.method) {
+      res.send(200);
+    }
+    else {
+      // move on
+      next();
+    }
+  };
+}
+
 // API: create
 router.post('/create', function(req, res){
   const {prefix, current, display_name} = req.body;
@@ -33,6 +54,7 @@ router.post('/create', function(req, res){
 });
 
 // API: update
+router.use('/update', allowCorsWithCredentials('POST'));
 router.post('/update', function(req, res){
   const {current} = req.body;
   dogears.update(req.user.id, current).then(dogears => {

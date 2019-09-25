@@ -101,29 +101,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 // and then down later, the /login endpoint actually calls the authentication thing.
 
-// corrrrrsssssssss
-// s/o to http://johnzhang.io/options-request-in-express
-// (via https://support.glitch.com/t/how-do-i-do-a-cors-on-my-api/7497/8)
-app.use(function(req, res, next){
-  // works w/ cookies:
-  res.header("Access-Control-Allow-Origin", req.headers.origin);
-  // doesn't work w/ cookies:
-  // res.header("Access-Control-Allow-Origin", '*');
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Vary', 'Origin');
-  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  //intercepts OPTIONS method
-  if ('OPTIONS' === req.method) {
-    console.log('got an options preflight request for cors');
-    //respond with 200
-    res.send(200);
-  }
-  else {
-    //move on
-    next();
-  }
-});
 
 // API routes live in their own little thing.
 const v1api = require('./api/v1');
