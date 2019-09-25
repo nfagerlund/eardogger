@@ -130,9 +130,7 @@ app.post('/login', passport.authenticate('local', {
 });
 
 
-// GL: http://expressjs.com/en/starter/basic-routing.html
-// Hey, do I have to call passport.authenticate on every route I want to protect?
-// it looks like not, but I guess we'll find out.
+// Homepage!
 app.get('/', function(req, res) {
   if (req.user) {
     res.render('index', {title: `${req.user.username}'s Dogears`});
@@ -141,6 +139,7 @@ app.get('/', function(req, res) {
   }
 });
 
+// UI version of updating a dogear; redirects instead of returning json
 app.get('/mark/:url', function(req, res){
   if (req.user) {
     dogears.update(req.user.id, req.params.url).then(updatedDogears => {
@@ -158,6 +157,7 @@ app.get('/mark/:url', function(req, res){
   }
 });
 
+// UI version of creating a dogear; should probably only be posted to from /mark/:url.
 app.post('/mark', function(req, res){
   if (req.user) {
     const {prefix, current, display_name} = req.body;
@@ -174,10 +174,17 @@ app.post('/mark', function(req, res){
   }
 });
 
+// Immediately redirect, if there's a dogear to go to.
 app.get('/resume/:url', function(req, res){
   if (req.user) {
     dogears.currently(req.user.id, req.params.url).then(current => {
-      res.redirect(current);
+      if (current) {
+        res.redirect(current);
+      } else {
+        // currently() returns false if no dogear matched. Could probably stand
+        // to make that more consistent w/ update().
+        res.render('create', {title: 'Make a new dogear', url: req.params.url});
+      }
     }).catch(err => {
       res.render('error', {title: 'Tried but failed', error: err.toString()});
     })
