@@ -9,6 +9,7 @@ module.exports = {
   destroy,
 //   edit,
   currently,
+  NoMatchError,
 }
 
 // Custom error type
