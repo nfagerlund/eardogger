@@ -27,11 +27,15 @@ router.use(express.json());
 // (via https://support.glitch.com/t/how-do-i-do-a-cors-on-my-api/7497/8)
 function allowCorsWithCredentials(methods) {
   return function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", req.headers.origin);
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Vary', 'Origin');
-    res.header('Access-Control-Allow-Methods', methods);
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    // Is this coming from the server you originally logged into? If not, it's CORS.
+    if (req.headers.origin !== req.session.loginOrigin) {
+      req.isCors = true;
+      res.header("Access-Control-Allow-Origin", req.headers.origin);
+      res.header('Access-Control-Allow-Credentials', true);
+      res.header('Vary', 'Origin');
+      res.header('Access-Control-Allow-Methods', methods);
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
+    }
     // Bail early for OPTIONS requests
     if ('OPTIONS' === req.method) {
       res.sendStatus(200);
@@ -57,6 +61,12 @@ router.post('/create', function(req, res){
 router.use('/update', allowCorsWithCredentials('POST'));
 router.post('/update', function(req, res){
   const {current} = req.body;
+  if (req.isCors) {
+    // Only let sites modify dogears on their own origin.
+    if (current.indexOf(req.headers.origin) !== 0) {
+      res.sendStatus(404);
+    }
+  }
   dogears.update(req.user.id, current).then(dogears => {
     res.status(200).json(dogears);
   }).catch(err => {

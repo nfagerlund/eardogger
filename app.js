@@ -106,20 +106,28 @@ app.use(passport.session());
 const v1api = require('./api/v1');
 app.use('/api/v1', v1api);
 
-// AUTHENTICATION WITH PASSPORT, finally. ok, so it's using the multiple callbacks signature,
-// which just does them in sequence, but they can call next('route') to skip the rest
-// of the sequence, or just return immediately. Which Passport actually does; if
-// authentication fails, it just 401s. But now that I read more, the authenticate function
-// can also take an object with redirect properties as its second argument.... maybe
-// that's the move instead. Hmm.
-// Man, that authenticate('local') bit really gets my goat. 'local' is a magic
-// string, I never specified it anywhere above, it's just tied to the local
-// authentication strategy, which I DID pass in as an object. Each strategy
-// plugin states its magic string in its docs, but good gravy. I hate this.
+// AUTHENTICATION WITH PASSPORT, finally.
+// About .authenticate('local')... 'local' is a magic string. I never specified
+// it anywhere above, it's just tied to the local authentication strategy, which
+// I DID pass in as an object. I don't love that interface, but each strategy
+// plugin states its magic string in its docs, so, ok.
 app.post('/login', passport.authenticate('local', {
-  successReturnToOrRedirect: '/', // uses req.session.returnTo if present
+//   successReturnToOrRedirect: '/', // uses req.session.returnTo if present. Undocumented.
   failureRedirect: '/', // should be /login but I don't have that yet
-}) );
+}), (req, res, next) => {
+  // On success, do the following! (If authentication failed, passport
+  // redirects immediately and this second middleware is never called.)
+
+  // Save the Origin header of the server you logged into (this one, right
+  // here), so we can compare against it later to detect CORS requests.
+  req.session.loginOrigin = req.headers.origin;
+  // Then redirect to wherever you were going.
+  if (req.session.returnTo) {
+    res.redirect(req.session.returnTo);
+  } else {
+    res.redirect('/');
+  }
+});
 
 
 // GL: http://expressjs.com/en/starter/basic-routing.html
