@@ -65,6 +65,7 @@ router.post('/update', function(req, res){
     // Only let sites modify dogears on their own origin.
     if (current.indexOf(req.headers.origin) !== 0) {
       res.sendStatus(404);
+      return;
     }
   }
   dogears.update(req.user.id, current).then(dogears => {
