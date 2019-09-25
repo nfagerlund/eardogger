@@ -25,16 +25,13 @@ router.use(express.json());
 // CORS is good, actually. But only enable it per-endpoint.
 // s/o to http://johnzhang.io/options-request-in-express
 // (via https://support.glitch.com/t/how-do-i-do-a-cors-on-my-api/7497/8)
-// "authorize" is a function(req) that returns a bool.
-function allowCorsWithCredentials(methods, authorize) {
+function allowCorsWithCredentials(methods) {
   return function(req, res, next) {
-    if (authorize(req)) {
-      res.header("Access-Control-Allow-Origin", req.headers.origin);
-      res.header('Access-Control-Allow-Credentials', true);
-      res.header('Vary', 'Origin');
-      res.header('Access-Control-Allow-Methods', methods);
-      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-    }
+    res.header("Access-Control-Allow-Origin", req.headers.origin);
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Vary', 'Origin');
+    res.header('Access-Control-Allow-Methods', methods);
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
     // Bail early for OPTIONS requests
     if ('OPTIONS' === req.method) {
       res.send(200);
@@ -57,13 +54,7 @@ router.post('/create', function(req, res){
 });
 
 // API: update
-router.use('/update', allowCorsWithCredentials('POST', (req) => {
-  try {
-    return req.body.current.indexOf(req.headers.origin) === 0;
-  } catch(e) {
-    return false;
-  }
-}));
+router.use('/update', allowCorsWithCredentials('POST'));
 router.post('/update', function(req, res){
   const {current} = req.body;
   dogears.update(req.user.id, current).then(dogears => {
