@@ -34,7 +34,7 @@ function allowCorsWithCredentials(methods) {
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
     // Bail early for OPTIONS requests
     if ('OPTIONS' === req.method) {
-      res.send(200);
+      res.sendStatus(200);
     }
     else {
       // move on
