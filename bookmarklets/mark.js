@@ -1,9 +1,12 @@
-// Update existing bookmark, or create a new bookmark.
-// TODO: use this to populate the bookmarklet install textarea
+// Update existing dogear, or create a new dogear.
+// TODO: - use this to populate the bookmarklet install textarea.
+//       - automatically minify and urlencode this.
+//       - template the site URL down there. (IDK, probably have to make this a module that returns a function)
 
 (
   () => {
     let d = document;
+    let e = 'https://eardogger.glitch.me';
     let s = {
       position:'fixed',
       width:'300px',
@@ -27,9 +30,9 @@
       }
     };
     let go = () => {
-      d.location.href = 'https://eardogger.glitch.me/mark/' + encodeURIComponent(document.location.href);
+      d.location.href = e + '/mark/' + encodeURIComponent(document.location.href);
     }
-    fetch('https://eardogger.glitch.me/api/v1/update', {
+    fetch(e + '/api/v1/update', {
       method:'POST',
       mode:'cors',
       credentials:'include',
@@ -52,7 +55,7 @@
         // navigate to old-style update/create page
         go();
       }
-    }).catch(error=>{
+    }).catch(err=>{
       // CSP or CORS problem, request was never sent
       // navigate to old-style update page
       go();
