@@ -65,6 +65,8 @@ textarea {
 .mock-input {
   font-family: system-ui, sans-serif;
   color: var(--color-disabled);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 a {
