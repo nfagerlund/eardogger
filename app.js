@@ -140,7 +140,7 @@ app.use('/api/v1', v1api);
 // authentication strategy, which I DID pass in as an object. Each strategy
 // plugin states its magic string in its docs, but good gravy. I hate this.
 app.post('/login', passport.authenticate('local', {
-  successRedirect: '/',
+  successReturnToOrRedirect: '/', // uses req.session.returnTo if present
   failureRedirect: '/', // should be /login but I don't have that yet
 }) );
 
@@ -167,5 +167,24 @@ app.get('/mark/:url', function(req, res){
         res.render('error', {title: 'Tried but failed', url: req.params.url, error: err.toString()});
       }
     })
+  } else {
+    req.session.returnTo = req.originalUrl;
+    res.render('login', {title: 'Log in'});
+  }
+});
+
+app.post('/mark', function(req, res){
+  if (req.user) {
+    const {prefix, current, display_name} = req.body;
+    dogears.create(req.user.id, prefix, current, display_name).then(dogear => {
+      res.render('marked', {title: 'Marked your place', url: req.params.url, updatedDogears});
+    }).catch(err => {
+      res.render('error', {title: 'Tried but failed', url: req.params.url, error: err.toString()});
+    })
+  } else {
+    // There's not really anywhere to return to, since this is a post
+    // endpoint... really, you just shouldn't ever find yourself in this
+    // situation. The only thing posting to /mark is /mark/:url on a miss.
+    res.redirect('/');
   }
 });

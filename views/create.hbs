@@ -1,12 +1,13 @@
-You haven't dogeared this content yet. Wanna start now?
-<form id="create-dogear">
-  <label>Current location of dogear</label>
+<p>You haven't saved your place in this content before. But you can start now, if you want!</p>
+
+<form id="create-dogear" method="post" action="/mark">
+  <label>Mark my spot at:</label>
   <p class="disabled">{{url}}</p>
   <input name="current" type="hidden" value="{{url}}" />
 
   <label for="prefix">URL prefix</label>
   <p class="help">Whenever you dogear something, Eardogger uses this prefix to figure out which bookmark it should move.</p>
-  <input name="prefix" type="text" autofocus maxlength="100" />
+  <input name="prefix" type="text" autofocus maxlength="100" value="{{url}}" />
 
   <label for="display_name">Name (optional)</label>
   <input name="display_name" type="text" maxlength="200" />

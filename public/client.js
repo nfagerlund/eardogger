@@ -93,8 +93,8 @@ if (countdownIndicator) {
   var count = 3;
   function tick() {
     if (count > 0) {
-      countdownIndicator.innerHTML = count.toString();
-      setTimeout(tick, count * 500);
+      countdownIndicator.innerText = count.toString();
+      setTimeout(tick, count * 300);
     } else {
       document.location.href = countdownIndicator.getAttribute('data-returnto');
     }
