@@ -83,7 +83,7 @@ describe("Dogears database layer", () => {
     await Promise.all([
       expect(dogears.currently(userID, 'https://example.com/comic/1'))
         .resolves.toBe('https://example.com/comic/240'),
-      expect(dogears.currently(userID, 'example.com/comic/'))
+      expect(dogears.currently(userID, 'example.com/comic/   '))
         .resolves.toBe('https://example.com/comic/240'),
       expect(dogears.currently(userID, 'https://example.com/com'))
         .resolves.toBe(false),
@@ -93,13 +93,11 @@ describe("Dogears database layer", () => {
     ]);
 
     // Updating w/ update()
-    await expect(dogears.update(userID, 'https://example.com/comic/241'))
+    await expect(dogears.update(userID, '   https://example.com/comic/241'))
       .resolves.toHaveLength(1);
     await expect(dogears.currently(userID, 'example.com/comic/'))
       .resolves.toBe('https://example.com/comic/241');
     await expect(dogears.update(userID, 'https://example.com/com/not-dogeared'))
-      .rejects.toThrow();
-    await expect(dogears.update(userID, 'invalid-url'))
       .rejects.toThrow();
 
     // Updating w/ create()'s fallback behavior
@@ -152,6 +150,8 @@ describe("User database layer", () => {
       expect(users.authenticate('test_create_and_auth', '')).rejects.toThrow(/requires/),
       // Pw validates
       expect(users.authenticate('test_create_and_auth', 'aoeuhtns')).resolves.toBe(true),
+      // Pw validates even when you add a bunch of spaces around everything
+      expect(users.authenticate('  test_create_and_auth ', ' aoeuhtns   ')).resolves.toBe(true),
       // Wrong pw doesn't validate
       expect(users.authenticate('test_create_and_auth', 'snthueoa')).resolves.toBe(false),
       // Nonexistent user indistinguishable from wrong pw, doesn't throw
