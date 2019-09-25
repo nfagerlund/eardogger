@@ -88,6 +88,11 @@ footer {
   display: grid;
   grid-template-columns: 1fr auto auto;
   grid-template-rows: 1fr auto;
+  row-gap: 5px;
+  column-gap: 5px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid;
 }
 
 #dogears li * {
@@ -104,6 +109,7 @@ footer {
 #dogears .delete-dogear {
   grid-column: 3 / 4;
   grid-row: 1 / 2;
+  align-self: self-start;
 }
 
 #dogears .current {
@@ -120,3 +126,23 @@ footer {
   color: var(--color-disabled);
 }
 
+@media screen and (max-width: 400px) {
+  body {
+    margin: 1em;
+  }
+
+ #dogears li {
+   grid-template-rows: 1fr auto;
+ }
+
+ #dogears .current {
+  grid-column: 1/4;
+  grid-row: 2/3;
+ }
+
+ #dogears .date {
+  grid-column: 1/4;
+  grid-row: 3/4;
+ }
+
+}
