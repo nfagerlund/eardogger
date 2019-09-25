@@ -1,13 +1,13 @@
 <p>You haven't saved your place in this content before. But you can start now, if you want!</p>
 
-<p class="help">Eardogger uses a URL prefix to figure out which bookmark you want it to move. Usually you just want the domain name part, like <code>https://comic.example.com/</code>. But if there are other serials hosted on the same site, you might want to include part of the path so you can dogear them separately, like <code>https://example.com/one-particular-comic</code>.</p>
 
 <form id="create-dogear" method="post" action="/mark">
   <label>Initial dogear location</label>
   <div class="mock-input">{{url}}</div>
   <input name="current" type="hidden" value="{{url}}" />
 
-  <label for="prefix">URL prefix</label>
+  <label for="prefix">URL prefix</label> <button type="button" class="help-reveal" data-help-target="help-url-prefix">?</button>
+  <p id="help-url-prefix" class="help help-hidden">Eardogger uses a URL prefix to figure out which bookmark you want it to move. Usually you just want the domain name part, like <code>https://comic.example.com/</code>. But if there are other serials hosted on the same site, you might want to include part of the path so you can dogear them separately, like <code>https://example.com/one-particular-comic</code>.</p>
   <input name="prefix" type="text" autofocus maxlength="100" value="{{url}}" />
 
   <label for="display_name">Name (optional)</label>

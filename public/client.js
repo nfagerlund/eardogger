@@ -135,3 +135,12 @@ if (createForm && createForm.elements['prefix'].value) {
     initialVal.length
   );
 }
+
+document.body.addEventListener('click', function(e){
+  const that = e.target;
+  if (that.matches('.help-reveal')) {
+    e.preventDefault();
+    const helpTarget = document.getElementById( that.getAttribute('data-help-target') );
+    helpTarget.classList.toggle('help-hidden');
+  }
+});
