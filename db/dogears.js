@@ -11,14 +11,20 @@ module.exports = {
   currently,
 }
 
+// Custom error type
+class NoMatchError extends Error {
+  constructor(...params) {
+    super(...params);
+  }
+}
 
 // Returns created dogear
 async function create(userID, prefix, current, displayName) {
   if (typeof userID != 'number') {
-    throw new Error("Create dogear requires numeric userID");
+    throw new TypeError("Create dogear requires numeric userID");
   }
   if (!prefix) {
-    throw new Error("Create dogear requires at least a URL prefix");
+    throw new TypeError("Create dogear requires at least a URL prefix");
   }
   prefix = prefix.replace(/^https?:\/\//, '');
   current = current || prefix;
@@ -42,10 +48,15 @@ async function create(userID, prefix, current, displayName) {
 // Returns array of updated dogears
 async function update(userID, current) {
   if (typeof userID != 'number') {
-    throw new Error("Update dogear requires numeric userID");
+    throw new TypeError("Update dogear requires numeric userID");
   }
   if (!current) {
-    throw new Error("Update dogear requires a URL");
+    throw new TypeError("Update dogear requires a valid URL");
+  }
+  try {
+    new URL(current);
+  } catch(e) {
+    throw new TypeError("Update dogear requires a valid URL");
   }
   const result = await db.query("UPDATE dogears " +
       "SET current = $2, updated = current_timestamp WHERE " +
@@ -54,7 +65,7 @@ async function update(userID, current) {
     [userID, current, getProtocol(current)]
   );
   if (result.rowCount === 0) {
-    throw new Error("No dogears match that URL");
+    throw new NoMatchError("No dogears match that URL");
   }
   return result.rows;
 }
@@ -84,7 +95,7 @@ async function edit(id, editFields) {
 // Returns bare url or false
 async function currently(userID, urlOrPrefix) {
   if (!userID || !urlOrPrefix) {
-    throw new Error("Finding a dogear requires a userID");
+    throw new TypeError("Finding a dogear requires a userID");
   }
   const result = await db.query(
     "SELECT current FROM dogears WHERE user_id = $1 AND $2 LIKE $3 || prefix || '%' ORDER BY LENGTH(prefix) DESC",

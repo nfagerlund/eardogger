@@ -99,6 +99,8 @@ describe("Dogears database layer", () => {
       .resolves.toBe('https://example.com/comic/241');
     await expect(dogears.update(userID, 'https://example.com/com/not-dogeared'))
       .rejects.toThrow();
+    await expect(dogears.update(userID, 'invalid-url'))
+      .rejects.toThrow();
 
     // Updating w/ create()'s fallback behavior
     // also stripping protocol from prefix
