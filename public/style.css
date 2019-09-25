@@ -191,3 +191,11 @@ form#logout {
   font-size: 2em;
   font-weight: bold;
 }
+
+.help {
+  font-size: smaller;
+}
+
+.help-hidden {
+  display: none;
+}
