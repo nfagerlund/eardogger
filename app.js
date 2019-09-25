@@ -177,7 +177,7 @@ app.post('/mark', function(req, res){
   if (req.user) {
     const {prefix, current, display_name} = req.body;
     dogears.create(req.user.id, prefix, current, display_name).then(dogear => {
-      res.render('marked', {title: 'Marked your place', url: req.params.url, updatedDogears});
+      res.render('marked', {title: 'Marked your place', url: req.params.url, updatedDogears: [dogear]});
     }).catch(err => {
       res.render('error', {title: 'Tried but failed', url: req.params.url, error: err.toString()});
     })
