@@ -155,7 +155,7 @@ app.get('/', function(req, res) {
 app.get('/mark/:url', function(req, res){
   if (req.user) {
     dogears.update(req.user.id, req.params.url).then(updatedDogears => {
-      res.render('marked', {title: 'Marked your place', url: req.params.url, updatedDogears});
+      res.render('marked', {title: 'Saved your place', url: req.params.url, updatedDogears});
     }).catch(err => {
       if (err instanceof dogears.NoMatchError) {
         res.render('create', {title: 'Make a new dogear', url: req.params.url});
@@ -174,7 +174,7 @@ app.post('/mark', function(req, res){
   if (req.user) {
     const {prefix, current, display_name} = req.body;
     dogears.create(req.user.id, prefix, current, display_name).then(dogear => {
-      res.render('marked', {title: 'Marked your place', url: current, updatedDogears: [dogear]});
+      res.render('marked', {title: 'Saved your place', url: current, updatedDogears: [dogear]});
     }).catch(err => {
       res.render('error', {title: 'Tried but failed', error: err.toString()});
     })

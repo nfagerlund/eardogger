@@ -68,7 +68,7 @@ if (bookmarksList) {
       e.preventDefault();
       that.classList.add('really-delete-dogear');
       that.innerText = 'REALLY delete';
-    } 
+    }
   });
 
   // semi-generic helper for submitting a dogear

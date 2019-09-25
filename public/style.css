@@ -23,7 +23,7 @@ footer {
   border-top: 1px solid lightgrey;
 }
 
-/* Styles I wanna keep */
+/* Global styles I wanna keep */
 
 * {
   box-sizing: border-box;
@@ -180,4 +180,9 @@ form#logout {
   grid-row: 3/4;
  }
 
+}
+
+#countdown {
+  font-size: 2em;
+  font-weight: bold;
 }
