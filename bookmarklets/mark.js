@@ -32,33 +32,37 @@
     let go = () => {
       d.location.href = e + '/mark/' + encodeURIComponent(document.location.href);
     };
-    fetch(e + '/api/v1/update', {
-      method:'POST',
-      mode:'cors',
-      credentials:'include',
-      headers:{
-        'Content-Type':'application/json',
-        'Accept':'application/json'
-      },
-      body:JSON.stringify({current: d.location.href})
-    }).then(rs=>{
-      if (rs.ok) {
-        msg('Bookmark updated', true);
-      } else if (rs.status === 400) {
-        // explain yrself, possibly w/ link to update bookmarklet
-        // expects a {error: "message"} object in the response
-        rs.json().then(data=>{
-          msg(data.error);
-        });
-      } else {
-        // other http error - 401 not logged in, or 404 bookmark doesn't exist
-        // navigate to old-style update/create page
+    if (fetch) {
+      fetch(e + '/api/v1/update', {
+        method:'POST',
+        mode:'cors',
+        credentials:'include',
+        headers:{
+          'Content-Type':'application/json',
+          'Accept':'application/json'
+        },
+        body:JSON.stringify({current: d.location.href})
+      }).then(rs=>{
+        if (rs.ok) {
+          msg('Bookmark updated', true);
+        } else if (rs.status === 400) {
+          // explain yrself, possibly w/ link to update bookmarklet
+          // expects a {error: "message"} object in the response
+          rs.json().then(data=>{
+            msg(data.error);
+          });
+        } else {
+          // other http error - 401 not logged in, or 404 bookmark doesn't exist
+          // navigate to old-style update/create page
+          go();
+        }
+      }).catch(err=>{
+        // CSP or CORS problem, request was never sent
+        // navigate to old-style update page
         go();
-      }
-    }).catch(err=>{
-      // CSP or CORS problem, request was never sent
-      // navigate to old-style update page
+      });
+    } else {
       go();
-    });
+    }
   }
 )();
