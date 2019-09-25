@@ -161,7 +161,11 @@ app.get('/mark/:url', function(req, res){
     dogears.update(req.user.id, req.params.url).then(updatedDogears => {
       res.render('mark', {title: 'Marked your place', url: req.params.url, updatedDogears});
     }).catch(err => {
-      res.render('mark', {title: 'fail', url: req.params.url, result: JSON.stringify(err.toString())});
+      if (err instanceof NoMatchError) {
+        res.render('create', {title: 'Make a new dogear', url: req.params.url});
+      } else {
+        res.render('error', {title: 'Tried but failed', url: req.params.url, error: err.toString()});
+      }
     })
   }
 });
