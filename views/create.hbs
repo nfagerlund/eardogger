@@ -1,6 +1,15 @@
+You haven't dogeared this content yet. Wanna start now?
 <form id="create-dogear">
-  <input name="prefix" type="text" maxlength="100" placeholder="Prefix" aria-label="URL prefix for this serial" />
-  <input name="current" type="text" maxlength="200" placeholder="Current URL" aria-label="Current URL for bookmark" />
-  <input name="display_name" type="text" maxlength="200" placeholder="Name (optional)" aria-label="Display name (optional)">
+  <label>Current location of dogear</label>
+  <p class="disabled">{{url}}</p>
+  <input name="current" type="hidden" value="{{url}}" />
+
+  <label for="prefix">URL prefix</label>
+  <p class="help">Whenever you dogear something, Eardogger uses this prefix to figure out which bookmark it should move.</p>
+  <input name="prefix" type="text" autofocus maxlength="100" />
+
+  <label for="display_name">Name (optional)</label>
+  <input name="display_name" type="text" maxlength="200" />
+
   <button type="submit" id="submit-dogear">Create new dogear</button>
 </form>
