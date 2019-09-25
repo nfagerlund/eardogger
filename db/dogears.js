@@ -25,12 +25,15 @@ async function create(userID, prefix, current, displayName) {
   if (typeof userID != 'number') {
     throw new TypeError("Create dogear requires numeric userID");
   }
-  if (!prefix) {
+  if (!prefix || typeof prefix !== 'string') {
     throw new TypeError("Create dogear requires at least a URL prefix");
   }
-  prefix = prefix.replace(/^https?:\/\//, '');
-  current = current || prefix;
+  prefix = prefix.replace(/^https?:\/\//, '').trim();
+  current = (current || prefix).trim();
   displayName = displayName || null; // real null, not undefined.
+  if (displayName) {
+    displayName = displayName.trim();
+  }
 
   const result = await db.query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " +
       "ON CONFLICT (user_id, prefix) DO UPDATE SET " +
@@ -49,12 +52,13 @@ async function create(userID, prefix, current, displayName) {
 
 // Returns array of updated dogears
 async function update(userID, current) {
-  if (typeof userID != 'number') {
+  if (typeof userID !== 'number') {
     throw new TypeError("Update dogear requires numeric userID");
   }
-  if (!current) {
+  if (!current || typeof current !== 'string') {
     throw new TypeError("Update dogear requires a valid URL");
   }
+  current = current.trim();
   try {
     new URL(current);
   } catch(e) {
@@ -73,6 +77,9 @@ async function update(userID, current) {
 }
 
 async function list(userID) {
+  if (typeof userID !== 'number') {
+    throw new TypeError("List dogears requires numeric userID");
+  }
   const result = await db.query(
     "SELECT id, user_id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC",
     [userID]
@@ -81,6 +88,9 @@ async function list(userID) {
 }
 
 async function destroy(userID, id) {
+  if (typeof userID !== 'number' || typeof id !== 'number') {
+    throw new TypeError("Destroy dogear requires numeric userID and id");
+  }
   const result = await db.query(
     "DELETE FROM dogears WHERE id = $2 AND user_id = $1",
     [userID, id]
@@ -99,6 +109,7 @@ async function currently(userID, urlOrPrefix) {
   if (!userID || !urlOrPrefix) {
     throw new TypeError("Finding a dogear requires a userID");
   }
+  urlOrPrefix = urlOrPrefix.trim();
   const result = await db.query(
     "SELECT current FROM dogears WHERE user_id = $1 AND $2 LIKE $3 || prefix || '%' ORDER BY LENGTH(prefix) DESC",
     [userID, urlOrPrefix, getProtocol(urlOrPrefix)]
