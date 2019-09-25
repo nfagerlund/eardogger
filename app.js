@@ -121,7 +121,7 @@ app.use('/api/v1', v1api);
 app.post('/login', passport.authenticate('local', {
 //   successReturnToOrRedirect: '/', // uses req.session.returnTo if present. Undocumented.
   failureRedirect: '/', // should be /login but I don't have that yet
-}), (req, res, next) => {
+}), function(req, res, next){
   // On success, do the following! (If authentication failed, passport
   // redirects immediately and this second middleware is never called.)
 
@@ -136,6 +136,11 @@ app.post('/login', passport.authenticate('local', {
   }
 });
 
+// Wow, logout is easy.
+app.post('/logout', function(req, res){
+  req.logout();
+  res.redirect('/');
+})
 
 // Homepage!
 app.get('/', function(req, res) {
