@@ -1,7 +1,7 @@
 /* default glitch styles */
 
 body {
-  
+
 }
 
 .bold {
@@ -30,15 +30,17 @@ footer {
 }
 
 body {
-  margin: 2em;
-  font-family: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
-  background-color: #FFF8EB;
   --color-disabled: #888;
   --color-danger: #f99;
+  --font-standard: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
+  margin: 2em;
+  font-family: var(--font-standard);
+  background-color: #FFF8EB;
 }
 
 button {
   font-size: 16px;
+  font-family: var(--font-standard);
   border-radius: 3px;
   background-color: #e5e0ff;
   border: 1px solid grey;
@@ -131,7 +133,7 @@ form#logout {
   grid-column: 3 / 4;
   grid-row: 1 / 2;
   align-self: self-start;
-  
+
   max-width: 6em; /* that's a hack around inability to transition auto values. */
   transition: max-width 1s linear, background-color .5s ease-out;
   white-space: nowrap;
