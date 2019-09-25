@@ -102,3 +102,12 @@ if (countdownIndicator) {
   }
   tick();
 }
+
+if (createForm && createForm.elements['prefix'].value) {
+  const initialVal = createForm.elements['prefix'].value;
+  const initialUrl = new URL(initialVal);
+  createForm.elements['prefix'].setSelectionRange(
+    initialVal.indexOf(initialUrl.pathname) + 1,
+    initialVal.length
+  );
+}
