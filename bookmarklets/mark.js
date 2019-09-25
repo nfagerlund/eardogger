@@ -26,6 +26,9 @@
         window.setTimeout(()=>{m.remove()}, 3000);
       }
     };
+    let go = () => {
+      d.location.href = 'https://eardogger.glitch.me/mark/' + encodeURIComponent(document.location.href);
+    }
     fetch('https://eardogger.glitch.me/api/v1/update', {
       method:'POST',
       mode:'cors',
@@ -40,17 +43,19 @@
         msg('Bookmark updated', true);
       } else if (rs.status === 400) {
         // explain yrself, possibly w/ link to update bookmarklet
-        // expects a {help: "html"} object in the response
+        // expects a {error: "message"} object in the response
         rs.json().then(data=>{
-          msg(data.help);
+          msg(data.error);
         });
       } else {
         // other http error - 401 not logged in, or 404 bookmark doesn't exist
         // navigate to old-style update/create page
+        go();
       }
     }).catch(error=>{
-        // CSP or CORS problem, request was never sent
-        // navigate to old-style update page
+      // CSP or CORS problem, request was never sent
+      // navigate to old-style update page
+      go();
     });
   }
 )();
