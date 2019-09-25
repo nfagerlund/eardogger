@@ -60,6 +60,7 @@ input, .mock-input, textarea {
 textarea {
   font-family: system-ui, sans-serif;
   height: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mock-input {
