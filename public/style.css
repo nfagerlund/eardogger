@@ -1,14 +1,7 @@
-/* styles */
-/* called by your view template */
-
-* {
-  box-sizing: border-box;
-}
+/* default glitch styles */
 
 body {
   font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
-  margin: 2em;
-  --color-disabled: #888;
 }
 
 h1 {
@@ -71,11 +64,20 @@ footer {
   border-top: 1px solid lightgrey;
 }
 
-.serial-name {
-  font-weight: bold;
+/* Styles I wanna keep */
+
+* {
+  box-sizing: border-box;
 }
 
+body {
+  margin: 2em;
+  --color-disabled: #888;
+}
 
+.serial-name { /* hey what was this */
+  font-weight: bold;
+}
 
 /* Grid for dogear items */
 
@@ -126,6 +128,8 @@ footer {
   color: var(--color-disabled);
 }
 
+
+/* Be good on smalls */
 @media screen and (max-width: 400px) {
   body {
     margin: 1em;
