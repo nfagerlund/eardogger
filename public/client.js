@@ -9,13 +9,24 @@ const countdownIndicator = document.getElementById('countdown');
 if (bookmarksList) {
   // Then we're on the front page and you're logged in.
 
-  // Build a dogear list item
+  // Build a dogear list item, but gotta do it paranoid-like because html injection,
+  // so this returns a DOM element.
   const makeDogear = mark => {
-    const lastDate = (new Date(mark.updated)).toLocaleDateString();
-    const display = mark.display_name || mark.prefix;
-    const urlHint = `<span class="current">(${mark.current})</span>`;
+    const li = document.createElement('li');
 
-    return `<li><a href=${mark.current}>${display}</a> ${urlHint} <span class="date">Last read: ${lastDate}</span></li>`;
+    const a = document.createElement('a');
+    a.setAttribute('href', 'mark.current');
+    a.innerText = mark.display_name || mark.prefix;
+    const current = document.createElement('span');
+    current.classList.add('current');
+    current.innerText = '(' + mark.current + ')';
+    const lastDate = document.createElement('span');
+    lastDate.classList.add('date');
+    lastDate.innerText = 'Last read: ' + (new Date(mark.updated)).toLocaleDateString();
+
+    li.append(a, ' ', current, ' ', lastDate);
+
+    return li;
   }
 
   // Get the list of bookmarks from the API, and refresh the on-page list with current info.
@@ -26,7 +37,8 @@ if (bookmarksList) {
       headers:{'Content-Type': 'application/json', 'Accept': 'application/json'}
     }).then(response => {
       response.json().then(dogears => {
-        bookmarksList.innerHTML = dogears.map(makeDogear).join(' ');
+        bookmarksList.innerHTML = '';
+        bookmarksList.append( ...dogears.map(makeDogear) );
       });
     }).catch(err => {
       bookmarksList.innerHTML = `<li>Something went wrong! Error: ${err}</li>`;
