@@ -1,58 +1,17 @@
 /* default glitch styles */
 
 body {
-  font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
-}
-
-h1 {
-  font-style: italic;
-  color: #373fff;
+  
 }
 
 .bold {
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 p {
   max-width: 600px;
 }
 
-form {
-  margin-bottom: 25px;
-  padding: 15px;
-  background-color: cyan;
-  display: inline-block;
-  width: 100%;
-  max-width: 340px;
-  border-radius: 3px;
-}
-
-input {
-  display: block;
-  margin-bottom: 10px;
-  padding: 5px;
-  width: 100%;
-  border: 1px solid lightgrey;
-  border-radius: 3px;
-  font-size: 16px;
-}
-
-button {
-  font-size: 16px;
-  border-radius: 3px;
-  background-color: lightgrey;
-  border: 1px solid grey;
-  box-shadow: 2px 2px teal;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: yellow;
-}
-
-button:active {
-  box-shadow: none;
-}
 
 li {
   margin-bottom: 5px;
@@ -72,7 +31,64 @@ footer {
 
 body {
   margin: 2em;
+  font-family: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
+  background-color: #FFF8EB;
   --color-disabled: #888;
+  --color-danger: #f99;
+}
+
+button {
+  font-size: 16px;
+  border-radius: 3px;
+  background-color: #e5e0ff;
+  border: 1px solid grey;
+  cursor: pointer;
+}
+
+input {
+  display: block;
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 100%;
+  border: 1px solid grey;
+  border-radius: 3px;
+  font-size: 16px;
+}
+
+a {
+  color: #265c92;
+}
+
+a:visited {
+  color: #7244c8;
+}
+
+a:hover {
+  color: #5452ff;
+}
+
+form {
+  margin-bottom: 25px;
+  padding: 15px;
+  display: inline-block;
+  width: 100%;
+  max-width: 340px;
+  border-radius: 7px;
+  border: 1px solid;
+}
+
+header {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: space-between;
+  align-items: center;
+}
+
+form#logout {
+  border: none;
+  width: auto;
+  margin-bottom: 0;
+  margin-left: auto;
 }
 
 .serial-name { /* hey what was this */
@@ -83,6 +99,7 @@ body {
 
 #dogears {
   padding-left: 0;
+  max-width: 780px;
 }
 
 #dogears li {
@@ -101,17 +118,29 @@ body {
   word-wrap: break-word;
   overflow-wrap: break-word;
   min-width: 0;
+  max-width: 100%;
 }
 
 #dogears a { /* main link */
   grid-column: 1 / 3;
   grid-row: 1 / 2;
+  justify-self: self-start; /* no invisible click targets */
 }
 
 #dogears .delete-dogear {
   grid-column: 3 / 4;
   grid-row: 1 / 2;
   align-self: self-start;
+  
+  max-width: 6em; /* that's a hack around inability to transition auto values. */
+  transition: max-width 1s linear, background-color .5s ease-out;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+#dogears .really-delete-dogear{
+  max-width: 16em;
+  background-color: var(--color-danger);
 }
 
 #dogears .current {

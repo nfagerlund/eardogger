@@ -55,8 +55,8 @@ if (bookmarksList) {
   // delegate delete buttons
   bookmarksList.addEventListener('click', function(e){
     const that = e.target;
-    if ( that.classList.contains('delete-dogear') ) {
-      e.preventDefault;
+    if ( that.classList.contains('really-delete-dogear') ) {
+      e.preventDefault();
       fetch(`/api/v1/dogear/${that.getAttribute('data-dogear-id')}`, {
         method: 'DELETE',
         credentials: 'include',
@@ -64,7 +64,11 @@ if (bookmarksList) {
       }).then(res => {
         refreshDogears();
       });
-    }
+    } else if ( that.classList.contains('delete-dogear') ) {
+      e.preventDefault();
+      that.classList.add('really-delete-dogear');
+      that.innerText = 'REALLY delete';
+    } 
   });
 
   // semi-generic helper for submitting a dogear

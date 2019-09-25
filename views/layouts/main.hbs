@@ -19,7 +19,8 @@
       </h1>
 
       {{#if user}}
-        <form action="/logout" method="post">
+        <form id="logout" action="/logout" method="post">
+          <label>{{user.username}}</label>
           <button type="submit">Log out</button>
         </form>
       {{/if}}
