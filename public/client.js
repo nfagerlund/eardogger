@@ -23,8 +23,13 @@ if (bookmarksList) {
     const lastDate = document.createElement('span');
     lastDate.classList.add('date');
     lastDate.innerText = 'Last read: ' + (new Date(mark.updated)).toLocaleDateString();
+    const destroy = document.createElement('button');
+    destroy.setAttribute('type', 'button')
+    destroy.setAttribute('data-dogear-id', mark.id);
+    destroy.classList.add('delete-dogear');
+    destroy.innerText = 'Delete';
 
-    li.append(a, ' ', current, ' ', lastDate);
+    li.append(a, ' ', current, ' ', lastDate, ' ', destroy);
 
     return li;
   }
@@ -46,6 +51,21 @@ if (bookmarksList) {
   }
 
   refreshDogears();
+
+  // delegate delete buttons
+  bookmarksList.addEventListener('click', function(e){
+    const that = e.target;
+    if ( that.classList.contains('delete-dogear') ) {
+      e.preventDefault;
+      fetch(`/api/v1/delete/${that.getAttribute('data-dogear-id')}`, {
+        method: 'DELETE',
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      }).then(res => {
+        refreshDogears();
+      });
+    }
+  });
 
   // semi-generic helper for submitting a dogear
   const submitDogear = (dest, dogObj) => {
