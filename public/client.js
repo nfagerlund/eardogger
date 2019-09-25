@@ -15,7 +15,7 @@ if (bookmarksList) {
     const li = document.createElement('li');
 
     const a = document.createElement('a');
-    a.setAttribute('href', 'mark.current');
+    a.setAttribute('href', mark.current);
     a.innerText = mark.display_name || mark.prefix;
     const current = document.createElement('span');
     current.classList.add('current');
