@@ -8,6 +8,7 @@
 body {
   font-family: "Benton Sans", "Helvetica Neue", helvetica, arial, sans-serif;
   margin: 2em;
+  --color-disabled: #888;
 }
 
 h1 {
@@ -73,3 +74,49 @@ footer {
 .serial-name {
   font-weight: bold;
 }
+
+
+
+/* Grid for dogear items */
+
+#dogears {
+  padding-left: 0;
+}
+
+#dogears li {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-rows: 1fr auto;
+}
+
+#dogears li * {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+#dogears a { /* main link */
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+}
+
+#dogears .delete-dogear {
+  grid-column: 3 / 4;
+  grid-row: 1 / 2;
+}
+
+#dogears .current {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  font-size: smaller;
+  color: var(--color-disabled);
+}
+
+#dogears .date {
+  grid-column: 2 / 4;
+  grid-row: 2 / 3;
+  font-size: smaller;
+  color: var(--color-disabled);
+}
+
