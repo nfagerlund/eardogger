@@ -31,7 +31,7 @@
     };
     let go = () => {
       d.location.href = e + '/mark/' + encodeURIComponent(document.location.href);
-    }
+    };
     fetch(e + '/api/v1/update', {
       method:'POST',
       mode:'cors',
@@ -40,7 +40,7 @@
         'Content-Type':'application/json',
         'Accept':'application/json'
       },
-      body:JSON.stringify({current: document.location.href})
+      body:JSON.stringify({current: d.location.href})
     }).then(rs=>{
       if (rs.ok) {
         msg('Bookmark updated', true);
