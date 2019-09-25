@@ -86,7 +86,7 @@ router.get('/list', function(req, res){
 
 // API: delete
 router.delete('/dogear/:id', function(req, res){
-  const id = req.params.id;
+  const id = Number(req.params.id);
   dogears.destroy(req.user.id, id).then(() => {
     res.sendStatus(204);
   }).catch(err => {
