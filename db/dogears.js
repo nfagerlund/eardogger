@@ -1,4 +1,5 @@
 const db = require('./pg');
+const {URL} = require('url');
 
 const getProtocol = url => url.match(/^(https?:\/\/)?/)[0];
 
