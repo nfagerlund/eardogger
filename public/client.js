@@ -57,7 +57,7 @@ if (bookmarksList) {
     const that = e.target;
     if ( that.classList.contains('delete-dogear') ) {
       e.preventDefault;
-      fetch(`/api/v1/delete/${that.getAttribute('data-dogear-id')}`, {
+      fetch(`/api/v1/dogear/${that.getAttribute('data-dogear-id')}`, {
         method: 'DELETE',
         credentials: 'include',
         headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
