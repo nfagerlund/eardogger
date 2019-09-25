@@ -2,6 +2,13 @@ const db = require('./pg');
 
 const getProtocol = url => url.match(/^(https?:\/\/)?/)[0];
 
+// Custom error type
+class NoMatchError extends Error {
+  constructor(...params) {
+    super(...params);
+  }
+}
+
 module.exports = {
   create,
   update,
@@ -10,13 +17,6 @@ module.exports = {
 //   edit,
   currently,
   NoMatchError,
-}
-
-// Custom error type
-class NoMatchError extends Error {
-  constructor(...params) {
-    super(...params);
-  }
 }
 
 // Returns created dogear
