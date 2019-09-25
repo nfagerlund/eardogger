@@ -3,7 +3,7 @@
 
   <p>Saved your place in
     {{#each updatedDogears}}
-      {{#if this.display_name}}{{this.display_name}}{{else}}{{this.prefix}}{{/if}}{{#unless @last}}, {{/unless}}
+      <span class="serial-name">{{#if this.display_name}}{{this.display_name}}{{else}}{{this.prefix}}{{/if}}</span>{{#unless @last}}, {{/unless}}
     {{/each}}
   </p>
 
