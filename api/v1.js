@@ -12,7 +12,7 @@ const dogears = require('../db/dogears');
 
 // 401 unless logged in middleware
 router.use(function(req, res, next) {
-  if (!req.user) {
+  if (!req.user && req.method !== 'OPTIONS') {
     res.sendStatus(401);
   } else {
     next();
