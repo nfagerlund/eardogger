@@ -173,9 +173,9 @@ app.post('/changepassword', function(req, res){
     if (new_password !== new_password_again) {
       res.status(400).send("New passwords didn't match");
     } else {
-      users.authenticate(user.username, password).then(result => {
+      users.authenticate(req.user.username, password).then(result => {
         if (result) {
-          users.setPassword(user.username, password).then(() => {
+          users.setPassword(req.user.username, password).then(() => {
             res.redirect('/');
           }).catch(err => {
             res.status(500).send(err.toString());
