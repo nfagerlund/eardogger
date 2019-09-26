@@ -175,7 +175,7 @@ app.post('/changepassword', function(req, res){
     } else {
       users.authenticate(req.user.username, password).then(result => {
         if (result) {
-          users.setPassword(req.user.username, password).then(() => {
+          users.setPassword(req.user.username, new_password).then(() => {
             res.redirect('/');
           }).catch(err => {
             res.status(500).send(err.toString());
