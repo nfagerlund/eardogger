@@ -128,8 +128,8 @@ form#logout {
   display: grid;
   grid-template-columns: 1fr auto auto;
   grid-template-rows: 1fr auto;
-  row-gap: 5px;
-  column-gap: 5px;
+  grid-row-gap: 5px;
+  grid-column-gap: 5px;
   margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid;
