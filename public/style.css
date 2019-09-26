@@ -1,17 +1,4 @@
-/* default glitch styles */
-
-body {
-
-}
-
-.bold {
-  /* font-weight: bold; */
-}
-
-p {
-  max-width: 600px;
-}
-
+/* Leftover default glitch styles */
 
 li {
   margin-bottom: 5px;
@@ -23,7 +10,7 @@ footer {
   border-top: 1px solid lightgrey;
 }
 
-/* Global styles I wanna keep */
+/* Global styles */
 
 * {
   box-sizing: border-box;
@@ -36,6 +23,10 @@ body {
   margin: 2em;
   font-family: var(--font-standard);
   background-color: #FFF8EB;
+}
+
+main {
+  max-width: 600px;
 }
 
 button {
@@ -117,7 +108,7 @@ form#logout {
   margin-left: auto;
 }
 
-.serial-name { /* hey what was this */
+.serial-name { /* on the marked page */
   font-weight: bold;
 }
 
@@ -125,7 +116,6 @@ form#logout {
 
 #dogears {
   padding-left: 0;
-  max-width: 780px;
 }
 
 #dogears li {
