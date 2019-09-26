@@ -21,6 +21,7 @@ ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_username
 ALTER TABLE IF EXISTS ONLY public.users DROP CONSTRAINT IF EXISTS users_pkey;
 ALTER TABLE IF EXISTS ONLY public.session DROP CONSTRAINT IF EXISTS session_pkey;
 ALTER TABLE IF EXISTS ONLY public.migrations DROP CONSTRAINT IF EXISTS migrations_pkey;
+ALTER TABLE IF EXISTS ONLY public.dogears DROP CONSTRAINT IF EXISTS dogears_prefix_user_id_unique;
 ALTER TABLE IF EXISTS ONLY public.dogears DROP CONSTRAINT IF EXISTS dogears_pkey;
 ALTER TABLE IF EXISTS public.migrations ALTER COLUMN id DROP DEFAULT;
 DROP TABLE IF EXISTS public.users;
@@ -42,7 +43,7 @@ CREATE TABLE public.dogears (
     display_name text,
     updated timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
     id integer NOT NULL,
-    user_id integer
+    user_id integer NOT NULL
 );
 
 
@@ -143,6 +144,14 @@ ALTER TABLE ONLY public.migrations ALTER COLUMN id SET DEFAULT nextval('public.m
 
 ALTER TABLE ONLY public.dogears
     ADD CONSTRAINT dogears_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dogears dogears_prefix_user_id_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.dogears
+    ADD CONSTRAINT dogears_prefix_user_id_unique UNIQUE (user_id, prefix);
 
 
 --

@@ -3,6 +3,6 @@
 (
   () => {
     let l = document.location;
-    l.href = 'https://eardogger.glitch.me/resume/' + encodeURIComponent(l.href);
+    l.href = 'https://eardogger.com/resume/' + encodeURIComponent(l.href);
   }
 )();

@@ -1,12 +1,13 @@
 {
   "name": "eardogger",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "A web app for movable bookmarks.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "schema": "node db/schema.js",
-    "test": "jest"
+    "test": "jest",
+    "web": "node server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,8 +21,7 @@
     "express-session": "^1.16.2",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "pg": "^7.12.1",
-    "sqlite3": "^4.0.0"
+    "pg": "^7.12.1"
   },
   "engines": {
     "node": "10.x"

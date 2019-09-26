@@ -140,7 +140,31 @@ app.post('/login', passport.authenticate('local', {
 app.post('/logout', function(req, res){
   req.logout();
   res.redirect('/');
-})
+});
+
+// How about signup.
+app.post('/signup', function(req, res){
+  if (req.user) {
+    res.status(403).send("Can't sign up when you're logged in");
+  } else {
+    const { new_username, new_password, new_password_again, email } = req.body;
+    if (new_password !== new_password_again) {
+      res.status(400).send("New passwords didn't match");
+    } else {
+      users.create(new_username, new_password, email).then(user => {
+        req.login(user, function(err){
+          if (err) {
+            return next(err);
+          } else {
+            return res.redirect('/');
+          }
+        });
+      }).catch(err => {
+        res.status(400).send(err.toString());
+      })
+    }
+  }
+});
 
 // Homepage!
 app.get('/', function(req, res) {
