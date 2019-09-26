@@ -1,4 +1,18 @@
 // client-side js
+(() => {
+
+// lightweight .ready() replacement
+function whenever(callback) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', callback);
+  } else {
+    // yolo
+    callback();
+  }
+}
+
+// OK, go for it.
+whenever(() => {
 
 // some important elements:
 const bookmarksList = document.getElementById('dogears');
@@ -153,3 +167,7 @@ document.body.addEventListener('click', function(e){
     helpTarget.classList.toggle('help-hidden');
   }
 });
+
+
+}); // end whenever()
+})(); // that's a wrap
