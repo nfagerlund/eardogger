@@ -146,12 +146,20 @@ describe("User database layer", () => {
       expect(users.create('test_create_and_auth_noemail', 'aoeuhtns')).resolves.toBeDefined(),
       // And blank password just disables login for a user
       expect(users.create('test_create_and_auth_nopw')).resolves.toBeDefined(),
+      // No spaces in username
+      expect(users.create('space cadet')).rejects.toThrow(),
+      // But yes spaces in passwords
+      expect(users.create('spacecadet', ' im in space').then(() => {
+        return users.authenticate('spacecadet', ' im in space');
+      })).resolves.toBe(true),
       // No blanks when validating
       expect(users.authenticate('test_create_and_auth', '')).rejects.toThrow(/requires/),
       // Pw validates
       expect(users.authenticate('test_create_and_auth', 'aoeuhtns')).resolves.toBe(true),
-      // Pw validates even when you add a bunch of spaces around everything
-      expect(users.authenticate('  test_create_and_auth ', ' aoeuhtns   ')).resolves.toBe(true),
+      // Trims space on username
+      expect(users.authenticate('  test_create_and_auth ', 'aoeuhtns')).resolves.toBe(true),
+      // Doesn't trim space on passwords
+      expect(users.authenticate('  test_create_and_auth ', '  aoeuhtns')).resolves.toBe(false),
       // Wrong pw doesn't validate
       expect(users.authenticate('test_create_and_auth', 'snthueoa')).resolves.toBe(false),
       // Nonexistent user indistinguishable from wrong pw, doesn't throw

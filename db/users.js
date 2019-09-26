@@ -27,7 +27,6 @@ async function create(username, password, email) {
   }
   let hashedPassword = null;
   if (password && typeof password === 'string') {
-    password = password.trim();
     hashedPassword = await bcrypt.hash(password, 12);
   }
   const result = await db.query("INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING id, username, email, created", [username, hashedPassword, email]);
@@ -39,7 +38,6 @@ async function authenticate(username, password) {
     throw new TypeError("Authenticate user requires username and password");
   }
   username = username.trim();
-  password = password.trim();
   const result = await db.query("SELECT password FROM users WHERE username = $1", [username]);
   try {
     const hashedPassword = result.rows[0].password;
@@ -84,7 +82,6 @@ async function setPassword(username, password) {
   username = username.trim();
   let hashedPassword = null; // explicit sql null
   if (password && typeof password === 'string') {
-    password = password.trim();
     hashedPassword = await bcrypt.hash(password, 12);
   }
   await db.query("UPDATE users SET password = $2 WHERE username = $1", [username, hashedPassword]);
