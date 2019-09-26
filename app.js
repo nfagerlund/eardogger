@@ -151,6 +151,11 @@ app.get('/', function(req, res) {
   }
 });
 
+// Install info page
+app.get('/install', function(req, res){
+  res.render('install', {title: 'How to'});
+});
+
 // UI version of updating a dogear; redirects instead of returning json
 app.get('/mark/:url', function(req, res){
   if (req.user) {

@@ -175,15 +175,6 @@ If logged in, returns 403 forbidden w/ message saying you need to log out before
 
 ## UI
 
-### /login
-
-- If logged out:
-    - display info
-    - display login form
-    - display signup form
-- If logged in:
-    - say so, and show big logout button in content space.
-
 ### /
 
 - If logged out:
@@ -204,6 +195,10 @@ If logged in, returns 403 forbidden w/ message saying you need to log out before
 - Link to API docs
 - FAQ
 - Things u could read
+
+### /install
+
+Install instructions for bookmarklets and eventually other stuff.
 
 ### /mark/:url
 
