@@ -213,6 +213,11 @@ app.get('/install', function(req, res){
   res.render('install', {title: 'How to'});
 });
 
+// Faq
+app.get('/faq', function(req, res){
+  res.render('faq', {title: 'FAQ'});
+});
+
 // UI version of updating a dogear; redirects instead of returning json
 app.get('/mark/:url', function(req, res){
   if (req.user) {
