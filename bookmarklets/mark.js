@@ -6,7 +6,7 @@
 (
   () => {
     let d = document;
-    let e = 'https://eardogger.glitch.me';
+    let e = 'https://eardogger.com';
     let s = {
       position:'fixed',
       width:'300px',
