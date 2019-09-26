@@ -19,7 +19,7 @@
 
       {{#if user}}
         <form id="logout" action="/logout" method="post">
-          <label>{{user.username}}</label>
+          <a href="/account">{{user.username}}</a>
           <button type="submit">Log out</button>
         </form>
       {{/if}}

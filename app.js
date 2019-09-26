@@ -166,6 +166,39 @@ app.post('/signup', function(req, res){
   }
 });
 
+// And password change.
+app.post('/changepassword', function(req, res){
+  if (req.user) {
+    const { password, new_password, new_password_again } = req.body;
+    if (new_password !== new_password_again) {
+      res.status(400).send("New passwords didn't match");
+    } else {
+      users.authenticate(user.username, password).then(result => {
+        if (result) {
+          users.setPassword(user.username, password).then(() => {
+            res.redirect('/');
+          }).catch(err => {
+            res.status(500).send(err.toString());
+          });
+        } else {
+          res.status(403).send("Current password was wrong");
+        }
+      })
+    }
+  } else {
+    res.status(401).send("Can't change password if you're logged out");
+  }
+});
+
+// Account page
+app.get('/account', function(req, res){
+  if (req.user) {
+    res.render('account', {title: 'Manage account'});
+  } else {
+    res.status(401).send("Can't manage account if you're logged out");
+  }
+});
+
 // Homepage!
 app.get('/', function(req, res) {
   if (req.user) {
