@@ -68,6 +68,13 @@ if (bookmarksList) {
       e.preventDefault();
       that.classList.add('really-delete-dogear');
       that.innerText = 'REALLY delete';
+    } else {
+      const reallies = this.getElementsByClassName('really-delete-dogear');
+      // it's a live HTMLCollection, so we have to run the loop backwards. Comedy.
+      for (var i = reallies.length - 1; i >= 0; i--) {
+        reallies[i].innerText = 'Delete';
+        reallies[i].classList.remove('really-delete-dogear');
+      }
     }
   });
 
