@@ -168,26 +168,35 @@ app.post('/signup', function(req, res){
 
 // And password change.
 app.post('/changepassword', function(req, res){
-  if (req.user) {
-    const { password, new_password, new_password_again } = req.body;
-    if (new_password !== new_password_again) {
-      res.status(400).send("New passwords didn't match");
-    } else {
-      users.authenticate(req.user.username, password).then(result => {
-        if (result) {
-          users.setPassword(req.user.username, new_password).then(() => {
-            res.redirect('/');
-          }).catch(err => {
-            res.status(500).send(err.toString());
-          });
-        } else {
-          res.status(403).send("Current password was wrong");
-        }
-      })
-    }
-  } else {
+  if (!req.user) {
     res.status(401).send("Can't change password if you're logged out");
+    return;
   }
+
+  const { password, new_password, new_password_again } = req.body;
+
+  if (new_password.length === 0) {
+    res.status(400).send("New password was empty")
+    return;
+  }
+  if (new_password !== new_password_again) {
+    res.status(400).send("New passwords didn't match");
+    return;
+  }
+
+  users.authenticate(req.user.username, password).then(authenticated => {
+    if (!authenticated) {
+      res.status(403).send("Current password was wrong");
+      return;
+    }
+
+    users.setPassword(req.user.username, new_password).then(() => {
+      res.redirect('/');
+    }).catch(err => {
+      res.status(500).send(err.toString());
+    });
+  })
+
 });
 
 // Account page
