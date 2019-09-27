@@ -211,7 +211,17 @@ app.get('/account', function(req, res){
 // Homepage!
 app.get('/', function(req, res) {
   if (req.user) {
-    res.render('index', {title: `${req.user.username}'s Dogears`});
+    dogears.list(req.user.id).then((dogears) => {
+      const templateDogears = dogears.map(mark => {
+        return {
+          id: mark.id,
+          current: mark.current,
+          linkText: mark.display_name || mark.prefix,
+          updatedString: (new Date(mark.updated)).toLocaleDateString(),
+        };
+      })
+      res.render('index', {title: `${req.user.username}'s Dogears`, dogears: templateDogears});
+    }).catch(err => { return next(err); });
   } else {
     res.render('login', {title: 'Log in'});
   }

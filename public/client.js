@@ -64,8 +64,6 @@ if (bookmarksList) {
     });
   }
 
-  refreshDogears();
-
   // delegate delete buttons
   bookmarksList.addEventListener('click', function(e){
     const that = e.target;
