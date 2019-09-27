@@ -20,6 +20,7 @@ body {
   --color-disabled: #888;
   --color-danger: #f99;
   --font-standard: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
+  --font-ui: system-ui, sans-serif;
   margin: 2em;
   font-family: var(--font-standard);
   background-color: #FFF8EB;
@@ -49,13 +50,13 @@ input, .mock-input, textarea {
 }
 
 textarea {
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-ui);
   height: auto;
   -webkit-overflow-scrolling: touch;
 }
 
 .mock-input {
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-ui);
   color: var(--color-disabled);
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -78,7 +79,6 @@ form {
   padding: 15px;
   display: inline-block;
   width: 100%;
-  max-width: 550px;
   border-radius: 7px;
   border: 1px solid;
 }
