@@ -148,12 +148,11 @@ if (countdownIndicator) {
 
 if (createForm && createForm.elements['prefix'].value) {
   const prefix = createForm.elements['prefix'];
-  const initialVal = prefix.value;
-  const initialUrl = new URL(initialVal);
+  const prefixHost = (new URL(prefix.value)).host;
   prefix.focus();
   prefix.setSelectionRange(
-    initialVal.indexOf(initialUrl.pathname) + 1,
-    initialVal.length
+    prefix.value.indexOf(prefixHost) + prefixHost.length + 1,
+    prefix.value.length
   );
 }
 
