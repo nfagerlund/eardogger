@@ -208,6 +208,11 @@ app.get('/account', function(req, res){
   }
 });
 
+// Status endpoint
+app.get('/status', function(req, res) {
+  res.sendStatus(204);
+});
+
 // Homepage!
 app.get('/', function(req, res) {
   if (req.user) {
