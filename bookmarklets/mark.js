@@ -8,31 +8,37 @@
     let d = document;
     let e = 'https://eardogger.com';
     let s = {
-      position:'fixed',
+      position:'absolute',
       width:'300px',
-      top:'100px',
+      minHeight:'80px',
       left:'calc(50% - 150px)',
       padding:'10px',
-      boxShadow:'0 0 20px black',
-      border:'2px solid black',
-      background:'white',
+      boxShadow:'0 15px 20px black',
+      borderRadius:'8px',
+      textAlign:'center',
+      fontSize:'16px',
+      background:'#FFF8EB',
       color:'black',
       zIndex:'40000'
     };
     let msg = (txt, auto) => {
       let m = d.createElement('div');
       Object.assign(m.style, s);
-      m.onclick = function(e){this.remove();};
+      m.style.top = `${window.scrollY + 100}px`;
+      m.onclick = function(e){m.remove();};
       m.innerHTML = txt;
+      m.auto = ()=>{window.setTimeout(()=>{m.remove()}, 3000);};
       d.body.append(m);
       if (auto) {
-        window.setTimeout(()=>{m.remove()}, 3000);
+        m.auto();
       }
+      return m;
     };
     let go = () => {
       d.location.href = e + '/mark/' + encodeURIComponent(document.location.href);
     };
     if (fetch) {
+      let b = msg('Updating dogear...');
       fetch(e + '/api/v1/update', {
         method:'POST',
         mode:'cors',
@@ -44,12 +50,13 @@
         body:JSON.stringify({current: d.location.href})
       }).then(rs=>{
         if (rs.ok) {
-          msg('Bookmark updated', true);
+          b.innerHTML = 'Dogear updated';
+          b.auto();
         } else if (rs.status === 400) {
           // explain yrself, possibly w/ link to update bookmarklet
           // expects a {error: "message"} object in the response
           rs.json().then(data=>{
-            msg(data.error);
+            b.innerHTML = data.error;
           });
         } else {
           // other http error - 401 not logged in, or 404 bookmark doesn't exist
