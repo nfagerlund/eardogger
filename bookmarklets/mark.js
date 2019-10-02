@@ -24,11 +24,12 @@
     let msg = (txt, auto) => {
       let m = d.createElement('div');
       Object.assign(m.style, s);
-      m.style.top = `${window.scrollY + 100}px`;
       m.onclick = function(e){m.remove();};
       m.innerHTML = txt;
+      m.place = ()=>{m.style.top = `${window.scrollY + 100}px`; d.body.append(m);};
       m.auto = ()=>{window.setTimeout(()=>{m.remove()}, 3000);};
-      d.body.append(m);
+
+      m.place();
       if (auto) {
         m.auto();
       }
@@ -51,6 +52,7 @@
       }).then(rs=>{
         if (rs.ok) {
           b.innerHTML = 'Dogear updated';
+          b.place();
           b.auto();
         } else if (rs.status === 400) {
           // explain yrself, possibly w/ link to update bookmarklet
