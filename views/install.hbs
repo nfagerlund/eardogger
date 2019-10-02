@@ -1,28 +1,39 @@
-<p>Ok, here's how to use Eardogger.</p>
+<p>Here's how to use Eardogger:</p>
 
 <ol>
   <li>Install the "Mark my spot" and "Where was I" bookmarklets, and bookmark the homepage.</li>
-  <li>When you're reading a webcomic or serial and want to take a break, click the "Mark my spot" bookmarklet.
+  <li>To pause the webcomic or serial you're reading, click "Mark my spot."</li>
+  <li>To resume reading from where you paused, either:
     <ul>
-      <li>If you already had a dogear for that serial, Eardogger will just move it to your new spot.</li>
-      <li>If it's a new serial, Eardogger will ask for a URL prefix (and an optional name) so it can recognize it next time.</li>
-    </ul>
-  </li>
-  <li>To resume reading where you stopped, either:
-    <ul>
-      <li>Go to the <a href="/">Eardogger homepage</a> and choose a serial from your list.</li>
-      <li>Go directly to the serial you were reading and click the "Where was I" bookmarklet.</li>
+      <li>Use the links on the <a href="/">Eardogger homepage</a>.</li>
+      <li>Go directly to the serial you were reading and click "Where was I."</li>
     </ul>
   </li>
 </ol>
 
-<h2>Installing the Bookmarklets</h2>
+<h2>Here's Those Bookmarklets</h2>
+
+<div class="columns">
+  <div>
+    <h3>
+      <a href="{{mark}}">Mark my spot</a>
+    </h3>
+    <textarea rows="3" cols="20">{{mark}}</textarea>
+  </div>
+
+  <div>
+    <h3>
+      <a href="{{where}}">Where was I</a>
+    </h3>
+    <textarea rows="3" cols="20">{{where}}</textarea>
+  </div>
+</div>
+
+<h2>How to Install</h2>
 
 <p>Bookmarklets are an antique tool for doing hacky shit on the web. Inelegant, yet powerful, like the mighty cassowary.</p>
 
-<p>Right now, you need these bookmarklets to use Eardogger. I figure eventually I'll make a browser extension, because obviously that's better, but in the meantime this works.</p>
-
-<p>Installing bookmarklets varies from browser to browser; basically, you just do whatever it takes to get that long nasty <code>javascript:(()...etc</code> URL into the "location" field of a bookmark. Some notable approaches:</p>
+<p>The way you install them depends on your browser; basically, just do whatever it takes to get that long nasty <code>javascript:(()...etc</code> URL into the "location" field of a bookmark. Some notable approaches:</p>
 
 <h3>In Most Desktop Browsers</h3>
 
@@ -43,16 +54,3 @@
 <li>Open your bookmarks and tap the "edit" button.</li>
 <li>Tap the bookmark you just made. Rename it, and replace the current URL with the <code>javascript:</code> URL.</li>
 </ol>
-
-<h3>Anyway Here's the Bookmarklets</h3>
-
-<h4>
-  <a href="{{mark}}">Mark my spot</a>
-</h4>
-<textarea rows="3" cols="20">{{mark}}</textarea>
-
-<h4>
-  <a href="{{where}}">Where was I</a>
-</h4>
-<textarea rows="3" cols="20">{{where}}</textarea>
-
