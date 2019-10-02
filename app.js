@@ -251,7 +251,7 @@ app.get('/install', function(req, res){
 
 // Faq
 app.get('/faq', function(req, res){
-  res.render('faq', {title: 'FAQ'});
+  res.render('faq', {title: 'FAQ and News'});
 });
 
 // UI version of updating a dogear; redirects instead of returning json
