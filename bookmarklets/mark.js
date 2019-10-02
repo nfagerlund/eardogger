@@ -8,9 +8,9 @@
     let s = {
       position:'absolute',
       width:'300px',
-      minHeight:'80px',
+      boxSizing:'border-box',
       left:'calc(50% - 150px)',
-      padding:'10px',
+      padding:'30px 10px',
       boxShadow:'0 15px 20px black',
       borderRadius:'8px',
       textAlign:'center',
