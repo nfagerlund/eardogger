@@ -17,6 +17,9 @@ const expressHandlebars = require('express-handlebars');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
 
+// Bookmarklet helper
+const {bookmarkletText} = require('./util');
+
 // Main DB helper (session store needs this)
 const db = require('./db/pg');
 
@@ -233,8 +236,17 @@ app.get('/', function(req, res) {
 });
 
 // Install info page
+let cachedBookmarklets;
 app.get('/install', function(req, res){
-  res.render('install', {title: 'How to'});
+  if (cachedBookmarklets === undefined) {
+    cachedBookmarklets = [
+      bookmarkletText('mark'),
+      bookmarkletText('where'),
+    ]
+  }
+  Promise.all(cachedBookmarklets).then( ([mark, where]) => {
+    res.render('install', {title: 'How to', mark, where});
+  });
 });
 
 // Faq
