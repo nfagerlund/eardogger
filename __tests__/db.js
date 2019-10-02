@@ -2,6 +2,7 @@
 const fs = require('fs');
 const dbmigrate = require('db-migrate').getInstance(true, {env: 'test'});
 const {Pool, Client} = require('pg');
+const {readTextFilePromise} = require('../util');
 
 const testDB = {
   connectionString: 'postgres://localhost/eardogger', // TODO??
@@ -18,18 +19,6 @@ db.query.mockImplementation( (text, params) => pool.query(text, params) );
 // stuff I'm actually testing:
 const dogears = require('../db/dogears');
 const users = require('../db/users');
-
-const readTextFilePromise = file => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(file, 'utf8', (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(data);
-      }
-    });
-  });
-};
 
 beforeAll( async () => {
   // run sql to set up localhost postgres database; sql includes teardown of
