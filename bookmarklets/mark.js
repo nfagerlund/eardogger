@@ -1,7 +1,5 @@
 // Update existing dogear, or create a new dogear.
-// TODO: - use this to populate the bookmarklet install textarea.
-//       - automatically minify and urlencode this.
-//       - template the site URL down there. (IDK, probably have to make this a module that returns a function)
+// TODO: - template the site URL down there.
 
 (
   () => {
@@ -17,6 +15,7 @@
       borderRadius:'8px',
       textAlign:'center',
       fontSize:'16px',
+      fontFamily:'sans-serif',
       background:'#FFF8EB',
       color:'black',
       zIndex:'40000'
