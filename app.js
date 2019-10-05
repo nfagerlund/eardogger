@@ -125,13 +125,8 @@ app.post('/login', passport.authenticate('local', {
 //   successReturnToOrRedirect: '/', // uses req.session.returnTo if present. Undocumented.
   failureRedirect: '/', // should be /login but I don't have that yet
 }), function(req, res, next){
-  // On success, do the following! (If authentication failed, passport
-  // redirects immediately and this second middleware is never called.)
-
-  // Save the Origin header of the server you logged into (this one, right
-  // here), so we can compare against it later to detect CORS requests.
-  req.session.loginOrigin = req.headers.origin;
-  // Then redirect to wherever you were going.
+  // On success, redirect to wherever you were going. (If authentication failed,
+  // passport redirects immediately and this second middleware is never called.)
   if (req.session.returnTo) {
     res.redirect(req.session.returnTo);
   } else {

@@ -25,10 +25,14 @@ router.use(express.json());
 // CORS is good, actually. But only enable it per-endpoint.
 // s/o to http://johnzhang.io/options-request-in-express
 // (via https://support.glitch.com/t/how-do-i-do-a-cors-on-my-api/7497/8)
+const localOrigin = new RegExp(
+    '^https?://' +
+    (process.env.SITE_HOSTNAME || 'eardogger.com')
+);
 function allowCorsWithCredentials(methods) {
   return function(req, res, next) {
     // Is this coming from the server you originally logged into? If not, it's CORS.
-    if (req.headers.origin !== req.session.loginOrigin) {
+    if ( !req.headers.origin.match(localOrigin) ) {
       req.isCors = true;
       res.header("Access-Control-Allow-Origin", req.headers.origin);
       res.header('Access-Control-Allow-Credentials', true);

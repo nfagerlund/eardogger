@@ -12,6 +12,7 @@ This is a movable bookmarks service, for reading serialized content on the web.
 
 The app needs these in order to run properly.
 
+- `SITE_HOSTNAME` — If deploying to anything other than eardogger.com, e.g. for a dev server.
 - `DATABASE_URL` — Postgres connection string. Heroku automatically provides this.
 - `PORT` — Port for webserver to bind to. Heroku and Glitch automatically provide this.
 - `SESSION_SECRET` — Arbitrary secret used for securing user login sessions. No one provides it.
