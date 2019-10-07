@@ -33,6 +33,7 @@ async function create(username, password, email) {
   return result.rows[0];
 }
 
+// Only returns true or false, you still need to get the user. Possibly a misstep.
 async function authenticate(username, password) {
   if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
     throw new TypeError("Authenticate user requires username and password");
