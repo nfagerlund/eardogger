@@ -29,13 +29,14 @@ INSERT INTO public.migrations VALUES (9, '/20190921162004-drop-protocol-column',
 INSERT INTO public.migrations VALUES (12, '/20190922184344-dogears-id', '2019-09-22 13:10:41.53');
 INSERT INTO public.migrations VALUES (13, '/20190922184357-users-table', '2019-09-22 13:10:41.931');
 INSERT INTO public.migrations VALUES (14, '/20190923014355-reify-userid', '2019-09-22 18:52:22.488');
+INSERT INTO public.migrations VALUES (15, '/20191005195605-tokens-table', '2019-10-05 18:43:02.603');
 
 
 --
 -- Name: migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.migrations_id_seq', 14, true);
+SELECT pg_catalog.setval('public.migrations_id_seq', 15, true);
 
 
 --
