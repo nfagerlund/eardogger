@@ -19,6 +19,7 @@ db.query.mockImplementation( (text, params) => pool.query(text, params) );
 // stuff I'm actually testing:
 const dogears = require('../db/dogears');
 const users = require('../db/users');
+const tokens = require('../db/tokens');
 
 beforeAll( async () => {
   // run sql to set up localhost postgres database; sql includes teardown of
@@ -201,4 +202,18 @@ describe("User database layer", () => {
     await expect(users.getByName('test_edit_email2')).resolves.toHaveProperty('email', 'now_has@example.com');
   });
 
+});
+
+describe("tokens database layer", () => {
+  let myID, notMyID;
+
+  beforeAll( async () => {
+    ( {id: myID} = await users.create('tokens_my_user') );
+    ( {id: notMyID} = await users.create('tokens_not_my_user') );
+  });
+
+  test("get token, authenticate with it", async () => {
+    const token = await tokens.create(myID, "get_and_authenticate");
+    await expect(tokens.getAuthenticatedUser(token.token)).resolves.toHaveProperty('username', 'tokens_my_user');
+  });
 });
