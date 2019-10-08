@@ -1,5 +1,4 @@
 // Update existing dogear, or create a new dogear.
-// TODO: - template the site URL down there.
 
 (
   () => {

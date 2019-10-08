@@ -40,6 +40,9 @@ async function bookmarkletText(bookmarklet) {
     .replace(spaceRuns, ' ')
     .replace(leadingSpace, '')
     .replace(trailingSpaceAndNewlines, '');
+  if (process.env.SITE_HOSTNAME) {
+    text = text.replace(/eardogger\.com/g, process.env.SITE_HOSTNAME);
+  }
   return 'javascript:' + encodeURI(text);
 }
 
