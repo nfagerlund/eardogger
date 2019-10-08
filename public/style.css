@@ -191,7 +191,7 @@ form#logout {
   }
 
  #dogears li {
-   grid-template-rows: 1fr auto;
+   grid-template-rows: 1fr auto auto;
  }
 
  #dogears .current {
