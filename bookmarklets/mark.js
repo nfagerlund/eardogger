@@ -57,6 +57,7 @@
           // expects a {error: "message"} object in the response
           rs.json().then(data=>{
             b.innerHTML = data.error;
+            b.place();
           });
         } else {
           // other http error - 401 not logged in, or 404 bookmark doesn't exist
