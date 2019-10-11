@@ -146,16 +146,28 @@ if (countdownIndicator) {
   tick();
 }
 
+// Munge a default prefix for normal version of the create form
 if (createForm && createForm.elements['prefix'].value) {
   const prefix = createForm.elements['prefix'];
-  const prefixHost = (new URL(prefix.value)).host;
-  prefix.focus();
-  prefix.setSelectionRange(
-    prefix.value.indexOf(prefixHost) + prefixHost.length + 1,
-    prefix.value.length
-  );
+  const changePrefix = document.getElementById('change-prefix');
+
+  const prefixHost = (new URL(prefix.defaultValue)).host + '/';
+
+  prefix.value = prefixHost;
+  prefix.readOnly = true;
+  prefix.classList.add('read-only');
+  changePrefix.style.display = 'inline-block';
+
+  changePrefix.addEventListener('click', function(e){
+    this.style.display = 'none';
+    prefix.readOnly = false;
+    prefix.classList.remove('read-only');
+    prefix.value = prefix.defaultValue.replace(/^https?:\/\//, '');
+    prefix.focus();
+  });
 }
 
+// Toggle help when help buttons are clicked
 document.body.addEventListener('click', function(e){
   const that = e.target;
   if (that.matches('.help-reveal')) {
