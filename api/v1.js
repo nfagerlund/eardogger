@@ -1,10 +1,19 @@
 // v1 API mini-app.
 const express = require('express');
+const passport = require('passport');
+const BearerStrategy = require('passport-http-bearer').Strategy;
 
 const router = express.Router({mergeParams: true});
   // TODO: Once I move to token auth, I might want to set this to false? IDK.
 
 module.exports = router;
+
+// passport.use(new BearerStrategy(
+//   (token, done) => {
+//
+//   }
+// ));
+
 
 // Application object DB helpers
 const dogears = require('../db/dogears');

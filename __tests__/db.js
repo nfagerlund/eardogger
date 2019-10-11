@@ -216,4 +216,9 @@ describe("tokens database layer", () => {
     const token = await tokens.create(myID, "get_and_authenticate");
     await expect(tokens.getAuthenticatedUser(token.token)).resolves.toHaveProperty('username', 'tokens_my_user');
   });
+
+  test("get token, never see it again", async () => {
+    await tokens.create(myID, "get_and_lose");
+    await expect(tokens.list(myID))
+  });
 });
