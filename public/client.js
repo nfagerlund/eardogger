@@ -105,21 +105,7 @@ if (bookmarksList) {
     });
   };
 
-  // Set up create form:
-  createForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    submitDogear('/api/v1/create', {
-      prefix: this.elements['prefix'].value,
-      current: this.elements['current'].value,
-      display_name: this.elements['display_name'].value,
-    }).then(success => {
-      this.querySelectorAll('input').forEach(input => {
-        input.value = '';
-      });
-    });
-  });
-
-  // Set up update form:
+  // Set up manual update form:
   updateForm.addEventListener('submit', function(e) {
     e.preventDefault();
     submitDogear('/api/v1/update', {

@@ -1,33 +1,25 @@
-      <section class="dogears">
-        <ul id="dogears">
-          {{#each dogears}}
-            <li>
-              <a href="{{this.current}}">{{this.linkText}}</a>
-              <span class="current">({{this.current}})</span>
-              <span class="date">Last read: {{this.updatedString}}</span>
-              <button type="button" class="delete-dogear" data-dogear-id="{{this.id}}">Delete</button>
-            </li>
-          {{/each}}
-        </ul>
-      </section>
+<section class="dogears">
+  <ul id="dogears">
+    {{#each dogears}}
+      <li>
+        <a href="{{this.current}}">{{this.linkText}}</a>
+        <span class="current">({{this.current}})</span>
+        <span class="date">Last read: {{this.updatedString}}</span>
+        <button type="button" class="delete-dogear" data-dogear-id="{{this.id}}">Delete</button>
+      </li>
+    {{/each}}
+  </ul>
+</section>
 
-      <h2>Manual mode, I guess</h2>
+<h2>Manual mode</h2>
 
-      <p>This is basically some leftover debugging stuff, idk if I'll keep it around. Feel free to use it for now, lmk if it does anything useful for you, but the bookmarklets are the real show.</p>
+<p>This was mostly for debugging, but you can still use it.</p>
 
-      <h3>Add Dogears:</h3>
+<h3>Dogear a page</h3>
 
-      <form id="create-dogear">
-        <input name="prefix" type="text" maxlength="100" placeholder="Prefix" aria-label="URL prefix for this serial" />
-        <input name="current" type="text" maxlength="200" placeholder="Current URL" aria-label="Current URL for bookmark" />
-        <input name="display_name" type="text" maxlength="200" placeholder="Name (optional)" aria-label="Display name (optional)">
-        <button type="submit" id="submit-dogear">Create new dogear</button>
-      </form>
-
-      <h3>Update Dogears:</h3>
-
-      <form id="update-dogear">
-        <input name="current" type="text" maxlength="200" placeholder="Current URL" aria-labelledby="update-dogear" />
-        <button type="submit" id="update-dogear">Update existing dogear</button>
-      </form>
+<form id="update-dogear">
+  <label for="current">URL:</label>
+  <input name="current" type="text" maxlength="300" />
+  <button type="submit" id="update-dogear">Mark my place</button>
+</form>
 
