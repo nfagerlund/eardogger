@@ -98,8 +98,12 @@ if (bookmarksList) {
       headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
       body: JSON.stringify(dogObj)
     }).then(response => {
-      refreshDogears();
-      return true;
+      if (response.ok) {
+        refreshDogears();
+        return true;
+      } else {
+        return false;
+      }
     }).catch(err => {
       return false;
     });
@@ -111,7 +115,11 @@ if (bookmarksList) {
     submitDogear('/api/v1/update', {
       current: this.elements['current'].value,
     }).then(success => {
-      this.elements['current'].value = '';
+      if (success) {
+        this.elements['current'].value = '';
+      } else {
+        document.location.href = '/mark/' + encodeURIComponent(this.elements['current'].value);
+      }
     });
   });
 }
