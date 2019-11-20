@@ -1,56 +1,65 @@
-<p>Here's how to use Eardogger:</p>
+<p>Most bookmark tools are for <em>researching and indexing.</em> They act like sticky notes: mark a specific page, and that mark stays put until you delete it.</p>
+
+<p>But Eardogger is for <em>reading,</em> and a reader's bookmark needs to move. So instead of saving pages, Eardogger saves your <em>position within a site,</em> which moves to a new page whenever you read further.</p>
+
+<h2>How to use Eardogger:</h2>
 
 <ol>
-  <li>Install the "Mark my spot" and "Where was I" bookmarklets, and bookmark the homepage.</li>
-  <li>To pause the webcomic or serial you're reading, click "Mark my spot."</li>
-  <li>To resume reading from where you paused, either:
+  <li>On all your devices and browsers, bookmark the Eardogger homepage and install the "Mark my spot" and "Where was I" bookmarklets.</li>
+  <li>To pause what you're reading, click "Mark my spot."
     <ul>
-      <li>Use the links on the <a href="/">Eardogger homepage</a>.</li>
-      <li>Go directly to the serial you were reading and click "Where was I."</li>
+      <li>If it's a site you've dogeared before, that's it! The existing dogear now marks your new position.</li>
+      <li>If it's a new site, it'll ask you for a name and then create a new dogear. (You can also customize the URL prefix, for sites that share a domain with several other sites.)</li>
+    </ul>
+  </li>
+  <li>To resume reading a site from where you paused it, either:
+    <ul>
+      <li>Use the list of dogears on the <a href="/">Eardogger homepage</a>.</li>
+      <li>If you're already on that site, click "Where was I." (Useful when you left a tab open, but it's behind your current position because you read further on another device.)</li>
     </ul>
   </li>
 </ol>
 
-<h2>Here's Those Bookmarklets</h2>
+<h2>The Bookmarklets</h2>
 
 <div class="columns">
   <div>
     <h3>
       <a href="{{mark}}">Mark my spot</a>
     </h3>
-    <textarea rows="3" cols="20">{{mark}}</textarea>
+    <textarea rows="3" cols="20" spellcheck="false">{{mark}}</textarea>
   </div>
 
   <div>
     <h3>
       <a href="{{where}}">Where was I</a>
     </h3>
-    <textarea rows="3" cols="20">{{where}}</textarea>
+    <textarea rows="3" cols="20" spellcheck="false">{{where}}</textarea>
   </div>
 </div>
 
-<h2>How to Install</h2>
+<h2>How to Install the Bookmarklets</h2>
 
-<p>Bookmarklets are an antique tool for doing hacky shit on the web. Inelegant, yet powerful, like the mighty cassowary.</p>
+<p>Bookmarklets are like browser extensions, but more primitive.</p>
 
-<p>The way you install them depends on your browser; basically, just do whatever it takes to get that long nasty <code>javascript:(()...etc</code> URL into the "location" field of a bookmark. Some notable approaches:</p>
+<p>Installation depends on your browser; basically, do whatever it takes to create a bookmark whose "location" field is that long nasty <code>javascript:</code> URL. Some notable approaches:</p>
 
 <h3>In Most Desktop Browsers</h3>
 
 <p>You usually want these on the toolbar so they're easily accessible, but you could also put them in the menu.</p>
 
 <ol>
-<li>Either go into the "view" menu and make sure the "bookmark toolbar" is visible, or open your browser's bookmark manager.</li>
+<li>Go into the "view" menu and make sure the "bookmark toolbar" is visible, or else open your browser's bookmark manager.</li>
 <li>Drag the bookmarklet links and drop them where you want them.</li>
 </ol>
 
 <h3>On iOS Safari</h3>
 
-<p>You usually want these at the top of the "favorites" section of your bookmarks, so you can tap on the URL bar and then choose them from the set of big tiles. To install each bookmarklet:</p>
+<p>You usually want these at the top of the "favorites" section of your bookmarks. That way, you can activate them by tapping on the URL bar and then choosing from the set of big tiles. To install each bookmarklet:</p>
 
 <ol>
 <li>First, use the share menu to bookmark some random page, like this one. Put it in the "favorites" section.</li>
-<li>Copy the <code>javascript:</code> URL to the clipboard. (Use the textarea; it won't let you copy the links for some reason.)</li>
+<li>Copy the <code>javascript:</code> URL to the clipboard. (On iOS ≥ 13 you can tap-and-hold the links; on iOS ≤ 12 you have to copy from the textarea.)</li>
 <li>Open your bookmarks and tap the "edit" button.</li>
 <li>Tap the bookmark you just made. Rename it, and replace the current URL with the <code>javascript:</code> URL.</li>
 </ol>
