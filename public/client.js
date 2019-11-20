@@ -168,6 +168,7 @@ document.body.addEventListener('click', function(e){
     e.preventDefault();
     const helpTarget = document.getElementById( that.getAttribute('data-help-target') );
     helpTarget.classList.toggle('help-hidden');
+    that.classList.toggle('help-reveal-active');
   }
 });
 
