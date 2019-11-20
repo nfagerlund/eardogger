@@ -19,12 +19,27 @@ footer {
 body {
   --color-disabled: #888;
   --color-danger: #f99;
-  --font-standard: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
+  --font-display: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
+  --font-text: "Avenir Next", "Avenir", "Candara", "Verdana", sans-serif;
+  --font-mono: "Courier Prime", "Courier", "Courier New", monospace;
   --font-ui: system-ui, sans-serif;
   --input-height: 28px;
   margin: 2em;
-  font-family: var(--font-standard);
+  font-family: var(--font-text);
   background-color: #FFF8EB;
+}
+
+header, nav, footer, form, h1, h2, h3, h4, h5, h6, .dogears, .serial-name, .countdown {
+  font-family: var(--font-display);
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 1em;
+}
+
+form p {
+  font-family: var(--font-text);
 }
 
 main {
@@ -33,7 +48,7 @@ main {
 
 button {
   font-size: 16px;
-  font-family: var(--font-standard);
+  font-family: var(--font-display);
   border-radius: 3px;
   background-color: #e5e0ff;
   border: 1px solid grey;
@@ -166,7 +181,7 @@ form#logout {
   overflow-x: hidden;
 }
 
-#dogears .really-delete-dogear{
+#dogears .really-delete-dogear {
   max-width: 16em;
   background-color: var(--color-danger);
 }
@@ -174,14 +189,16 @@ form#logout {
 #dogears .current {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
-  font-size: smaller;
-  color: var(--color-disabled);
 }
 
 #dogears .date {
   grid-column: 2 / 4;
   grid-row: 2 / 3;
+}
+
+#dogears .current, #dogears .date {
   font-size: smaller;
+  font-family: var(--font-text);
   color: var(--color-disabled);
 }
 
