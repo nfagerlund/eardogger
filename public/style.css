@@ -247,3 +247,11 @@ form#logout {
 .help-hidden {
   display: none;
 }
+
+.help-reveal {
+  transition: transform ease-in 0.25s;
+}
+
+.help-reveal-active {
+  transform: rotate(180deg);
+}
