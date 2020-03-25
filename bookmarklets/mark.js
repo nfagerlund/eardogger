@@ -1,7 +1,7 @@
 // Update existing dogear, or create a new dogear.
 
 (
-  () => {
+  ()=>{
     let d = document;
     let e = 'https://eardogger.com';
     let s = {
@@ -19,7 +19,7 @@
       color:'black',
       zIndex:'40000'
     };
-    let msg = (txt, auto) => {
+    let msg = (txt, auto)=>{
       let m = d.createElement('div');
       Object.assign(m.style, s);
       m.onclick = function(e){m.remove();};
@@ -33,8 +33,8 @@
       }
       return m;
     };
-    let go = () => {
-      d.location.href = e + '/mark/' + encodeURIComponent(document.location.href);
+    let go = ()=>{
+      d.location.href = e + '/mark/' + encodeURIComponent(d.location.href);
     };
     if (fetch) {
       let b = msg('Updating dogear...');
