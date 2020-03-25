@@ -74,6 +74,8 @@ describe("Dogears database layer", () => {
         .resolves.toBe('https://example.com/comic/240'),
       expect(dogears.currently(userID, 'example.com/comic/   '))
         .resolves.toBe('https://example.com/comic/240'),
+      expect(dogears.currently(userID, 'www.example.com/comic/   '))
+        .resolves.toBe('https://example.com/comic/240'),
       expect(dogears.currently(userID, 'https://example.com/com'))
         .resolves.toBe(false),
       // Malformed call to currently()
@@ -86,6 +88,10 @@ describe("Dogears database layer", () => {
       .resolves.toHaveLength(1);
     await expect(dogears.currently(userID, 'example.com/comic/'))
       .resolves.toBe('https://example.com/comic/241');
+    await expect(dogears.update(userID, '   https://www.example.com/comic/242'))
+      .resolves.toHaveLength(1);
+    await expect(dogears.currently(userID, 'example.com/comic/'))
+      .resolves.toBe('https://www.example.com/comic/242');
     await expect(dogears.update(userID, 'https://example.com/com/not-dogeared'))
       .rejects.toThrow();
 
