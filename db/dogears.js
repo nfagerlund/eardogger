@@ -3,7 +3,6 @@ const {URL} = require('url');
 
 const protocolAndWww = /^((https?:\/\/)?(www\.)?)?/;
 const getProtocolAndWww = url => url.match(protocolAndWww)[0] || '';
-const getProtocol = url => url.match(protocolAndWww)[2] || '';
 
 // Custom error type
 class NoMatchError extends Error {
@@ -68,9 +67,9 @@ async function update(userID, current) {
   }
   const result = await db.query("UPDATE dogears " +
       "SET current = $2, updated = current_timestamp WHERE " +
-      "user_id = $1 AND ($2 LIKE $3 || prefix || '%' OR $2 LIKE $4 || prefix || '%')" +
+      "user_id = $1 AND $2 LIKE $3 || prefix || '%' " +
       "RETURNING id, user_id, prefix, current, display_name, updated",
-    [userID, current, getProtocolAndWww(current), getProtocol(current)]
+    [userID, current, getProtocolAndWww(current)]
   );
   if (result.rowCount === 0) {
     throw new NoMatchError("No dogears match that URL");
@@ -113,8 +112,8 @@ async function currently(userID, urlOrPrefix) {
   }
   urlOrPrefix = urlOrPrefix.trim();
   const result = await db.query(
-    "SELECT current FROM dogears WHERE user_id = $1 AND ($2 LIKE $3 || prefix || '%' OR $2 LIKE $4 || prefix || '%') ORDER BY LENGTH(prefix) DESC",
-    [userID, urlOrPrefix, getProtocolAndWww(urlOrPrefix), getProtocol(urlOrPrefix)]
+    "SELECT current FROM dogears WHERE user_id = $1 AND $2 LIKE $3 || prefix || '%' ORDER BY LENGTH(prefix) DESC",
+    [userID, urlOrPrefix, getProtocolAndWww(urlOrPrefix)]
   );
   if (result.rows[0]) {
     return result.rows[0].current;
