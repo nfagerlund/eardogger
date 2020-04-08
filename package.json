@@ -1,6 +1,6 @@
 {
   "name": "eardogger",
-  "version": "0.1.9",
+  "version": "0.2.1",
   "description": "A web app for movable bookmarks.",
   "main": "server.js",
   "scripts": {
