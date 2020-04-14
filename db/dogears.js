@@ -1,7 +1,7 @@
 const db = require('./pg');
 const {URL} = require('url');
 
-const protocolAndWww = /^((https?:\/\/)?(www\.)?)?/;
+const protocolAndWww = /^((https?:\/\/)?((www|m)\.)*)?/;
 const getProtocolAndWww = url => url.match(protocolAndWww)[0] || '';
 
 // Custom error type
