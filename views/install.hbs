@@ -1,13 +1,13 @@
 <h2>What's Eardogger?</h2>
 
-<p>Eardogger is a bookmark service for long webcomics and web-books.</p>
+<p>Eardogger is a bookmarking service for long webcomics and web-books.</p>
 
-<p>There are lots of ways to sync bookmarks, but this one is weird because it's designed for <em>reading:</em></p>
+<p>There are lots of ways to bookmark a web page, but this one is weird because it's designed for <em>reading:</em></p>
 
 <ul>
-  <li><strong>Only one bookmark per site.</strong> Eardogger assumes each page is just a temporary resting point in a larger work; when you read a little further on a site and then save your place again, it moves your old bookmark. It's like marking your place with a slip of paper instead of a color-coded sticky note.</li>
-  <li><strong>Available everywhere.</strong> Pause your reading on one device, and resume elsewhere.</li>
-  <li><strong>Incredibly lazy.</strong> If you've already bookmarked a site once, you can pause or resume with just one click.</li>
+  <li><strong>Only one bookmark per site.</strong> A marked page is just a temporary resting point in a larger work; when you read a little further and save your place again, Eardogger moves your old bookmark. In other words, Eardogger does the "yesterday's bus ticket" type of bookmark, not the "six colors of sticky notes" type.</li>
+  <li><strong>Available everywhere.</strong> Pause your reading on one device, resume wherever.</li>
+  <li><strong>Incredibly lazy.</strong> Pause or resume with one click on sites you've bookmarked before.</li>
   <li><strong>Calls bookmarks "dogears"??</strong> I liked how sloppy and disreputable it sounded. 🐶</li>
 </ul>
 
@@ -15,11 +15,11 @@
 
 <ol>
   <li>Sign up for a free account.</li>
-  <li>Install the "Mark my spot" and "Where was I" bookmarklets on all your devices and browsers.</li>
-  <li>To pause what you're reading, click "Mark my spot."
+  <li>Install the "Mark my spot" and "Where was I" bookmarklets on all your devices and browsers. (See below.)</li>
+  <li>To pause whatever you're reading, click "Mark my spot."
     <ul>
       <li>If you've dogeared that site before, that's it! The dogear now marks your new position.</li>
-      <li>If it's a new site, it'll ask you for a name and then create a new dogear. (You can also adjust the URL prefix, for sites that share a domain with several other sites.)</li>
+      <li>If this is a new site, Eardogger asks you for the site's name and makes a new dogear. (You can also adjust the URL prefix, for sites that share a domain with several other sites.)</li>
     </ul>
   </li>
   <li>To resume reading a site from where you paused it, use the list of dogears on the <a href="/">Eardogger homepage</a>.
@@ -49,11 +49,11 @@
   </div>
 </div>
 
-<p>Installation depends on your browser; basically, do whatever it takes to create a bookmark whose "location" field is that long nasty <code>javascript:</code> URL. Some notable approaches:</p>
+<p>To install these, create a browser bookmark whose "location" is that long nasty <code>javascript:</code> URL. The way you do this depends on your browser. Some notable approaches:</p>
 
 <h3>In Most Desktop Browsers</h3>
 
-<p>You usually want these on the toolbar so they're easily accessible, but you could also put them in the menu.</p>
+<p>You usually want these on the toolbar or in the menu, so they're easily accessible.</p>
 
 <ol>
 <li>Go into the "view" menu and make sure the "bookmark toolbar" is visible, or else open your browser's bookmark manager.</li>
@@ -62,11 +62,13 @@
 
 <h3>On iOS Safari</h3>
 
-<p>You usually want these at the top of the "favorites" section of your bookmarks. That way, you can activate them by tapping on the URL bar and then choosing from the set of big tiles. To install each bookmarklet:</p>
+<p>You usually want these at the top of the "favorites" section of your bookmarks. That way, you can activate them by tapping on the URL bar and then choosing the appropriate icon.</p>
+
+<p>Safari doesn't want you to bookmark javascript URLs by accident, so it adds an extra step: you have to create a normal bookmark, then manually replace its URL. In more detail:</p>
 
 <ol>
-<li>First, use the share menu to bookmark some random page, like this one. Put it in the "favorites" section.</li>
+<li>First, use the share menu to bookmark <em>this</em> page. Put it in the "favorites" section.</li>
 <li>Copy the <code>javascript:</code> URL to the clipboard. (On iOS ≥ 13 you can tap-and-hold the links; on iOS ≤ 12 you have to copy from the textarea.)</li>
-<li>Open your bookmarks and tap the "edit" button.</li>
+<li>Open your bookmarks and tap "edit".</li>
 <li>Tap the bookmark you just made. Rename it, and replace the current URL with the <code>javascript:</code> URL.</li>
 </ol>
