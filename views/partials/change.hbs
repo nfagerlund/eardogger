@@ -1,0 +1,15 @@
+<h2>Change Password for {{username}}</h2>
+<form action="/changepassword" method="post" id="changeform">
+  <input type="hidden" name="username" value="{{username}}" />
+
+  <label for="password">Password</label>
+  <input type="password" id="password" name="password" />
+
+  <label for="new_password">New Password</label>
+  <input type="password" id="new_password" name="new_password" />
+
+  <label for="new_password_again">Confirm New Password</label>
+  <input type="password" id="new_password_again" name="new_password_again" />
+
+  <button type="submit">Change Password</button>
+</form>
