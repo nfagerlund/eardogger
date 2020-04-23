@@ -24,51 +24,72 @@
   </li>
   <li>To resume reading a site from where you paused it, use the list of dogears on the <a href="/">Eardogger homepage</a>.
     <ul>
-      <li>Or, if you're already on that site, click "Where was I." (Useful when you left a tab open but then read further on another device.)</li>
+      <li>Or, if you're already on that site, click "Where was I." (Good for when you left a tab open but then read further on another device.)</li>
     </ul>
   </li>
 </ol>
 
 <h2>How to Install the Bookmarklets</h2>
 
-<p>Bookmarklets are like browser extensions, but more primitive. Behold:</p>
+<p>Bookmarklets are like browser extensions, but more primitive. Eardogger uses two bookmarklets:</p>
 
 <div class="columns">
   <div>
     <h3>
       <a href="{{mark}}">Mark my spot</a>
     </h3>
-    <textarea rows="3" cols="20" spellcheck="false">{{mark}}</textarea>
+
+    <button type="button" class="copy-button" data-copy-target="bookmarklet-text-mark" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
+
+    <textarea
+      id="bookmarklet-text-mark"
+      readonly
+      rows="3"
+      cols="20"
+      spellcheck="false"
+    >{{mark}}</textarea>
   </div>
 
   <div>
     <h3>
       <a href="{{where}}">Where was I</a>
     </h3>
-    <textarea rows="3" cols="20" spellcheck="false">{{where}}</textarea>
+
+    <button type="button" class="copy-button" data-copy-target="bookmarklet-text-where" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
+
+    <textarea
+      id="bookmarklet-text-where"
+      readonly
+      rows="3"
+      cols="20"
+      spellcheck="false"
+    >{{where}}</textarea>
   </div>
 </div>
 
-<p>To install these, create a browser bookmark whose "location" is that long nasty <code>javascript:</code> URL. The way you do this depends on your browser. Some notable approaches:</p>
+<p>To install these, create a browser bookmark whose "location" is that long nasty <code>javascript:</code> URL. To activate them, click or tap that bookmark while viewing a page you want to dogear.</p>
 
 <h3>In Most Desktop Browsers</h3>
 
-<p>You usually want these on the toolbar or in the menu, so they're easily accessible.</p>
+<p>Drag and drop the links, or right-click the links and choose to create a new bookmark.</p>
 
-<ol>
-<li>Go into the "view" menu and make sure the "bookmark toolbar" is visible, or else open your browser's bookmark manager.</li>
-<li>Drag the bookmarklet links and drop them where you want them.</li>
-</ol>
+<p>You usually want these on the "bookmark toolbar" or in the menu, so they're easily accessible.</p>
 
 <h3>On iOS Safari</h3>
 
-<p>You usually want these at the top of the "favorites" section of your bookmarks. That way, you can activate them by tapping on the URL bar and then choosing the appropriate icon.</p>
-
-<p>Safari doesn't want you to bookmark javascript URLs by accident, so it adds an extra step: you have to create a normal bookmark, then manually replace its URL. In more detail:</p>
+<p>iOS doesn't want you to bookmark javascript URLs by accident, so it adds an extra step: you have to create a normal bookmark, then manually replace its URL. In more detail:</p>
 
 <ol>
-<li>First, use the share menu to bookmark <em>this</em> page. Put it in the "favorites" section.</li>
-<li>Copy the <code>javascript:</code> URL to the clipboard. (On iOS ≥ 13 you can tap-and-hold the links; on iOS ≤ 12 you have to copy from the textarea.)</li>
+<li>Use the share menu to bookmark <em>this</em> page. Put it in the "favorites" section for easy access.</li>
+<li>Copy the <code>javascript:</code> URL to the clipboard.</li>
 <li>Open your bookmarks and tap "edit".</li>
-<li>Tap the bookmark you just made. Rename it, and replace the current URL with the <code>javascript:</code> URL.</li>
+<li>Tap the bookmark you just made. Rename it, and replace the current URL with the copied <code>javascript:</code> URL.</li>
 </ol>
+
+<p>If you put your bookmarklets in the "favorites" section, the easiest way to activate them is to tap the URL bar; a list of icons will appear, and you can tap the icon for your bookmarklet. You can also activate bookmarklets from the main bookmarks sheet.</p>
+
+<p>Other iOS browsers have their controls in different places, but still use the same "bookmark something random, then replace the name and URL" technique.</p>
+
+<h3>On Android</h3>
+
+<p>Uhhhhhhh I'm not actually sure yet. 😅</p>

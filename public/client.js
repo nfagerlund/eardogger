@@ -11,6 +11,53 @@ function whenever(callback) {
   }
 }
 
+// clipboard button handler
+function clipboardHandler(button) {
+  let target = document.getElementById( button.getAttribute('data-copy-target') );
+  let copyButtons = document.getElementsByClassName('copy-button');
+  if (navigator.clipboard) { // New style
+    navigator.clipboard.writeText(target.textContent).then(() => {
+      resetButtonStatuses('success', button, copyButtons);
+    }).catch(() => {
+      resetButtonStatuses('fail', button, copyButtons);
+    });
+  } else { // Old style
+    // ganked from https://stackoverflow.com/questions/34045777/copy-to-clipboard-using-javascript-in-ios
+    let oldEditable = target.contentEditable;
+    let oldRead = target.readOnly;
+    target.contentEditable = true;
+    target.readOnly = false;
+
+    let range = document.createRange();
+    range.selectNodeContents(target);
+    let s = window.getSelection();
+    s.removeAllRanges();
+    s.addRange(range);
+    target.setSelectionRange(0, target.textContent.length);
+
+    target.contentEditable = oldEditable;
+    target.readOnly = oldRead;
+
+    let result = document.execCommand('copy');
+    let status = result ? 'success' : 'fail';
+
+    resetButtonStatuses(status, button, copyButtons);
+  }
+}
+
+// button status resetter, for sets of buttons that touch a global object like clipboard
+function resetButtonStatuses(newStatus, activeButton, allButtons) {
+  for (var i = 0; i < allButtons.length; i++) {
+    let current = allButtons[i];
+    let status = current.getElementsByClassName('status')[0];
+    if (current === activeButton) {
+      status.textContent = current.getAttribute(`data-status-${newStatus}`);
+    } else {
+      status.textContent = current.getAttribute('data-status-ready');
+    }
+  }
+}
+
 // OK, go for it.
 whenever(() => {
 
@@ -169,6 +216,9 @@ document.body.addEventListener('click', function(e){
     const helpTarget = document.getElementById( that.getAttribute('data-help-target') );
     helpTarget.classList.toggle('help-hidden');
     that.classList.toggle('help-reveal-active');
+  } else if (that.matches('.copy-button')) {
+    e.preventDefault();
+    clipboardHandler(that);
   }
 });
 
