@@ -1,43 +1,23 @@
-<h2>What's Eardogger?</h2>
+<h2>Install the Eardogger Bookmarklets</h2>
 
-<p>Eardogger is a bookmarking service for long webcomics and web-books.</p>
-
-<p>There are lots of ways to bookmark a web page, but this one is weird because it's designed for <em>reading:</em></p>
+<p>Bookmarklets are like simple browser extensions: when you activate them, they perform an action on whatever page you're currently viewing. Eardogger uses two bookmarklets:</p>
 
 <ul>
-  <li><strong>Only one bookmark per site.</strong> A marked page is just a temporary resting point in a larger work; when you read a little further and save your place again, Eardogger moves your old bookmark. In other words, Eardogger does the "yesterday's bus ticket" type of bookmark, not the "six colors of sticky notes" type.</li>
-  <li><strong>Available everywhere.</strong> Pause your reading on one device, resume wherever.</li>
-  <li><strong>Incredibly lazy.</strong> Pause or resume with one click on sites you've bookmarked before.</li>
-  <li><strong>Calls bookmarks "dogears"??</strong> I liked how sloppy and disreputable it sounded. 🐶</li>
+  <li><strong>"Mark my spot"</strong> — Self-explanatory.</li>
+  <li><strong>"Where was I?"</strong> (optional) — Like a "load saved game" button. If you previously marked your spot on the site you're viewing, this jumps directly to your saved location.</li>
 </ul>
 
-<h2>How to Use Eardogger</h2>
-
-<ol>
-  <li>Sign up for a free account.</li>
-  <li>Install the "Mark my spot" and "Where was I" bookmarklets on all your devices and browsers. (See below.)</li>
-  <li>To pause whatever you're reading, click "Mark my spot."
-    <ul>
-      <li>If you've dogeared that site before, that's it! The dogear now marks your new position.</li>
-      <li>If this is a new site, Eardogger asks you for the site's name and makes a new dogear. (You can also adjust the URL prefix, for sites that share a domain with several other sites.)</li>
-    </ul>
-  </li>
-  <li>To resume reading a site from where you paused it, use the list of dogears on the <a href="/">Eardogger homepage</a>.
-    <ul>
-      <li>Or, if you're already on that site, click "Where was I." (Good for when you left a tab open but then read further on another device.)</li>
-    </ul>
-  </li>
-</ol>
-
-<h2>How to Install the Bookmarklets</h2>
-
-<p>Bookmarklets are like browser extensions, but more primitive. Eardogger uses two bookmarklets:</p>
+<p>If your desktop and mobile browsers sync bookmarks with each other, you might only need to install these once; bookmarklets get synced just like regular bookmarks.</p>
 
 <div class="columns">
   <div>
-    <h3>
-      <a href="{{mark}}">Mark my spot</a>
-    </h3>
+    <h3>Mark my spot</h3>
+
+    <p><strong>Desktop:</strong> Bookmark this link ⬇️</p>
+
+    <p><a href="{{mark}}">Mark my spot</a></p>
+
+    <p><strong>Mobile:</strong> Make a random bookmark, then replace its URL with this text ⬇️</p>
 
     <button type="button" class="copy-button" data-copy-target="bookmarklet-text-mark" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
 
@@ -51,9 +31,13 @@
   </div>
 
   <div>
-    <h3>
-      <a href="{{where}}">Where was I</a>
-    </h3>
+    <h3>Where was I?</h3>
+
+    <p><strong>Desktop:</strong> Bookmark this link ⬇️</p>
+
+    <p><a href="{{where}}">Where was I?</a></p>
+
+    <p><strong>Mobile:</strong> Make a random bookmark, then replace its URL with this text ⬇️</p>
 
     <button type="button" class="copy-button" data-copy-target="bookmarklet-text-where" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
 
@@ -67,37 +51,35 @@
   </div>
 </div>
 
-<p>To install these, create a browser bookmark whose "location" is that long nasty <code>javascript:</code> URL. To activate them, click or tap that bookmark while viewing a page you want to dogear.</p>
+<h2>Desktop Instructions</h2>
 
-<h3>Most Desktop Browsers</h3>
-
-<p>Drag and drop the links, or right-click the links and choose to create a new bookmark.</p>
+<p>Drag and drop the links above, or right-click the links and select "bookmark."</p>
 
 <p>You usually want these on the "bookmark toolbar" or in the menu, so they're easily accessible.</p>
 
-<h3>iOS Safari</h3>
+<h2>iOS Instructions (Safari)</h2>
 
 <p>iOS doesn't want you to bookmark javascript URLs by accident, so it adds an extra step: you have to create a normal bookmark, then manually replace its URL. In more detail:</p>
 
 <ol>
-  <li>Use the share menu to bookmark <em>this</em> page. Put it in the "favorites" section for easy access.</li>
+  <li>Use the share menu to bookmark <em>this</em> page. For easy access, put it in the "favorites" section.</li>
   <li>Copy the <code>javascript:</code> URL to the clipboard.</li>
   <li>Open your bookmarks and tap "edit".</li>
-  <li>Tap the bookmark you just made. Rename it, and replace the current URL with the copied <code>javascript:</code> URL.</li>
+  <li>Edit the bookmark you just made. Rename it, and replace the current URL with the copied <code>javascript:</code> URL.</li>
 </ol>
 
-<p>If you put your bookmarklets in the "favorites" section, the easiest way to activate them is to tap the URL bar; a list of icons will appear, and you can tap the icon for your bookmarklet. You can also activate bookmarklets from the main bookmarks sheet.</p>
+<p>If you put your bookmarklets in "favorites," the fastest way to activate them is to tap the URL bar; a list of icons will appear, and you can tap the icon for your bookmarklet. You can also activate bookmarklets from the main bookmarks sheet.</p>
 
 <p>Other iOS browsers have their controls in different places, but still use the same "bookmark something random, then replace the name and URL" technique.</p>
 
-<h3>Android Chrome</h3>
+<h2>Android Instructions (Chrome)</h2>
 
 <p>Chrome on Android uses the same installation technique as iOS Safari:</p>
 
 <ol>
   <li>Bookmark <em>this</em> page by going to the "…" menu and tapping the star.</li>
   <li>Copy the <code>javascript:</code> URL to the clipboard.</li>
-  <li>Open your bookmarks, find the bookmark you made, and edit it; change the name, and replace the current URL with the copied <code>javascript:</code> URL. You can also move the bookmark, if you want.</li>
+  <li>Open your bookmarks, find the bookmark you made, and edit it. Rename it, and replace the current URL with the copied <code>javascript:</code> URL.</li>
 </ol>
 
 <p>However, <em>activating</em> bookmarklets on Chrome is weird. You must:</p>
@@ -108,6 +90,6 @@
   <li>Tap the bookmarklet in the suggestions list.</li>
 </ol>
 
-<p>For some reason, Chrome <em>doesn't</em> let you activate bookmarklets by tapping them from the bookmarks list; only the location bar suggestions will work. Because of this, you might want to include a unique sequence of letters in your bookmarklet names.</p>
+<p>For some reason, Chrome <em>doesn't</em> let you activate bookmarklets by tapping them from the bookmarks list; only the location bar suggestions will work. Because of this, you might want to include a unique abbreviation in your bookmarklet names, so you don't have to type as much to make them appear in the suggestions list.</p>
 
 <p>Other Android browsers might do their own things, but if you've gone to the trouble to install a non-default browser on your telephone in the first place, you can probably sort it out.</p>

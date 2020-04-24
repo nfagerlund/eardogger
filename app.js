@@ -240,13 +240,13 @@ app.get('/install', function(req, res){
     ]
   }
   Promise.all(cachedBookmarklets).then( ([mark, where]) => {
-    res.render('install', {title: 'How to', mark, where});
+    res.render('install', {title: 'Install', mark, where});
   });
 });
 
 // Faq
 app.get('/faq', function(req, res){
-  res.render('faq', {title: 'FAQ and News'});
+  res.render('faq', {title: 'How to'});
 });
 
 // UI version of updating a dogear; redirects instead of returning json

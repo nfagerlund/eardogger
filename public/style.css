@@ -211,6 +211,9 @@ form#logout {
 .columns > * {
   flex-basis: 230px;
   flex-grow: 1;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  margin-top: -1px;
 }
 
 /* Be good on smalls */
