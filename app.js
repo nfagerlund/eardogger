@@ -48,7 +48,8 @@ const sessionPersist = session({
   name: 'eardogger.sessid',
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 30 * 2, // two months, in milliseconds.
-    sameSite: false,
+    sameSite: 'none',
+    secure: true,
     httpOnly: false,
   },
   store: new pgSession({
