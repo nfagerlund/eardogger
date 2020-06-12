@@ -24,9 +24,10 @@ body {
   --font-mono: "Courier Prime", "Courier", "Courier New", monospace;
   --font-ui: system-ui, sans-serif;
   --input-height: 28px;
-  margin: 2em;
   font-family: var(--font-text);
   background-color: #FFF8EB;
+  max-width: 38em; /* ~75 chars */
+  margin: 2em auto;
 }
 
 header, nav, footer, form, h1, h2, h3, h4, h5, h6, .dogears, .serial-name, .countdown {
@@ -133,6 +134,7 @@ form#logout {
   width: auto;
   margin-bottom: 0;
   margin-left: auto;
+  padding-right: 0;
 }
 
 .serial-name { /* on the marked page */
@@ -152,6 +154,9 @@ form#logout {
   grid-template-rows: 1fr auto;
   grid-row-gap: 5px;
   grid-column-gap: 5px;
+  grid-template-areas:
+    "link link delete"
+    "current date date";
   margin-bottom: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid;
@@ -165,14 +170,12 @@ form#logout {
 }
 
 #dogears a { /* main link */
-  grid-column: 1 / 3;
-  grid-row: 1 / 2;
+  grid-area: link;
   justify-self: self-start; /* no invisible click targets */
 }
 
 #dogears .delete-dogear {
-  grid-column: 3 / 4;
-  grid-row: 1 / 2;
+  grid-area: delete;
   align-self: self-start;
 
   max-width: 6em; /* that's a hack around inability to transition auto values. */
@@ -187,13 +190,11 @@ form#logout {
 }
 
 #dogears .current {
-  grid-column: 1 / 2;
-  grid-row: 2 / 3;
+  grid-area: current;
 }
 
 #dogears .date {
-  grid-column: 2 / 4;
-  grid-row: 2 / 3;
+  grid-area: date;
 }
 
 #dogears .current, #dogears .date {
@@ -222,20 +223,13 @@ form#logout {
     margin: 1em;
   }
 
- #dogears li {
-   grid-template-rows: 1fr auto auto;
- }
-
- #dogears .current {
-  grid-column: 1/4;
-  grid-row: 2/3;
- }
-
- #dogears .date {
-  grid-column: 1/4;
-  grid-row: 3/4;
- }
-
+  #dogears li {
+    grid-template-rows: 1fr auto auto;
+    grid-template-areas:
+      "link link        delete"
+      "current current current"
+      "date      date     date";
+  }
 }
 
 #countdown {
