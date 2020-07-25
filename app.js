@@ -44,12 +44,11 @@ app.set('view engine', 'hbs'); // the default for no-extension views
 
 
 // session handling
-let sessionOptions = {
+const sessionPersist = session({
   name: 'eardogger.sessid',
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 30 * 2, // two months, in milliseconds.
-    sameSite: 'none',
-    secure: true,
+    sameSite: false,
     httpOnly: false,
   },
   store: new pgSession({
@@ -61,17 +60,9 @@ let sessionOptions = {
   rolling: true,
   resave: false,
   unset: 'destroy',
-};
+});
 
-if (process.env.USE_PROXY) {
-  // Setting secure cookies takes some finagling if the client's talking HTTPS
-  // to a proxy but it's talking HTTP to us. And we want to set secure cookies
-  // because browsers are gonna stop allowing POSTS from foreign sites
-  // otherwise, and that's kind of a Thing we do with the bookmarklets.
-  app.set('trust proxy', 1);
-  sessionOptions.proxy = true;
-}
-app.use(session(sessionOptions));
+app.use(sessionPersist);
 
 // OK, let's passport.js.
 passport.use(new LocalStrategy(
