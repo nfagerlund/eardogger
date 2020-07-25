@@ -63,6 +63,7 @@ const sessionPersist = session({
   unset: 'destroy',
 });
 
+app.set('trust proxy', 1); // Required for cookie `secure: true` if we're behind a proxy... which we always seem to be.
 app.use(sessionPersist);
 
 // OK, let's passport.js.
