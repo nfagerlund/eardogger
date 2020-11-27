@@ -201,7 +201,7 @@ if (createForm && createForm.elements['prefix'] && createForm.elements['prefix']
 }
 
 // The big "clicking on buttons" listener
-document.body.addEventListener('click', function(e){
+document.addEventListener('click', function(e){
   const that = e.target;
   if (that.matches('.help-reveal')) {
     // Help text toggle buttons:
