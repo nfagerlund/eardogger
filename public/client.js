@@ -166,25 +166,25 @@ document.addEventListener('click', function(e){
   }
 });
 
-// OK, here's all the stuff where I need to know the page state before doing something:
-whenever(() => {
-
 // Manual "dogear a URL" form on homepage
-const updateForm = document.getElementById('update-dogear');
-if (updateForm) {
-  updateForm.addEventListener('submit', function(e) {
+document.addEventListener('submit', function(e){
+  const that = e.target;
+  if (that.matches('#update-dogear')) {
     e.preventDefault();
     submitDogear('/api/v1/update', {
-      current: this.elements['current'].value,
+      current: that.elements['current'].value,
     }).then(success => {
       if (success) {
-        this.elements['current'].value = '';
+        that.elements['current'].value = '';
       } else {
-        document.location.href = '/mark/' + encodeURIComponent(this.elements['current'].value);
+        document.location.href = '/mark/' + encodeURIComponent(that.elements['current'].value);
       }
     });
-  });
-}
+  }
+});
+
+// OK, here's all the stuff where I need to know the page state before doing something:
+whenever(() => {
 
 // "Returning to site in..." countdown timer after dogearing something
 const countdownIndicator = document.getElementById('countdown');
