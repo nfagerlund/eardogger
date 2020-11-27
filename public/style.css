@@ -22,12 +22,14 @@ body {
   --font-display: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
   --font-text: "Avenir Next", "Avenir", "Candara", "Verdana", sans-serif;
   --font-mono: "Courier Prime", "Courier", "Courier New", monospace;
-  --font-ui: system-ui, sans-serif;
+  /* still waitin on universal support for "system-ui", sigh. */
+  --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --input-height: 28px;
   font-family: var(--font-text);
   background-color: #FFF8EB;
-  max-width: 38em; /* ~75 chars */
+  max-width: 70ch;
   margin: 2em auto;
+  padding: 0 1em;
 }
 
 header, nav, footer, form, h1, h2, h3, h4, h5, h6, .dogears, .serial-name, .countdown {
@@ -41,10 +43,6 @@ code {
 
 form p {
   font-family: var(--font-text);
-}
-
-main {
-  max-width: 600px;
 }
 
 button {
@@ -220,7 +218,7 @@ form#logout {
 /* Be good on smalls */
 @media screen and (max-width: 400px) {
   body {
-    margin: 1em;
+    margin: 1em 0;
   }
 
   #dogears li {
