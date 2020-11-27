@@ -11,13 +11,6 @@ function whenever(callback) {
   }
 }
 
-// page state variables, which some functions refer to.
-// These get filled in with DOM elements (or not) once the document is ready.
-let bookmarksList = null;
-let createForm = null;
-let updateForm = null;
-let countdownIndicator = null;
-
 // clipboard button handler
 function clipboardHandler(button) {
   let target = document.getElementById( button.getAttribute('data-copy-target') );
@@ -91,6 +84,7 @@ function makeDogear(mark) {
 
 // Get the list of bookmarks from the API, and refresh the on-page list with current info.
 function refreshDogears() {
+  const bookmarksList = document.getElementById('dogears');
   if (!bookmarksList) {
     return;
   }
@@ -139,67 +133,6 @@ function deleteDogear(id) {
   });
 }
 
-// OK, go for it.
-whenever(() => {
-
-// some important elements:
-bookmarksList = document.getElementById('dogears');
-createForm = document.getElementById('create-dogear');
-updateForm = document.getElementById('update-dogear');
-countdownIndicator = document.getElementById('countdown');
-
-if (updateForm) {
-  // Set up manual update form:
-  updateForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    submitDogear('/api/v1/update', {
-      current: this.elements['current'].value,
-    }).then(success => {
-      if (success) {
-        this.elements['current'].value = '';
-      } else {
-        document.location.href = '/mark/' + encodeURIComponent(this.elements['current'].value);
-      }
-    });
-  });
-}
-
-if (countdownIndicator) {
-  // we're redirecting soon.
-  var count = 3;
-  function tick() {
-    if (count > 0) {
-      countdownIndicator.innerText = count.toString();
-      setTimeout(tick, count * 300);
-    } else {
-      document.location.href = countdownIndicator.getAttribute('data-returnto');
-    }
-    count--;
-  }
-  tick();
-}
-
-// Munge a default prefix for normal version of the create form
-if (createForm && createForm.elements['prefix'] && createForm.elements['prefix'].value) {
-  const prefix = createForm.elements['prefix'];
-  const changePrefix = document.getElementById('change-prefix');
-
-  const prefixHost = (new URL(prefix.defaultValue)).host + '/';
-
-  prefix.value = prefixHost;
-  prefix.readOnly = true;
-  prefix.classList.add('read-only');
-  changePrefix.style.display = 'inline-block'; // 'cause it's hidden by default.
-
-  changePrefix.addEventListener('click', function(_e){
-    this.style.display = 'none';
-    prefix.readOnly = false;
-    prefix.classList.remove('read-only');
-    prefix.value = prefix.defaultValue.replace(/^https?:\/\//, '');
-    prefix.focus();
-  });
-}
-
 // The big "clicking on buttons" listener
 document.addEventListener('click', function(e){
   const that = e.target;
@@ -233,6 +166,65 @@ document.addEventListener('click', function(e){
   }
 });
 
+// OK, here's all the stuff where I need to know the page state before doing something:
+whenever(() => {
+
+// Manual "dogear a URL" form on homepage
+const updateForm = document.getElementById('update-dogear');
+if (updateForm) {
+  updateForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    submitDogear('/api/v1/update', {
+      current: this.elements['current'].value,
+    }).then(success => {
+      if (success) {
+        this.elements['current'].value = '';
+      } else {
+        document.location.href = '/mark/' + encodeURIComponent(this.elements['current'].value);
+      }
+    });
+  });
+}
+
+// "Returning to site in..." countdown timer after dogearing something
+const countdownIndicator = document.getElementById('countdown');
+if (countdownIndicator) {
+  // we're redirecting soon.
+  var count = 3;
+  function tick() {
+    if (count > 0) {
+      countdownIndicator.innerText = count.toString();
+      setTimeout(tick, count * 300);
+    } else {
+      document.location.href = countdownIndicator.getAttribute('data-returnto');
+    }
+    count--;
+  }
+  tick();
+}
+
+// Creating new dogear: Suggest the domain name as the default prefix, but let them customize it
+// if the same domain hosts several sites.
+const createForm = document.getElementById('create-dogear');
+if (createForm && createForm.elements['prefix'] && createForm.elements['prefix'].value) {
+  const prefix = createForm.elements['prefix'];
+  const changePrefix = document.getElementById('change-prefix');
+
+  const prefixHost = (new URL(prefix.defaultValue)).host + '/';
+
+  prefix.value = prefixHost;
+  prefix.readOnly = true;
+  prefix.classList.add('read-only');
+  changePrefix.style.display = 'inline-block'; // 'cause it's hidden by default.
+
+  changePrefix.addEventListener('click', function(_e){
+    this.style.display = 'none';
+    prefix.readOnly = false;
+    prefix.classList.remove('read-only');
+    prefix.value = prefix.defaultValue.replace(/^https?:\/\//, '');
+    prefix.focus();
+  });
+}
 
 }); // end whenever()
 })(); // that's a wrap
