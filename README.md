@@ -1,6 +1,8 @@
 # Eardogger
 
-This is a movable bookmarks service, for reading serialized content on the web.
+Eardogger is a movable bookmarks service, for reading serialized content on the web.
+
+[It runs as a free service at Eardogger.com](https://eardogger.com).
 
 ## Concepts
 
