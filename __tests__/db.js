@@ -1,5 +1,4 @@
 // setup stuff
-const fs = require('fs');
 const dbmigrate = require('db-migrate').getInstance(true, {env: 'test'});
 const {Pool, Client} = require('pg');
 const {readTextFilePromise} = require('../util');
@@ -32,6 +31,10 @@ beforeAll( async () => {
 
   // migrations, in case the schema's out of date
   await dbmigrate.up();
+});
+
+afterAll( async () => {
+  await pool.end();
 });
 
 describe("Dogears database layer", () => {
