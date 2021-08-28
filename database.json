@@ -2,11 +2,11 @@
   "sql-file": true,
   "prod": {
     "url": {"ENV": "DATABASE_URL"},
-    "ssl": true
+    "ssl": {"rejectUnauthorized": false}
   },
   "dev": {
     "url": {"ENV": "DATABASE_URL"},
-    "ssl": true
+    "ssl": {"rejectUnauthorized": false}
   },
   "test": {
     "url": "postgres://localhost/eardogger",
