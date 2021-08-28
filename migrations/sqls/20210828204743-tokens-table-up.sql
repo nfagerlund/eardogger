@@ -5,5 +5,5 @@ CREATE TABLE tokens (
   user_id integer REFERENCES users (id) ON DELETE CASCADE,
   token_hash text,
   scope token_scope,
-  comment text,
+  comment text
 );
