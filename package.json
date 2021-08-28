@@ -5,7 +5,6 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "schema": "node db/schema.js",
     "test": "jest",
     "web": "node server.js"
   },
