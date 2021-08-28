@@ -19,6 +19,14 @@ The app needs these in order to run properly.
 - `PORT` — Port for webserver to bind to. Heroku and Glitch automatically provide this.
 - `SESSION_SECRET` — Arbitrary secret used for securing user login sessions. No one provides it.
 
+## Running Migrations
+
+`yarn run db-migrate up --env prod`
+
+For the dev server on glitch, gotta use npx instead of yarn run (and specify `dev`).
+
+Migrations use database.json for their config, which in turn mostly defers to `DATABASE_URL`.
+
 ## v1 API
 
 - [POST /api/v1/create](#post-api-v1-create)
@@ -242,4 +250,3 @@ Outcome | Response
 -|-
 Success | 302 "found" redirect to current location of dogear.
 Can't find bookmark | 404, but probably like, a nice 404.
-
