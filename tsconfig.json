@@ -1,7 +1,8 @@
 {
   "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
-    "sourceMap": true
+    "sourceMap": true,
+    "strict": true
   },
   "include": ["**/*"],
   "exclude": [
