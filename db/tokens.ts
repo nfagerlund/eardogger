@@ -17,7 +17,7 @@ module.exports = {
 
 // Create and store a token; must return the cleartext of the token, as it's
 // the only thing that'll ever have it.
-async function create(userID: number, scope: TokenScope, comment: string) {
+async function create(userID: number, scope: TokenScope, comment: string): Promise<Token> {
   let tokenCleartext = `eardoggerv1.${uuidv4()}`;
   let tokenHash = crypto.createHash('sha256').update(tokenCleartext).digest('hex');
   let result = await db.query(
