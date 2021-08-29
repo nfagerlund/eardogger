@@ -1,3 +1,4 @@
 node_modules
 .data
 shrinkwrap.yaml
+db/tokens.js*
