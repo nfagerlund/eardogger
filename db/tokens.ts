@@ -36,3 +36,11 @@ async function create(userID: number, scope: TokenScope, comment: string): Promi
     comment,
   };
 }
+
+async function list(userId: number) {
+  let result = await db.query(
+    "SELECT id, user_id, scope, created, comment FROM tokens WHERE user_id = $1",
+    [userId]
+  );
+  return result.rows;
+}
