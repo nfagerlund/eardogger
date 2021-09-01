@@ -11,6 +11,7 @@ const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const BearerStrategy = require('passport-http-bearer').Strategy;
 const expressHandlebars = require('express-handlebars');
 
 app.use(express.urlencoded({ extended: true }));
@@ -25,6 +26,7 @@ const db = require('./db/pg');
 // Application object DB helpers
 const dogears = require('./db/dogears');
 const users = require('./db/users');
+const tokens = require('./db/tokens');
 
 // http://expressjs.com/en/starter/static-files.html
 // putting this before session middleware saves some db load.
@@ -106,6 +108,20 @@ passport.deserializeUser( (id, done) => {
     done(err);
   });
 });
+// Then there's token auth. Token authentication only applies to API routes! So
+// we'll call passport.authenticate a second time using the bearer strategy if
+// we're trying to access an API route.
+passport.use(new BearerStrategy(
+  (tokenCleartext, done) => {
+    tokens.findWithUser(tokenCleartext).then(result => {
+      let { token, user } = result;
+      // Third argument to done() is available later at req.authInfo
+      done(null, user, { scope: token.scope });
+    }).catch(err => {
+      done(err);
+    });
+  }
+));
 
 // ok, and then finally,
 app.use(passport.initialize());
@@ -122,7 +138,7 @@ app.use(function(req, res, next){
 
 // API routes live in their own little thing.
 const v1api = require('./api/v1');
-app.use('/api/v1', v1api);
+app.use('/api/v1', passport.authenticate('bearer', { session: false }), v1api);
 
 // AUTHENTICATION WITH PASSPORT, finally.
 // About .authenticate('local')... 'local' is a magic string. I never specified
