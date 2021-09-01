@@ -136,9 +136,21 @@ app.use(function(req, res, next){
   next();
 });
 
+// Wrapper for bearer token authentication, so we don't even try it unless you
+// provided a token in the headers:
+let bearerAuthMiddleware = passport.authenticate('bearer', { session: false });
+function maybeBearerAuthMiddleware(req, res, next) {
+  if (req.get('Authorization')) {
+    // then we have a token
+    bearerAuthMiddleware(req, res, next);
+  } else {
+    next();
+  }
+}
+
 // API routes live in their own little thing.
 const v1api = require('./api/v1');
-app.use('/api/v1', passport.authenticate('bearer', { session: false }), v1api);
+app.use('/api/v1', maybeBearerAuthMiddleware, v1api);
 
 // AUTHENTICATION WITH PASSPORT, finally.
 // About .authenticate('local')... 'local' is a magic string. I never specified
