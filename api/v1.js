@@ -23,6 +23,7 @@ router.use(function(req, res, next) {
 router.use(express.json());
 
 // CORS is good, actually. But only enable it per-endpoint.
+// Use this middleware *before* token auth.
 // s/o to http://johnzhang.io/options-request-in-express
 // (via https://support.glitch.com/t/how-do-i-do-a-cors-on-my-api/7497/8)
 const localOrigin = new RegExp(
@@ -77,7 +78,7 @@ router.post('/create', function(req, res){
 });
 
 // API: update
-router.use('/update', writeOrManageDogears, allowCorsWithCredentials('POST'));
+router.use('/update', allowCorsWithCredentials('POST'), writeOrManageDogears);
 router.post('/update', function(req, res){
   const {current} = req.body;
   if (req.isCors) {
