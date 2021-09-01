@@ -55,7 +55,7 @@ function allowCorsWithCredentials(methods) {
 // Known scopes so far: write_dogears, manage_dogears.
 function allowTokenScopes(scopes) {
   return function(req, res, next) {
-    if (req.authInfo.isToken && scopes.includes(req.authInfo.scope)) {
+    if (req.authInfo && req.authInfo.isToken && scopes.includes(req.authInfo.scope)) {
       next();
     } else { // NOPE
       res.sendStatus(403);
