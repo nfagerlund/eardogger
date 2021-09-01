@@ -159,8 +159,8 @@ app.use('/api/v1', maybeBearerAuthMiddleware, v1api);
 // plugin states its magic string in its docs, so, ok.
 app.post('/login', passport.authenticate('local', {
 //   successReturnToOrRedirect: '/', // uses req.session.returnTo if present. Undocumented.
-  failureRedirect: '/', // should be /login but I don't have that yet
-}), function(req, res, next){
+  failureRedirect: '/', // it's the login page
+}), function(req, res){
   // On success, redirect to wherever you were going. (If authentication failed,
   // passport redirects immediately and this second middleware is never called.)
   if (req.session.returnTo) {
