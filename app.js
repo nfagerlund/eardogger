@@ -100,7 +100,8 @@ passport.serializeUser( (user, done) => {
 passport.deserializeUser( (id, done) => {
   users.getByID(id).then(userObj => {
     if (userObj) {
-      done(null, userObj);
+      // Set authInfo so we can tell this is a real login session
+      done(null, userObj, { isSession: true });
     } else {
       done(null, false);
     }
@@ -116,8 +117,9 @@ passport.use(new BearerStrategy(
     tokens.findWithUser(tokenCleartext).then(result => {
       if (result) {
         let { token, user } = result;
-        // Third argument to done() is available later at req.authInfo
-        done(null, user, { scope: token.scope });
+        // Third argument to done() is available later at req.authInfo, and
+        // we'll need the token scope for authenticating API actions
+        done(null, user, { isToken: true, scope: token.scope });
       } else {
         done(null, false);
       }
