@@ -64,14 +64,14 @@
         } else {
           // other http error - 401 not authorized, or 404 bookmark doesn't
           // exist; navigate to old-style update/create page
-          go();
+          // go();
         }
       }).catch(err=>{
         // request was never sent; navigate to old-style update page
-        go();
+        // go();
       });
     } else {
-      go();
+      // go();
     }
   }
 )();
