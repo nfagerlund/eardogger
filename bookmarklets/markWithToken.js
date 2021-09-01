@@ -42,7 +42,7 @@
       fetch(e + '/api/v1/update', {
         method:'POST',
         mode:'cors',
-        credentials:'include',
+        credentials:'omit',
         headers:{
           'Content-Type':'application/json',
           'Accept':'application/json',
