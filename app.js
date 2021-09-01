@@ -165,7 +165,7 @@ app.post('/logout', function(req, res){
 });
 
 // How about signup.
-app.post('/signup', function(req, res){
+app.post('/signup', function(req, res, next){
   if (req.user) {
     res.status(403).send("Can't sign up when you're logged in");
   } else {
@@ -236,7 +236,7 @@ app.get('/status', function(req, res) {
 });
 
 // Homepage!
-app.get('/', function(req, res) {
+app.get('/', function(req, res, next) {
   if (req.user) {
     dogears.list(req.user.id).then((dogears) => {
       const templateDogears = dogears.map(mark => {
