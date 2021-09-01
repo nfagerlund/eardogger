@@ -30,19 +30,20 @@ const blockComments = /^\s*\/\*.+?\*\/\n?/gm;
 const spaceRuns = / {2,}/gm;
 const leadingSpace = /^\s+/gm;
 const trailingSpaceAndNewlines = /\s*\n/gm;
+const tokenPlaceHolder = /<TOKEN>/gm;
 
 // This doesn't handle html escaping, just URI escaping.
-async function bookmarkletText(bookmarklet) {
+async function bookmarkletText(bookmarklet, token = '') {
   let text = await readTextFilePromise(__dirname + '/bookmarklets/' + bookmarklet + '.js');
   text = text
     .replace(commentedLines, '')
     .replace(blockComments, '')
     .replace(spaceRuns, ' ')
     .replace(leadingSpace, '')
-    .replace(trailingSpaceAndNewlines, '');
+    .replace(trailingSpaceAndNewlines, '')
+    .replace(tokenPlaceHolder, token);
   if (process.env.SITE_HOSTNAME) {
     text = text.replace(/eardogger\.com/g, process.env.SITE_HOSTNAME);
   }
   return 'javascript:' + encodeURI(text);
 }
-
