@@ -279,10 +279,11 @@ app.get('/install', function(req, res){
     cachedBookmarklets = [
       bookmarkletText('mark'),
       bookmarkletText('where'),
+      bookmarkletText('markWithToken', 'eardoggerv1.f33994b8-f7fd-40b5-ab74-81f48fcc3185'),
     ]
   }
-  Promise.all(cachedBookmarklets).then( ([mark, where]) => {
-    res.render('install', {title: 'Install', mark, where});
+  Promise.all(cachedBookmarklets).then( ([mark, where, markWithToken]) => {
+    res.render('install', {title: 'Install', mark, where, markWithToken});
   });
 });
 
