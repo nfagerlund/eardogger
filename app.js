@@ -6,7 +6,6 @@ const app = express();
 
 module.exports = app;
 
-const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -14,7 +13,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const expressHandlebars = require('express-handlebars');
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
 
 // Bookmarklet helper
