@@ -41,8 +41,8 @@
       let b = msg('Updating dogear...');
       fetch(e + '/api/v1/update', {
         method:'POST',
-        mode:'no-cors',
-        credentials:'omit',
+        mode:'cors',
+        credentials:'include',
         headers:{
           'Content-Type':'application/json',
           'Accept':'application/json',
