@@ -10,7 +10,7 @@ module.exports = router;
 const dogears = require('../db/dogears');
 // const users = require('../db/users');
 
-// 401 unless logged in middleware
+// 401 unless authenticated middleware
 router.use(function(req, res, next) {
   if (!req.user && req.method !== 'OPTIONS') {
     res.sendStatus(401);
@@ -51,7 +51,22 @@ function allowCorsWithCredentials(methods) {
   };
 }
 
+// Implementation for token scope restrictions. Returns a middleware.
+// Known scopes so far: write_dogears, manage_dogears.
+function allowTokenScopes(scopes) {
+  return function(req, res, next) {
+    if (req.authInfo.isToken && scopes.includes(req.authInfo.scope)) {
+      next();
+    } else { // NOPE
+      res.sendStatus(403);
+    }
+  }
+}
+let writeOrManageDogears = allowTokenScopes(['write_dogears', 'manage_dogears']);
+let manageDogears = allowTokenScopes(['manage_dogears']);
+
 // API: create
+router.use('/create', writeOrManageDogears);
 router.post('/create', function(req, res){
   const {prefix, current, display_name} = req.body;
   dogears.create(req.user.id, prefix, current, display_name).then(dogear => {
@@ -62,7 +77,7 @@ router.post('/create', function(req, res){
 });
 
 // API: update
-router.use('/update', allowCorsWithCredentials('POST'));
+router.use('/update', writeOrManageDogears, allowCorsWithCredentials('POST'));
 router.post('/update', function(req, res){
   const {current} = req.body;
   if (req.isCors) {
@@ -80,6 +95,7 @@ router.post('/update', function(req, res){
 });
 
 // API: list
+router.use('/list', manageDogears);
 router.get('/list', function(req, res){
   dogears.list(req.user.id).then(dogears => {
     res.status(200).json(dogears);
@@ -89,6 +105,7 @@ router.get('/list', function(req, res){
 });
 
 // API: delete
+router.use('/delete', manageDogears);
 router.delete('/dogear/:id', function(req, res){
   const id = Number(req.params.id);
   dogears.destroy(req.user.id, id).then(() => {
