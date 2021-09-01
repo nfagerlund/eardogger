@@ -114,9 +114,13 @@ passport.deserializeUser( (id, done) => {
 passport.use(new BearerStrategy(
   (tokenCleartext, done) => {
     tokens.findWithUser(tokenCleartext).then(result => {
-      let { token, user } = result;
-      // Third argument to done() is available later at req.authInfo
-      done(null, user, { scope: token.scope });
+      if (result) {
+        let { token, user } = result;
+        // Third argument to done() is available later at req.authInfo
+        done(null, user, { scope: token.scope });
+      } else {
+        done(null, false);
+      }
     }).catch(err => {
       done(err);
     });

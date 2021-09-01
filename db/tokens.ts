@@ -67,13 +67,15 @@ async function destroy(userID: number, id: number) {
   }
 }
 
-async function findWithUser(tokenCleartext: string): Promise<{token: Token, user: User}> {
+async function findWithUser(tokenCleartext: string): Promise<{token: Token, user: User} | null> {
   let result = await db.query(
     "SELECT tokens.id AS token_id, users.id AS user_id, tokens.scope, tokens.created AS token_created, tokens.comment, users.username, users.email, users.created AS user_created FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token_hash = $1 LIMIT 1",
     [sha256hash(tokenCleartext)]
   );
   if (result.rowCount === 0) {
-    throw new Error("Invalid API token; you might need to generate a new personal bookmarklet.");
+    // For authorization, we want to distinguish normal 401s from major blowups,
+    // so don't throw.
+    return null;
   }
   let fields = result.rows[0];
   return {
