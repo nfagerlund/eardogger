@@ -281,7 +281,7 @@ app.get('/fragments/dogears', function(req, res, next) {
   if (req.user) {
     dogears.list(req.user.id).then(dogears => {
       res.render('fragments/dogears', {
-        layout: 'fragment',
+        layout: false,
         dogears: templateDogears(dogears),
       });
     }).catch(err => { return next(err); });
