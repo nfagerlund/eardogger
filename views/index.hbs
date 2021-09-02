@@ -1,12 +1,7 @@
 <section class="dogears">
   <ul id="dogears">
     {{#each dogears}}
-      <li>
-        <a href="{{this.current}}">{{this.linkText}}</a>
-        <span class="current">({{this.current}})</span>
-        <span class="date">Last read: {{this.updatedString}}</span>
-        <button type="button" class="delete-dogear" data-dogear-id="{{this.id}}">Delete</button>
-      </li>
+      {{> dogear dogear=this}}
     {{/each}}
   </ul>
 </section>
@@ -22,4 +17,3 @@
   <input name="current" type="text" maxlength="300" />
   <button type="submit" id="update-dogear">Mark my place</button>
 </form>
-

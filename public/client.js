@@ -58,45 +58,19 @@ function resetButtonStatuses(newStatus, activeButton, allButtons) {
   }
 }
 
-// Build a dogear list item, returning a DOM element. No side-effects.
-function makeDogear(mark) {
-  const li = document.createElement('li');
-
-  const a = document.createElement('a');
-  a.setAttribute('href', mark.current);
-  a.innerText = mark.display_name || mark.prefix;
-  const current = document.createElement('span');
-  current.classList.add('current');
-  current.innerText = '(' + mark.current + ')';
-  const lastDate = document.createElement('span');
-  lastDate.classList.add('date');
-  lastDate.innerText = 'Last read: ' + (new Date(mark.updated)).toLocaleDateString();
-  const destroy = document.createElement('button');
-  destroy.setAttribute('type', 'button')
-  destroy.setAttribute('data-dogear-id', mark.id);
-  destroy.classList.add('delete-dogear');
-  destroy.innerText = 'Delete';
-
-  li.append(a, ' ', current, ' ', lastDate, ' ', destroy);
-
-  return li;
-}
-
-// Get the list of bookmarks from the API, and refresh the on-page list with current info.
+// Get the list of bookmarks from the backend, and refresh the on-page list with current info.
 function refreshDogears() {
   const bookmarksList = document.getElementById('dogears');
   if (!bookmarksList) {
     return;
   }
 
-  fetch('/api/v1/list', {
+  fetch('/fragments/dogears', {
     method: 'GET',
     credentials: 'include',
-    headers:{'Content-Type': 'application/json', 'Accept': 'application/json'}
   }).then(response => {
-    response.json().then(dogears => {
-      bookmarksList.innerHTML = '';
-      bookmarksList.append( ...dogears.map(makeDogear) );
+    response.text().then(dogears => {
+      bookmarksList.innerHTML = dogears;
     });
   }).catch(err => {
     bookmarksList.innerHTML = `<li>Something went wrong! Error: ${err}</li>`;
