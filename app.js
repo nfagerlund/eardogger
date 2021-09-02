@@ -253,8 +253,8 @@ app.get('/status', function(req, res) {
   res.sendStatus(204);
 });
 
-function templateDogears(dogears) {
-  return dogears.map(mark => ({
+function templateDogears(dogearsList) {
+  return dogearsList.map(mark => ({
     id: mark.id,
     current: mark.current,
     linkText: mark.display_name || mark.prefix,
@@ -265,10 +265,10 @@ function templateDogears(dogears) {
 // Homepage!
 app.get('/', function(req, res, next) {
   if (req.user) {
-    dogears.list(req.user.id).then((dogears) => {
+    dogears.list(req.user.id).then((dogearsList) => {
       res.render('index', {
         title: `${req.user.username}'s Dogears`,
-        dogears: templateDogears(dogears),
+        dogears: templateDogears(dogearsList),
       });
     }).catch(err => { return next(err); });
   } else {
@@ -279,10 +279,10 @@ app.get('/', function(req, res, next) {
 // Dogears list as an HTML fragment (just LIs without a surrounding UL)
 app.get('/fragments/dogears', function(req, res, next) {
   if (req.user) {
-    dogears.list(req.user.id).then(dogears => {
+    dogears.list(req.user.id).then(dogearsList => {
       res.render('fragments/dogears', {
         layout: false,
-        dogears: templateDogears(dogears),
+        dogears: templateDogears(dogearsList),
       });
     }).catch(err => { return next(err); });
   } else {
