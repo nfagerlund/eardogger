@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 
 type TokenScope = 'write_dogears' | 'manage_dogears';
+
 interface Token {
   id: number,
   user_id: number,
@@ -12,11 +13,22 @@ interface Token {
   comment: string,
   token?: string,
 };
+
 interface User {
   id: number,
   username: string,
   email: string,
   created: Date,
+};
+
+interface Meta {
+  pagination: {
+    current_page: number,
+    prev_page: number | null,
+    next_page: number | null,
+    total_pages: number,
+    total_count: number,
+  },
 };
 
 module.exports = {
@@ -51,12 +63,38 @@ async function create(userID: number, scope: TokenScope, comment: string): Promi
   };
 }
 
-async function list(userId: number): Promise<Array<Token>> {
+// Return paginated list of tokens for a user
+async function list(userId: number, page: number = 1, size: number = 50):
+  Promise<{
+    data: Array<Token>,
+    meta: Meta,
+  }>
+{
+  if (page < 0 || size < 0) {
+    throw new Error("Can't use negative page or page size.");
+  }
+  let offset = (page - 1) * size;
   let result = await db.query(
-    "SELECT id, user_id, scope, created, comment FROM tokens WHERE user_id = $1",
-    [userId]
+    "SELECT id, user_id, scope, created, comment FROM tokens WHERE user_id = $1 ORDER BY last_used, id DESC LIMIT $2 OFFSET $3",
+    [userId, size, offset]
   );
-  return result.rows;
+  let countResult = await db.query("SELECT COUNT(*) AS count FROM tokens WHERE user_id = $1", [userId]);
+  let count = countResult.rows[0].count;
+  let totalPages = Math.ceil(count/size);
+  let prevPage = page <= 1 ? null : Math.min(page - 1, totalPages);
+  let nextPage = page >= totalPages ? null : page + 1;
+  return {
+    data: result.rows,
+    meta: {
+      pagination: {
+        current_page: page,
+        prev_page: prevPage,
+        next_page: nextPage,
+        total_pages: totalPages,
+        total_count: count,
+      },
+    },
+  };
 }
 
 async function destroy(userID: number, id: number) {
