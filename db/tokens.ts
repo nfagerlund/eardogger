@@ -8,6 +8,7 @@ interface Token {
   user_id: number,
   scope: TokenScope,
   created: Date,
+  last_used: Date | null,
   comment: string,
   token?: string,
 };
@@ -45,6 +46,7 @@ async function create(userID: number, scope: TokenScope, comment: string): Promi
     user_id: userID,
     scope,
     created,
+    last_used: null,
     comment,
   };
 }
@@ -69,7 +71,7 @@ async function destroy(userID: number, id: number) {
 
 async function findWithUser(tokenCleartext: string): Promise<{token: Token, user: User} | null> {
   let result = await db.query(
-    "SELECT tokens.id AS token_id, users.id AS user_id, tokens.scope, tokens.created AS token_created, tokens.comment, users.username, users.email, users.created AS user_created FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token_hash = $1 LIMIT 1",
+    "SELECT tokens.id AS token_id, users.id AS user_id, tokens.scope, tokens.created AS token_created, tokens.last_used, tokens.comment, users.username, users.email, users.created AS user_created FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token_hash = $1 LIMIT 1",
     [sha256hash(tokenCleartext)]
   );
   if (result.rowCount === 0) {
@@ -78,12 +80,18 @@ async function findWithUser(tokenCleartext: string): Promise<{token: Token, user
     return null;
   }
   let fields = result.rows[0];
+  // Update last_used (tho we're returning the old value.)
+  await db.query(
+      "UPDATE tokens SET last_used = CURRENT_TIMESTAMP WHERE id = $1",
+      [fields.token_id]
+  );
   return {
     token: {
       id: fields.token_id,
       user_id: fields.user_id,
       scope: fields.scope,
       created: fields.token_created,
+      last_used: fields.last_used,
       comment: fields.comment,
     },
     user: {
