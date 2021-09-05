@@ -2,6 +2,7 @@
 const dbmigrate = require('db-migrate').getInstance(true, {env: 'test'});
 const {Pool, Client} = require('pg');
 const {readTextFilePromise} = require('../util');
+import { describe, expect, test, beforeAll, afterAll, jest } from '@jest/globals';
 
 const testDB = {
   connectionString: 'postgres://localhost/eardogger', // TODO??
@@ -13,12 +14,12 @@ const pool = new Pool(testDB);
 // swap in the test database for the main db helper
 jest.mock('../db/pg');
 const db = require('../db/pg'); // crosses fingers
-db.query.mockImplementation( (text, params) => pool.query(text, params) );
+db.query.mockImplementation( (text: string, params: Array<any>) => pool.query(text, params) );
 
 // stuff I'm actually testing:
-const dogears = require('../db/dogears');
-const users = require('../db/users');
-const tokens = require('../db/tokens');
+import * as dogears from '../db/dogears';
+import * as users from '../db/users';
+import * as tokens from '../db/tokens';
 
 beforeAll( async () => {
   // run sql to set up localhost postgres database; sql includes teardown of
@@ -59,8 +60,6 @@ describe("Dogears database layer", () => {
       expect(dogears.create(userID, 'example.com/story/', 'https://example.com/story/2')).resolves.toBeDefined(),
       // A third, with no current.
       expect(dogears.create(userID, 'example.com/extras/')).resolves.toBeDefined(),
-      // A malformed one
-      expect(dogears.create('example.com/explodes/')).rejects.toThrow(),
     ]);
 
     // Three dogears now
@@ -82,9 +81,6 @@ describe("Dogears database layer", () => {
         .resolves.toBe('https://example.com/comic/240'),
       expect(dogears.currently(userID, 'https://example.com/com'))
         .resolves.toBe(false),
-      // Malformed call to currently()
-      expect(dogears.currently('https://example.com/comic/1'))
-        .rejects.toThrow(/requires/),
     ]);
 
     // Updating w/ update()
@@ -138,7 +134,7 @@ describe("User database layer", () => {
       email: 'nf@example.com',
     });
     // Rest of this can go in any order tho.
-    await Promise.all([
+    await Promise.all<any>([
       // No blank usernames
       expect(users.create('', 'aoeua')).rejects.toThrow(/requires/),
       // But omitting email is ok
@@ -152,7 +148,7 @@ describe("User database layer", () => {
         return users.authenticate('spacecadet', ' im in space');
       })).resolves.toBe(true),
       // No blanks when validating
-      expect(users.authenticate('test_create_and_auth', '')).rejects.toThrow(/requires/),
+      expect(users.authenticate('test_create_and_auth', '')).resolves.toBeFalsy(),
       // Pw validates
       expect(users.authenticate('test_create_and_auth', 'aoeuhtns')).resolves.toBe(true),
       // Trims space on username
@@ -184,9 +180,7 @@ describe("User database layer", () => {
     await users.setPassword('test_edit_pw', '');
     // Can't log in anymore
     await expect(users.authenticate('test_edit_pw', 'ueoahtns')).resolves.toBe(false);
-    // ...and authenticating with empty string or other falsy value just throws.
-
-    await users.setPassword('test_edit_pw');
+    await users.setPassword('test_edit_pw', null);
     // same deal
     await expect(users.authenticate('test_edit_pw', 'ueoahtns')).resolves.toBe(false);
   });
@@ -215,17 +209,26 @@ describe("User database layer", () => {
 
 describe("tokens database layer", () => {
   test("Create, authenticate, destroy", async () => {
+    expect.assertions(8);
     let rightUser = await users.create('rightTokenCreate', 'password123', 'who@what.huh');
     let wrongUser = await users.create('wrongTokenCreate', 'password456', 'yeah@dude.wut');
     let rightToken = await tokens.create(rightUser.id, 'write_dogears', 'comment');
     let wrongToken = await tokens.create(wrongUser.id, 'write_dogears', 'no comment');
     // IDs increment
     expect(rightToken.id).not.toBe(wrongToken.id);
-    let authenticatedResult = await tokens.findWithUser(rightToken.token);
-    // Got the expected user object
-    expect(authenticatedResult.user.id).toBe(rightUser.id);
-    // Got the token object too
-    expect(authenticatedResult.token.id).toBe(rightToken.id);
+    let authenticatedResult = null;
+    let rightTokenString = '';
+    if (rightToken.token) {
+      rightTokenString = rightToken.token;
+    }
+    authenticatedResult = await tokens.findWithUser(rightTokenString);
+    expect(authenticatedResult).not.toBeNull();
+    if (authenticatedResult) {
+      // Got the expected user object
+      expect(authenticatedResult.user.id).toBe(rightUser.id);
+      // Got the token object too
+      expect(authenticatedResult.token.id).toBe(rightToken.id);
+    }
     // Deleting requires correct user ID
     await expect(tokens.destroy(wrongUser.id, rightToken.id)).rejects.toThrow();
     // Deleting properly resolves, but doesn't return anything interesting
@@ -233,7 +236,7 @@ describe("tokens database layer", () => {
     // Re-deleting is, of course, wrong.
     await expect(tokens.destroy(rightUser.id, rightToken.id)).rejects.toThrow();
     // Can't authenticate with a deleted token
-    expect(await tokens.findWithUser(rightToken.token)).toBe(null);
+    await expect(tokens.findWithUser(rightTokenString)).resolves.toBe(null);
   });
 
   test("Listing and pagination", async () => {
