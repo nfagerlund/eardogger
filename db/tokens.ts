@@ -1,6 +1,7 @@
 const db = require('./pg');
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
+import type { User } from './users';
 
 type TokenScope = 'write_dogears' | 'manage_dogears';
 
@@ -12,13 +13,6 @@ interface Token {
   last_used: Date | null,
   comment: string,
   token?: string,
-};
-
-interface User {
-  id: number,
-  username: string,
-  email: string,
-  created: Date,
 };
 
 interface Meta {
@@ -40,7 +34,6 @@ export {
 
 export type {
   TokenScope,
-  User,
   Token,
   Meta,
 };
