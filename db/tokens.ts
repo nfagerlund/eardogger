@@ -31,11 +31,18 @@ interface Meta {
   },
 };
 
-module.exports = {
+export {
   create,
   list,
   destroy,
   findWithUser,
+};
+
+export type {
+  TokenScope,
+  User,
+  Token,
+  Meta,
 };
 
 function sha256hash(tokenCleartext: string) {
