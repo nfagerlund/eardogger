@@ -3,3 +3,6 @@ node_modules
 shrinkwrap.yaml
 db/tokens.js*
 db/pg.js*
+db/dogears.js*
+db/users.js*
+__tests__/db.js*
