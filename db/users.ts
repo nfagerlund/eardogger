@@ -6,7 +6,6 @@ export {
   authenticate,
   getByName,
   getByID,
-//   getByEmail,
   setPassword,
   setEmail,
   purgeByName,
@@ -24,8 +23,11 @@ interface User {
 };
 
 // returns user.
-async function create(username: string, password: string | null, email: string | null): Promise<User> {
+async function create(username: string, password: string | null = null, email: string | null = null): Promise<User> {
   username = username.trim();
+  if (username === '') {
+    throw new TypeError("Create user requires username");
+  }
   if (await getByName(username)) { // might be inefficient, but
     throw new Error("Username already exists");
   }
