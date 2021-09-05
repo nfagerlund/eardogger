@@ -18,6 +18,7 @@ db.query.mockImplementation( (text, params) => pool.query(text, params) );
 // stuff I'm actually testing:
 const dogears = require('../db/dogears');
 const users = require('../db/users');
+const tokens = require('../db/tokens');
 
 beforeAll( async () => {
   // run sql to set up localhost postgres database; sql includes teardown of
@@ -210,4 +211,69 @@ describe("User database layer", () => {
     await expect(users.getByName('test_edit_email2')).resolves.toHaveProperty('email', 'now_has@example.com');
   });
 
+});
+
+describe("tokens database layer", () => {
+  test("Create, authenticate, destroy", async () => {
+    let rightUser = await users.create('rightTokenCreate', 'password123', 'who@what.huh');
+    let wrongUser = await users.create('wrongTokenCreate', 'password456', 'yeah@dude.wut');
+    let rightToken = await tokens.create(rightUser.id, 'write_dogears', 'comment');
+    let wrongToken = await tokens.create(wrongUser.id, 'write_dogears', 'no comment');
+    // IDs increment
+    expect(rightToken.id).not.toBe(wrongToken.id);
+    let authenticatedResult = await tokens.findWithUser(rightToken.token);
+    // Got the expected user object
+    expect(authenticatedResult.user.id).toBe(rightUser.id);
+    // Got the token object too
+    expect(authenticatedResult.token.id).toBe(rightToken.id);
+    // Deleting requires correct user ID
+    await expect(tokens.destroy(wrongUser.id, rightToken.id)).rejects.toThrow();
+    // Deleting properly resolves, but doesn't return anything interesting
+    await expect(tokens.destroy(rightUser.id, rightToken.id)).resolves.toBeUndefined();
+    // Re-deleting is, of course, wrong.
+    await expect(tokens.destroy(rightUser.id, rightToken.id)).rejects.toThrow();
+    // Can't authenticate with a deleted token
+    expect(await tokens.findWithUser(rightToken.token)).toBe(null);
+  });
+
+  test("Listing and pagination", async () => {
+    let rightUser = await users.create('rightTokenList', 'password123', 'who@what.huh')
+    let wrongUser = await users.create('wrongTokenlist', 'password456', 'yeah@dude.wut');
+    // Adding an irrelevant one just to make sure it isn't included in counts:
+    await tokens.create(wrongUser.id, 'write_dogears', 'no comment');
+    // 14 tokens
+    for (let i = 0; i <= 13; i++) {
+      await tokens.create(rightUser.id, 'manage_dogears', `comment ${i}`);
+    }
+    // Default page size of 50:
+    let firstPage = await tokens.list(rightUser.id);
+    expect(Array.isArray(firstPage.data)).toBe(true);
+    expect(firstPage.data).toHaveLength(14);
+    expect(firstPage.meta.pagination).toMatchObject({
+      current_page: 1,
+      prev_page: null,
+      next_page: null,
+      total_pages: 1,
+      total_count: 14,
+    });
+    // Manual page size of 5:
+    let firstSmallPage = await tokens.list(rightUser.id, 1, 5);
+    expect(firstSmallPage.meta.pagination).toMatchObject({
+      prev_page: null,
+      next_page: 2,
+      total_pages: 3,
+      total_count: 14,
+    });
+    let lastSmallPage = await tokens.list(rightUser.id, 3, 5);
+    expect(lastSmallPage.meta.pagination).toMatchObject({
+      prev_page: 2,
+      next_page: null,
+    });
+    let pastSmallPage = await tokens.list(rightUser.id, 14, 5);
+    expect(pastSmallPage.data).toHaveLength(0);
+    expect(pastSmallPage.meta.pagination).toMatchObject({
+      prev_page: 3,
+      next_page: null,
+    });
+  });
 });
