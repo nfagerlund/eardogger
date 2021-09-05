@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "tsc && node server.js",
-    "test": "jest",
+    "test": "tsc && jest",
     "web": "tsc && node server.js"
   },
   "dependencies": {
