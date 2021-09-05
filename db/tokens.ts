@@ -51,7 +51,7 @@ async function create(userID: number, scope: TokenScope, comment: string): Promi
     "INSERT INTO tokens (user_id, token_hash, scope, comment) VALUES ($1, $2, $3, $4) RETURNING id, created",
     [userID, tokenHash, scope, comment]
   );
-  let { id, created } = result.rows[0].id;
+  let { id, created } = result.rows[0];
   return {
     id,
     token: tokenCleartext,
@@ -79,7 +79,8 @@ async function list(userId: number, page: number = 1, size: number = 50):
     [userId, size, offset]
   );
   let countResult = await db.query("SELECT COUNT(*) AS count FROM tokens WHERE user_id = $1", [userId]);
-  let count = countResult.rows[0].count;
+  // Not sure why COUNT() comes back as a string, but hey:
+  let count = parseInt(countResult.rows[0].count);
   let totalPages = Math.ceil(count/size);
   let prevPage = page <= 1 ? null : Math.min(page - 1, totalPages);
   let nextPage = page >= totalPages ? null : page + 1;
