@@ -7,9 +7,13 @@ const pool = new Pool({
   },
 });
 
-module.exports = {
-  // Returns a promise that resolves to a pg.Result, which has .rows, .fields, and .rowCount.
-  // https://node-postgres.com/api/result
-  query: (text: string, params: Array<any>) => pool.query(text, params),
-  pool: pool,
+// Returns a promise that resolves to a pg.Result, which has .rows, .fields, and .rowCount.
+// https://node-postgres.com/api/result
+function query(text: string, params: Array<any>) {
+  return pool.query(text, params);
+}
+
+export {
+  query,
+  pool,
 };
