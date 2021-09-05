@@ -124,7 +124,9 @@ CREATE TABLE public.tokens (
     user_id integer,
     token_hash text,
     scope public.token_scope,
-    comment text
+    created timestamp with time zone DEFAULT CURRENT_TIMESTAMP,
+    comment text,
+    last_used timestamp with time zone
 );
 
 
