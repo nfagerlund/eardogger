@@ -217,10 +217,7 @@ describe("tokens database layer", () => {
     // IDs increment
     expect(rightToken.id).not.toBe(wrongToken.id);
     let authenticatedResult = null;
-    let rightTokenString = '';
-    if (rightToken.token) {
-      rightTokenString = rightToken.token;
-    }
+    let rightTokenString = rightToken.token || '';
     authenticatedResult = await tokens.findWithUser(rightTokenString);
     expect(authenticatedResult).not.toBeNull();
     if (authenticatedResult) {
