@@ -1,20 +1,6 @@
 const db = require('./pg');
 const bcrypt = require('bcryptjs');
 
-export {
-  create,
-  authenticate,
-  getByName,
-  getByID,
-  setPassword,
-  setEmail,
-  purgeByName,
-};
-
-export type {
-  User,
-}
-
 interface User {
   id: number,
   username: string,
@@ -22,8 +8,8 @@ interface User {
   created: Date,
 };
 
-// returns user.
-async function create(username: string, password: string | null = null, email: string | null = null): Promise<User> {
+type FUserCreate = (username: string, password?: string | null, email?: string | null) => Promise<User>;
+let create: FUserCreate = async function(username: string, password: string | null = null, email: string | null = null): Promise<User> {
   username = username.trim();
   if (username === '') {
     throw new TypeError("Create user requires username");
@@ -44,7 +30,8 @@ async function create(username: string, password: string | null = null, email: s
   return { id, username, email, created };
 }
 
-async function authenticate(username: string, password: string): Promise<boolean> {
+type FUserAuthenticate = (username: string, password: string) => Promise<boolean>;
+let authenticate: FUserAuthenticate = async function(username: string, password: string): Promise<boolean> {
   username = username.trim();
   let result = await db.query("SELECT password FROM users WHERE username = $1", [username]);
   try {
@@ -59,24 +46,22 @@ async function authenticate(username: string, password: string): Promise<boolean
   }
 }
 
-async function getByName(username: string): Promise<User> {
+type FUserGetByName = (username: string) => Promise<User>;
+let getByName: FUserGetByName = async function(username: string): Promise<User> {
   username = username.trim();
   const result = await db.query("SELECT id, username, email, created FROM users WHERE username = $1", [username]);
   return result.rows[0];
 }
 
-async function getByID(id: number): Promise<User> {
+type FUserGetByID = (id: number) => Promise<User>;
+let getByID: FUserGetByID = async function(id: number): Promise<User> {
   let result = await db.query("SELECT id, username, email, created FROM users WHERE id = $1", [id]);
   return result.rows[0];
 }
 
-// returns (possibly empty) array, probably won't use this except for manual admin
-// async function getByEmail(email) {
-//   return db.query("SELECT id, username, email, created FROM users WHERE email = $1", [email]).then(result => result.rows);
-// }
-
 // application logic is in charge of validating, this is raw
-async function setPassword(username: string, password: string | null): Promise<void> {
+type FUserSetPassword = (username: string, password: string | null) => Promise<void>;
+let setPassword: FUserSetPassword = async function(username: string, password: string | null): Promise<void> {
   username = username.trim();
   let hashedPassword = null; // explicit sql null
   if (password) {
@@ -86,7 +71,8 @@ async function setPassword(username: string, password: string | null): Promise<v
 }
 
 // returns user
-async function setEmail(username: string, email: string | null): Promise<User> {
+type FUserSetEmail = (username: string, email: string | null) => Promise<User>;
+let setEmail: FUserSetEmail = async function(username: string, email: string | null): Promise<User> {
   username = username.trim();
   email = email || null; // '' => explicit sql null
   if (email) {
@@ -97,7 +83,29 @@ async function setEmail(username: string, email: string | null): Promise<User> {
 }
 
 // schema should just make this cascade to dogears.
-async function purgeByName(username: string): Promise<void> {
+type FUserPurgeByName = (username: string) => Promise<void>;
+let purgeByName: FUserPurgeByName = async function(username: string): Promise<void> {
   username = username.trim();
   await db.query("DELETE FROM users WHERE username = $1", [username]);
+}
+
+export {
+  create,
+  authenticate,
+  getByName,
+  getByID,
+  setPassword,
+  setEmail,
+  purgeByName,
+};
+
+export type {
+  User,
+  FUserCreate,
+  FUserAuthenticate,
+  FUserGetByName,
+  FUserGetByID,
+  FUserSetPassword,
+  FUserSetEmail,
+  FUserPurgeByName,
 }

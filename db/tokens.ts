@@ -25,26 +25,14 @@ interface Meta {
   },
 };
 
-export {
-  create,
-  list,
-  destroy,
-  findWithUser,
-};
-
-export type {
-  TokenScope,
-  Token,
-  Meta,
-};
-
 function sha256hash(tokenCleartext: string) {
   return crypto.createHash('sha256').update(tokenCleartext).digest('hex');
 }
 
 // Create and store a token; must return the cleartext of the token, as it's
 // the only thing that'll ever have it.
-async function create(userID: number, scope: TokenScope, comment: string): Promise<Token> {
+type FTokenCreate = (userID: number, scope: TokenScope, comment: string) => Promise<Token>;
+let create: FTokenCreate = async function(userID: number, scope: TokenScope, comment: string): Promise<Token> {
   let tokenCleartext = `eardoggerv1.${uuidv4()}`;
   let tokenHash = sha256hash(tokenCleartext);
   let result = await db.query(
@@ -64,7 +52,8 @@ async function create(userID: number, scope: TokenScope, comment: string): Promi
 }
 
 // Return paginated list of tokens for a user
-async function list(userId: number, page: number = 1, size: number = 50):
+type FTokenList = (userId: number, page?: number, size?: number) => Promise<{data: Array<Token>, meta: Meta}>;
+let list: FTokenList = async function(userId: number, page: number = 1, size: number = 50):
   Promise<{
     data: Array<Token>,
     meta: Meta,
@@ -98,7 +87,8 @@ async function list(userId: number, page: number = 1, size: number = 50):
   };
 }
 
-async function destroy(userID: number, id: number) {
+type FTokenDestroy = (userID: number, id: number) => Promise<void>;
+let destroy: FTokenDestroy = async function(userID: number, id: number): Promise<void> {
   let result = await db.query(
     "DELETE FROM tokens WHERE id = $1 AND user_id = $2",
     [id, userID]
@@ -108,7 +98,8 @@ async function destroy(userID: number, id: number) {
   }
 }
 
-async function findWithUser(tokenCleartext: string): Promise<{token: Token, user: User} | null> {
+type FTokenFindWithUser = (tokenCleartext: string) => Promise<{token: Token, user: User} | null>;
+let findWithUser: FTokenFindWithUser = async function(tokenCleartext: string): Promise<{token: Token, user: User} | null> {
   let result = await db.query(
     "SELECT tokens.id AS token_id, users.id AS user_id, tokens.scope, tokens.created AS token_created, tokens.last_used, tokens.comment, users.username, users.email, users.created AS user_created FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token_hash = $1 LIMIT 1",
     [sha256hash(tokenCleartext)]
@@ -141,3 +132,23 @@ async function findWithUser(tokenCleartext: string): Promise<{token: Token, user
     },
   };
 }
+
+// Why `let name: T = async function()...` and exports at the bottom, instead of
+// hoisted function statements? Because there's no way to annotate the overall
+// type of a function statement, AFAICT, so I need the var assignment. LE SIGH.
+export {
+  create,
+  list,
+  destroy,
+  findWithUser,
+};
+
+export type {
+  TokenScope,
+  Token,
+  Meta,
+  FTokenCreate,
+  FTokenList,
+  FTokenDestroy,
+  FTokenFindWithUser,
+};

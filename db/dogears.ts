@@ -27,19 +27,14 @@ interface Dogear {
   updated: Date,
 }
 
-export {
-  create,
-  update,
-  list,
-  destroy,
-  currently,
-  NoMatchError,
-}
-
-export type { Dogear };
-
 // Returns created dogear
-async function create(
+type FDogearCreate = (
+  userID: number,
+  prefix: string,
+  current?: string | null,
+  displayName?: string | null,
+) => Promise<Dogear>;
+let create: FDogearCreate = async function(
   userID: number,
   prefix: string,
   current: string | null = null,
@@ -71,7 +66,8 @@ async function create(
 }
 
 // Returns array of updated dogears
-async function update(userID: number, current: string): Promise<Array<Dogear>> {
+type FDogearUpdate = (userID: number, current: string) => Promise<Array<Dogear>>;
+let update: FDogearUpdate = async function(userID: number, current: string): Promise<Array<Dogear>> {
   current = current.trim();
   try {
     new URL(current);
@@ -90,7 +86,8 @@ async function update(userID: number, current: string): Promise<Array<Dogear>> {
   return result.rows;
 }
 
-async function list(userID: number): Promise<Array<Dogear>> {
+type FDogearList = (userID: number) => Promise<Array<Dogear>>;
+let list: FDogearList = async function(userID: number): Promise<Array<Dogear>> {
   const result = await db.query(
     "SELECT id, user_id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC",
     [userID]
@@ -98,7 +95,8 @@ async function list(userID: number): Promise<Array<Dogear>> {
   return result.rows;
 }
 
-async function destroy(userID: number, id: number): Promise<void> {
+type FDogearDestroy = (userID: number, id: number) => Promise<void>;
+let destroy: FDogearDestroy = async function(userID: number, id: number): Promise<void> {
   const result = await db.query(
     "DELETE FROM dogears WHERE id = $2 AND user_id = $1",
     [userID, id]
@@ -109,7 +107,8 @@ async function destroy(userID: number, id: number): Promise<void> {
 }
 
 // Returns bare url or false
-async function currently(userID: number, urlOrPrefix: string): Promise<string | false> {
+type FDogearCurrently = (userID: number, urlOrPrefix: string) => Promise<string | false>;
+let currently: FDogearCurrently = async function(userID: number, urlOrPrefix: string): Promise<string | false> {
   urlOrPrefix = urlOrPrefix.trim();
   const result = await db.query(
     "SELECT current FROM dogears WHERE user_id = $1 AND $2 LIKE $3 || prefix || '%' ORDER BY LENGTH(prefix) DESC",
@@ -121,3 +120,21 @@ async function currently(userID: number, urlOrPrefix: string): Promise<string | 
     return false;
   }
 }
+
+export {
+  create,
+  update,
+  list,
+  destroy,
+  currently,
+  NoMatchError,
+}
+
+export type {
+  Dogear,
+  FDogearCreate,
+  FDogearUpdate,
+  FDogearList,
+  FDogearDestroy,
+  FDogearCurrently,
+};
