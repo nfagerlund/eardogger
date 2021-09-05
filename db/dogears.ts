@@ -2,31 +2,50 @@ const db = require('./pg');
 const {URL} = require('url');
 
 const protocolAndWww = /^((https?:\/\/)?((www|m)\.)*)?/;
-const getProtocolAndWww = url => url.match(protocolAndWww)[0] || '';
+function getProtocolAndWww(url: string) {
+  let matches = url.match(protocolAndWww);
+  if (matches) {
+    return matches[0] || '';
+  } else {
+    return '';
+  }
+}
 
 // Custom error type
 class NoMatchError extends Error {
-  constructor(...params) {
+  constructor(...params: string[]) {
     super(...params);
   }
 }
 
-module.exports = {
+interface Dogear {
+  id: number,
+  user_id: number,
+  prefix: string,
+  current: string,
+  display_name: string | null,
+  updated: Date,
+}
+
+export {
   create,
   update,
   list,
   destroy,
-//   edit,
   currently,
   NoMatchError,
 }
 
+export type { Dogear };
+
 // Returns created dogear
-async function create(userID, prefix, current, displayName) {
-  if (typeof userID != 'number') {
-    throw new TypeError("Create dogear requires numeric userID");
-  }
-  if (!prefix || typeof prefix !== 'string') {
+async function create(
+  userID: number,
+  prefix: string,
+  current: string | null = null,
+  displayName: string | null = null,
+): Promise<Dogear> {
+  if (prefix == '') {
     throw new TypeError("Create dogear requires at least a URL prefix");
   }
   prefix = prefix.replace(protocolAndWww, '').trim();
@@ -52,13 +71,7 @@ async function create(userID, prefix, current, displayName) {
 }
 
 // Returns array of updated dogears
-async function update(userID, current) {
-  if (typeof userID !== 'number') {
-    throw new TypeError("Update dogear requires numeric userID");
-  }
-  if (!current || typeof current !== 'string') {
-    throw new TypeError("Update dogear requires a valid URL");
-  }
+async function update(userID: number, current: string): Promise<Array<Dogear>> {
   current = current.trim();
   try {
     new URL(current);
@@ -77,10 +90,7 @@ async function update(userID, current) {
   return result.rows;
 }
 
-async function list(userID) {
-  if (typeof userID !== 'number') {
-    throw new TypeError("List dogears requires numeric userID");
-  }
+async function list(userID: number): Promise<Array<Dogear>> {
   const result = await db.query(
     "SELECT id, user_id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC",
     [userID]
@@ -88,10 +98,7 @@ async function list(userID) {
   return result.rows;
 }
 
-async function destroy(userID, id) {
-  if (typeof userID !== 'number' || typeof id !== 'number') {
-    throw new TypeError("Destroy dogear requires numeric userID and id");
-  }
+async function destroy(userID: number, id: number): Promise<void> {
   const result = await db.query(
     "DELETE FROM dogears WHERE id = $2 AND user_id = $1",
     [userID, id]
@@ -101,15 +108,8 @@ async function destroy(userID, id) {
   }
 }
 
-async function edit(id, editFields) {
-
-}
-
 // Returns bare url or false
-async function currently(userID, urlOrPrefix) {
-  if (!userID || !urlOrPrefix) {
-    throw new TypeError("Finding a dogear requires a userID");
-  }
+async function currently(userID: number, urlOrPrefix: string): Promise<string | false> {
   urlOrPrefix = urlOrPrefix.trim();
   const result = await db.query(
     "SELECT current FROM dogears WHERE user_id = $1 AND $2 LIKE $3 || prefix || '%' ORDER BY LENGTH(prefix) DESC",
