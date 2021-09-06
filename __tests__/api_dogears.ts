@@ -2,6 +2,7 @@ import { describe, expect, test, jest } from '@jest/globals';
 import type { NextFunction } from 'express';
 import type { TokenScope } from '../db/tokens';
 import type { User } from '../db/users';
+import * as mocks from '../db/mocks';
 
 interface Request extends Express.Request {
   user?: User,
@@ -12,32 +13,28 @@ interface Request extends Express.Request {
   }
 }
 
+// Oh hey, jest's matchers kind of have their own runtime type system. Guess
+// we'll use that. expect.any takes a constructor function, and the primitive
+// types all have those wrapper constructors/classes. This is a subset bc
+// there's no built-in matcher for "<type> or null" and I don't feel like
+// writing one, so display_name is out.
+let dogearMatcher = {
+  id: expect.any(Number),
+  user_id: expect.any(Number),
+  prefix: expect.any(String),
+  current: expect.any(String),
+  // display_name: expect.anyOrNull(String),
+  updated: expect.stringMatching(/^\d{4}-\d{2}-\d{2}/), // not any(Date) bc it's dumb json
+};
+
 // First off, mock the dogears database layer.
 jest.mock('../db/dogears');
 const dogears = require('../db/dogears');
-// db.query.mockImplementation( (text, params) => pool.query(text, params) );
-dogears.create.mockImplementationOnce( async () => {
-  return {
-    id: 1,
-    user_id: 1,
-    prefix: 'example.com/comic/',
-    current: 'https://example.com/comic/24',
-    display_name: 'Example Comic',
-    updated: '2019-09-24T03:58:19.571Z',
-  };
-}).mockImplementation( async () => {
-  throw new Error("This is the error text");
-});
-dogears.list.mockImplementation( async () => {
-  return [{
-    id: 1,
-    user_id: 1,
-    prefix: 'example.com/comic/',
-    current: 'https://example.com/comic/24',
-    display_name: 'Example Comic',
-    updated: '2019-09-24T03:58:19.571Z',
-  }];
-})
+dogears.create.mockImplementation(mocks.dogears.create);
+dogears.list.mockImplementation(mocks.dogears.list);
+dogears.update.mockImplementation(mocks.dogears.update);
+dogears.currently.mockImplementation(mocks.dogears.currently);
+dogears.destroy.mockImplementation(mocks.dogears.destroy);
 
 // Next, fake up an app and mount the API mini-app in it.
 const express = require('express');
@@ -63,43 +60,25 @@ const request = require('supertest');
 
 describe.only("Test a couple endpoints", () => {
   test("List returns JSON on success", async () => {
-    const response = await request(app).get('/api/v1/list');
-    return Promise.all([
-      expect(response.statusCode).toBe(200),
-      expect(response.body).toEqual([{
-        id: 1,
-        user_id: 1,
-        prefix: 'example.com/comic/',
-        current: 'https://example.com/comic/24',
-        display_name: 'Example Comic',
-        updated: '2019-09-24T03:58:19.571Z',
-      }]),
-    ]);
+    let response = await request(app).get('/api/v1/list');
+    expect(response.statusCode).toBe(200);
+    let body = response.body;
+    expect(Array.isArray(body)).toBe(true);
+    expect(body[0]).toMatchObject(dogearMatcher);
   });
   test("Create returns JSON on success, 400 on error", async () => {
-    const response = await request(app).post('/api/v1/create').send({
+    let response = await request(app).post('/api/v1/create').send({
       prefix: 'example.com/comic/',
       current: 'https://example.com/comic/24',
-      display_name: 'Example Comic'
+      display_name: 'Example Comic',
     });
-    await Promise.all([
-      expect(response.statusCode).toBe(201),
-      expect(response.body).toEqual({
-        id: 1,
-        user_id: 1,
-        prefix: 'example.com/comic/',
-        current: 'https://example.com/comic/24',
-        display_name: 'Example Comic',
-        updated: '2019-09-24T03:58:19.571Z',
-      }),
-    ]);
-    const fail = await request(app).post('/api/v1/create').send({
-      display_name: 'Busted'
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toMatchObject(dogearMatcher);
+    let fail = await request(app).post('/api/v1/create').send({
+      display_name: 'Busted',
     });
-    await Promise.all([
-      expect(fail.statusCode).toBe(400),
-      expect(fail.body).toHaveProperty('error'),
-    ]);
+    expect(fail.statusCode).toBe(400);
+    expect(fail.body).toHaveProperty('error');
 
   });
 });
