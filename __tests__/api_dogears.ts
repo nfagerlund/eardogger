@@ -1,17 +1,7 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import type { NextFunction } from 'express';
-import type { TokenScope } from '../db/tokens';
-import type { User } from '../db/users';
+import type { EardoggerExpressRequest } from '../utilTypes';
 import * as mocks from '../db/mocks';
-
-interface Request extends Express.Request {
-  user?: User,
-  authInfo?: {
-    isSession?: boolean,
-    isToken?: boolean,
-    scope?: TokenScope,
-  }
-}
 
 // Oh hey, jest's matchers kind of have their own runtime type system. Guess
 // we'll use that. expect.any takes a constructor function, and the primitive
@@ -41,7 +31,7 @@ const express = require('express');
 const app = express();
 
 // Fake up an authenticated user:
-app.use(function(req: Request, _res: Express.Response, next: NextFunction){
+app.use(function(req: EardoggerExpressRequest, _res: Express.Response, next: NextFunction){
   req.user = {
     id: 1,
     username: 'fake',
