@@ -1,3 +1,17 @@
+import { describe, expect, test, jest } from '@jest/globals';
+import type { NextFunction } from 'express';
+import type { TokenScope } from '../db/tokens';
+import type { User } from '../db/users';
+
+interface Request extends Express.Request {
+  user?: User,
+  authInfo?: {
+    isSession?: boolean,
+    isToken?: boolean,
+    scope?: TokenScope,
+  }
+}
+
 // First off, mock the dogears database layer.
 jest.mock('../db/dogears');
 const dogears = require('../db/dogears');
@@ -30,8 +44,13 @@ const express = require('express');
 const app = express();
 
 // Fake up an authenticated user:
-app.use(function(req, res, next){
-  req.user = {id: 1};
+app.use(function(req: Request, _res: Express.Response, next: NextFunction){
+  req.user = {
+    id: 1,
+    username: 'fake',
+    created: new Date('2019-09-20T03:58:19.571Z'),
+    email: null,
+  };
   next();
 });
 
