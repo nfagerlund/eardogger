@@ -1,22 +1,22 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Everything should be running from dist due to tsc compilation, so nothing
 // outside this file should rely directly on path.resolve() or __dirname.
 const projectRoot = path.resolve(__dirname, '..');
 
-module.exports = {
+export {
   readTextFilePromise,
   bookmarkletText,
   projectRoot,
   resolveFromProjectRoot,
 }
 
-function resolveFromProjectRoot(filePath) {
+function resolveFromProjectRoot(filePath: string) {
   return path.resolve(projectRoot, filePath);
 }
 
-function readTextFilePromise(file) {
+function readTextFilePromise(file: string): Promise<string> {
   return new Promise((resolve, reject) => {
     fs.readFile(file, 'utf8', (err, data) => {
       if (err) {
@@ -42,8 +42,8 @@ const trailingSpaceAndNewlines = /\s*\n/gm;
 const tokenPlaceHolder = /<TOKEN>/gm;
 
 // This doesn't handle html escaping, just URI escaping.
-async function bookmarkletText(bookmarklet, token = '') {
-  let text = await readTextFilePromise(__dirname + '/bookmarklets/' + bookmarklet + '.js');
+async function bookmarkletText(bookmarkletName: string, token = '') {
+  let text = await readTextFilePromise(__dirname + '/bookmarklets/' + bookmarkletName + '.js');
   text = text
     .replace(commentedLines, '')
     .replace(blockComments, '')
