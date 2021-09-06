@@ -4,9 +4,15 @@
   "description": "A web app for movable bookmarks.",
   "main": "server.js",
   "scripts": {
-    "start": "tsc && node server.js",
-    "test": "tsc && jest",
-    "web": "tsc && node server.js"
+    "clean": "rm -rf ./dist",
+    "prebuild": "yarn run clean",
+    "build": "tsc",
+    "prestart": "yarn run build",
+    "preweb": "yarn run build",
+    "pretest": "yarn run build",
+    "start": "node ./dist/server.js",
+    "test": "jest",
+    "web": "node ./dist/server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

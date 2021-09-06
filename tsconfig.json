@@ -2,11 +2,16 @@
   "extends": "@tsconfig/node12/tsconfig.json",
   "compilerOptions": {
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    "allowJs": true,
+    "outDir": "dist"
   },
   "include": ["**/*"],
   "exclude": [
     "node_modules",
+    "./dist",
+    "./migrations",
+    "./public",
     "**/*.spec.ts"
   ]
 }

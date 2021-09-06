@@ -1,10 +1,20 @@
-var fs = require('fs');
+const fs = require('fs');
+const path = require('path');
+
+// Everything should be running from dist due to tsc compilation, so nothing
+// outside this file should rely directly on path.resolve() or __dirname.
+const projectRoot = path.resolve(__dirname, '..');
 
 module.exports = {
   readTextFilePromise,
   bookmarkletText,
+  projectRoot,
+  resolveFromProjectRoot,
 }
 
+function resolveFromProjectRoot(filePath) {
+  return path.resolve(projectRoot, filePath);
+}
 
 function readTextFilePromise(file) {
   return new Promise((resolve, reject) => {
@@ -17,7 +27,6 @@ function readTextFilePromise(file) {
     });
   });
 }
-
 
 // This bookmarklet munger is a port of the Daring Fireball one, and it's pretty
 // naïve. For example, it doesn't understand the syntax of comments enough to

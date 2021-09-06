@@ -13,24 +13,20 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const expressHandlebars = require('express-handlebars');
-
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
-
-// Bookmarklet helper
-const {bookmarkletText} = require('./util');
-
+const { bookmarkletText, resolveFromProjectRoot } = require('./util');
 // Main DB helper (session store needs this)
 const db = require('./db/pg');
-
 // Application object DB helpers
 const dogears = require('./db/dogears');
 const users = require('./db/users');
 const tokens = require('./db/tokens');
 
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
+
 // http://expressjs.com/en/starter/static-files.html
 // putting this before session middleware saves some db load.
-app.use(express.static('public'));
+app.use(express.static(resolveFromProjectRoot('public')));
 app.use(express.json());
 
 // configure hbs view engine:

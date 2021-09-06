@@ -1,10 +1,4 @@
 node_modules
 .data
 shrinkwrap.yaml
-db/tokens.js*
-db/pg.js*
-db/dogears.js*
-db/users.js*
-db/mocks.js*
-__tests__/db.js*
-__tests__/api_dogears.js*
+dist

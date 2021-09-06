@@ -1,7 +1,7 @@
 // setup stuff
 const dbmigrate = require('db-migrate').getInstance(true, {env: 'test'});
 const {Pool, Client} = require('pg');
-const {readTextFilePromise} = require('../util');
+import { readTextFilePromise, resolveFromProjectRoot } from '../util';
 import { describe, expect, test, beforeAll, afterAll, jest } from '@jest/globals';
 
 const testDB = {
@@ -25,9 +25,9 @@ beforeAll( async () => {
   // run sql to set up localhost postgres database; sql includes teardown of
   // existing tables and objects.
   await client.connect();
-  const schema = await readTextFilePromise(__dirname + '/../schema/schema.sql');
+  const schema = await readTextFilePromise(resolveFromProjectRoot('schema/schema.sql'));
   await client.query(schema);
-  const migrations = await readTextFilePromise(__dirname + '/../schema/migrations.sql');
+  const migrations = await readTextFilePromise(resolveFromProjectRoot('schema/migrations.sql'));
   await client.query(migrations);
   await client.end();
 
