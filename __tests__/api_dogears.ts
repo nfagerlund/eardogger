@@ -18,19 +18,24 @@ let dogearMatcher = {
 
 // First off, mock the dogears database layer.
 jest.mock('../db/dogears');
-const dogears = require('../db/dogears');
+import * as dogears from '../db/dogears';
+// @ts-ignore
 dogears.create.mockImplementation(mocks.dogears.create);
+// @ts-ignore
 dogears.list.mockImplementation(mocks.dogears.list);
+// @ts-ignore
 dogears.update.mockImplementation(mocks.dogears.update);
+// @ts-ignore
 dogears.currently.mockImplementation(mocks.dogears.currently);
+// @ts-ignore
 dogears.destroy.mockImplementation(mocks.dogears.destroy);
 
 // Next, fake up an app and mount the API mini-app in it.
-const express = require('express');
+import express from 'express';
 const app = express();
 
 // Fake up an authenticated user:
-app.use(function(req: Request, _res: Response, next: NextFunction){
+app.use(function(req: Request, _res: Response, next: NextFunction) {
   req.user = {
     id: 1,
     username: 'fake',
@@ -41,11 +46,11 @@ app.use(function(req: Request, _res: Response, next: NextFunction){
 });
 
 // Uhhhh... bombs away, I guess
-const v1api = require('../api/v1');
+import v1api from '../api/v1';
 app.use('/api/v1', v1api);
 
 // Supertest
-const request = require('supertest');
+import request from 'supertest';
 
 describe.only("Test a couple endpoints", () => {
   test("List returns JSON on success", async () => {
