@@ -1,17 +1,16 @@
 // v1 API mini-app.
-const express = require('express');
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import * as dogears from '../db/dogears';
+import { TokenScope } from '../db/tokens';
 
 const router = express.Router({mergeParams: true});
   // TODO: Once I move to token auth, I might want to set this to false? IDK.
 
-module.exports = router;
-
-// Application object DB helpers
-const dogears = require('../db/dogears');
-// const users = require('../db/users');
+export default router;
 
 // 401 unless authenticated middleware
-router.use(function(req, res, next) {
+router.use(function(req: Request, res: Response, next: NextFunction) {
   if (!req.user && req.method !== 'OPTIONS') {
     res.sendStatus(401);
   } else {
@@ -30,15 +29,15 @@ const localOrigin = new RegExp(
     '^https?://' +
     (process.env.SITE_HOSTNAME || 'eardogger.com')
 );
-function allowCorsWithCredentials(methods) {
-  return function(req, res, next) {
+function allowCorsWithCredentials(commaSeparatedMethods: string) {
+  return function(req: Request, res: Response, next: NextFunction) {
     // Is this coming from the server you originally logged into? If not, it's CORS.
-    if ( !req.headers.origin.match(localOrigin) ) {
+    if ( req.headers.origin && !req.headers.origin.match(localOrigin) ) {
       req.isCors = true;
       res.header("Access-Control-Allow-Origin", req.headers.origin);
-      res.header('Access-Control-Allow-Credentials', true);
+      res.header('Access-Control-Allow-Credentials', 'true');
       res.header('Vary', 'Origin');
-      res.header('Access-Control-Allow-Methods', methods);
+      res.header('Access-Control-Allow-Methods', commaSeparatedMethods);
       res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
     }
     // Bail early for OPTIONS requests
@@ -54,11 +53,11 @@ function allowCorsWithCredentials(methods) {
 
 // Implementation for token scope restrictions. Returns a middleware.
 // Known scopes so far: write_dogears, manage_dogears.
-function allowTokenScopes(scopes) {
-  return function(req, res, next) {
+function allowTokenScopes(scopes: Array<TokenScope>) {
+  return function(req: Request, res: Response, next: NextFunction) {
     if (req.authInfo && req.authInfo.isToken) {
       // Then it's a token and we need to check scope.
-      if (scopes.includes(req.authInfo.scope)) {
+      if (req.authInfo.scope && scopes.includes(req.authInfo.scope)) {
         next();
       } else {
         // NOPE
@@ -77,6 +76,9 @@ let manageDogears = allowTokenScopes(['manage_dogears']);
 router.use('/create', writeOrManageDogears);
 router.post('/create', function(req, res){
   const {prefix, current, display_name} = req.body;
+  if (!req.user) {
+    throw new Error("Tried to create dogear without authenticated user");
+  }
   dogears.create(req.user.id, prefix, current, display_name).then(dogear => {
     res.status(201).json(dogear);
   }).catch(err => {
@@ -95,6 +97,9 @@ router.post('/update', function(req, res){
       return;
     }
   }
+  if (!req.user) {
+    throw new Error("Tried to update dogear without authenticated user");
+  }
   dogears.update(req.user.id, current).then(dogears => {
     res.status(200).json(dogears);
   }).catch(err => {
@@ -105,6 +110,9 @@ router.post('/update', function(req, res){
 // API: list
 router.use('/list', manageDogears);
 router.get('/list', function(req, res){
+  if (!req.user) {
+    throw new Error("Tried to list dogears without authenticated user");
+  }
   dogears.list(req.user.id).then(dogears => {
     res.status(200).json(dogears);
   }).catch(err => {
@@ -116,6 +124,9 @@ router.get('/list', function(req, res){
 router.use('/delete', manageDogears);
 router.delete('/dogear/:id', function(req, res){
   const id = Number(req.params.id);
+  if (!req.user) {
+    throw new Error("Tried to delete dogear without authenticated user");
+  }
   dogears.destroy(req.user.id, id).then(() => {
     res.sendStatus(204);
   }).catch(err => {
