@@ -44,7 +44,11 @@
   ],
   "devDependencies": {
     "@tsconfig/node12": "^1.0.9",
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
+    "@types/express-handlebars": "^5.3.1",
+    "@types/express-session": "^1.17.4",
+    "@types/passport": "^1.0.7",
     "@types/pg": "^8.6.1",
     "@types/uuid": "^8.3.1",
     "@types/node": "^12.12.6",
