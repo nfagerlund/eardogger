@@ -1,6 +1,5 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import type { NextFunction } from 'express';
-import type { EardoggerExpressRequest } from '../utilTypes';
+import type { Request, Response, NextFunction } from 'express';
 import * as mocks from '../db/mocks';
 
 // Oh hey, jest's matchers kind of have their own runtime type system. Guess
@@ -31,7 +30,7 @@ const express = require('express');
 const app = express();
 
 // Fake up an authenticated user:
-app.use(function(req: EardoggerExpressRequest, _res: Express.Response, next: NextFunction){
+app.use(function(req: Request, _res: Response, next: NextFunction){
   req.user = {
     id: 1,
     username: 'fake',
