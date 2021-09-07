@@ -1,4 +1,4 @@
-import type { User } from './db/users';
+import type { User as EDUser } from './db/users';
 import type { TokenScope } from './db/tokens';
 
 // Here's what *I think* is happening here:
@@ -16,14 +16,25 @@ import type { TokenScope } from './db/tokens';
 //   it's necessary.
 declare global {
   namespace Express {
-    export interface Request {
-      user?: User,
-      authInfo?: {
-        isSession?: boolean,
-        isToken?: boolean,
-        scope?: TokenScope,
-      },
+    // @types/passport adds User and AuthInfo interfaces under Express, but
+    // they're empty and meant for users to merge/extend. So now we do that.
+    // I already went to the trouble of making a User type, so plz just use it.
+    interface User extends EDUser {};
+    // thx.
+
+    interface AuthInfo {
+      isSession?: boolean,
+      isToken?: boolean,
+      scope?: TokenScope,
+    };
+
+    // N.B. that @types/passport (and a few other things) already tack things
+    // onto Request, so I'm not going to double-add those. (I *think* that's
+    // best practice, but hey, I'm baby.)
+    interface Request {
       isCors?: boolean,
-    }
-  }
-}
+      // user?: User // (from Passport)
+      // authInfo?: AuthInfo // (from Passport)
+    };
+  };
+};
