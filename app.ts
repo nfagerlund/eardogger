@@ -9,7 +9,8 @@ export default app;
 
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-const pgSession = require('connect-pg-simple')(session);
+import connectPgSimple from 'connect-pg-simple';
+const pgSession = connectPgSimple(session);
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import type { IVerifyOptions as LocalVerifyOptions } from 'passport-local';

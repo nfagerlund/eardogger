@@ -1,5 +1,5 @@
-const db = require('./pg');
-const {URL} = require('url');
+import * as db from './pg';
+import { URL } from 'url';
 
 const protocolAndWww = /^((https?:\/\/)?((www|m)\.)*)?/;
 function getProtocolAndWww(url: string) {

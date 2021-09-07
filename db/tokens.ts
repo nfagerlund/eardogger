@@ -1,4 +1,4 @@
-const db = require('./pg');
+import * as db from './pg';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import type { User } from './users';

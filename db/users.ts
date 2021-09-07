@@ -1,5 +1,5 @@
-const db = require('./pg');
-const bcrypt = require('bcryptjs');
+import * as db from './pg';
+import bcrypt from 'bcryptjs';
 
 interface User {
   id: number,
