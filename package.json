@@ -44,6 +44,8 @@
   ],
   "devDependencies": {
     "@tsconfig/node12": "^1.0.9",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/connect-pg-simple": "^4.2.4",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/express-handlebars": "^5.3.1",
