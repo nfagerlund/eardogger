@@ -1,25 +1,25 @@
 // create and configure express app, which might get set to listen or might not
 
-const express = require('express');
+import express from 'express';
 
 const app = express();
 
-module.exports = app;
+export default app;
 
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 const pgSession = require('connect-pg-simple')(session);
-const passport = require('passport');
+import passport from 'passport';
 const LocalStrategy = require('passport-local').Strategy;
 const BearerStrategy = require('passport-http-bearer').Strategy;
-const expressHandlebars = require('express-handlebars');
-const { bookmarkletText, resolveFromProjectRoot } = require('./util');
+import expressHandlebars from 'express-handlebars';
+import { bookmarkletText, resolveFromProjectRoot } from './util';
 // Main DB helper (session store needs this)
-const db = require('./db/pg');
+import * as db from './db/pg';
 // Application object DB helpers
-const dogears = require('./db/dogears');
-const users = require('./db/users');
-const tokens = require('./db/tokens');
+import * as dogears from './db/dogears';
+import * as users from './db/users';
+import * as tokens from './db/tokens';
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // might require same secret as session cookie? also, do I need this once I have session running?
@@ -151,7 +151,7 @@ function maybeBearerAuthMiddleware(req, res, next) {
 }
 
 // API routes live in their own little thing.
-const v1api = require('./api/v1');
+import v1api from './api/v1';
 app.use('/api/v1', maybeBearerAuthMiddleware, v1api);
 
 // AUTHENTICATION WITH PASSPORT, finally.
