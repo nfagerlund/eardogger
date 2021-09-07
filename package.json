@@ -49,6 +49,8 @@
     "@types/express-handlebars": "^5.3.1",
     "@types/express-session": "^1.17.4",
     "@types/passport": "^1.0.7",
+    "@types/passport-http-bearer": "^1.0.37",
+    "@types/passport-local": "^1.0.34",
     "@types/pg": "^8.6.1",
     "@types/uuid": "^8.3.1",
     "@types/node": "^12.12.6",
