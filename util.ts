@@ -43,7 +43,9 @@ const tokenPlaceHolder = /<TOKEN>/gm;
 
 // This doesn't handle html escaping, just URI escaping.
 async function bookmarkletText(bookmarkletName: string, token = '') {
-  let text = await readTextFilePromise(__dirname + '/bookmarklets/' + bookmarkletName + '.js');
+  let text = await readTextFilePromise(
+    resolveFromProjectRoot(`bookmarklets/${bookmarkletName}.js`)
+  );
   text = text
     .replace(commentedLines, '')
     .replace(blockComments, '')
