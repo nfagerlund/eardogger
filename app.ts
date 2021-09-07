@@ -1,6 +1,7 @@
 // create and configure express app, which might get set to listen or might not
 
 import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 const app = express();
 
@@ -10,8 +11,9 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 const pgSession = require('connect-pg-simple')(session);
 import passport from 'passport';
-const LocalStrategy = require('passport-local').Strategy;
-const BearerStrategy = require('passport-http-bearer').Strategy;
+import { Strategy as LocalStrategy } from 'passport-local';
+import type { IVerifyOptions as LocalVerifyOptions } from 'passport-local';
+import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import expressHandlebars from 'express-handlebars';
 import { bookmarkletText, resolveFromProjectRoot } from './util';
 // Main DB helper (session store needs this)
@@ -39,9 +41,12 @@ const hbsViews = expressHandlebars.create({
 app.engine('hbs', hbsViews.engine); // register for extension
 app.set('view engine', 'hbs'); // the default for no-extension views
 
+if (!process.env.SESSION_SECRET) {
+  throw new Error("The SESSION_SECRET environment variable wasn't set, and I absolutely demand it. Plz fix your env.");
+}
 
 // session handling
-let sessionOptions = {
+let sessionOptions: session.SessionOptions = {
   name: 'eardogger.sessid',
   cookie: {
     maxAge: 1000 * 60 * 60 * 24 * 30 * 2, // two months, in milliseconds.
@@ -72,7 +77,11 @@ app.use(session(sessionOptions));
 
 // OK, let's passport.js.
 passport.use(new LocalStrategy(
-  (username, password, done) => {
+  (
+    username: string,
+    password: string,
+    done: (error: any, user?: any, options?: LocalVerifyOptions) => void
+  ) => {
     // Authenticate password and return user object
     users.authenticate(username, password).then(success => {
       if (success) {
@@ -93,11 +102,11 @@ passport.serializeUser( (user, done) => {
   done(null, user.id);
 });
 // use an identifier from a session to find and return a user:
-passport.deserializeUser( (id, done) => {
+passport.deserializeUser( (id: number, done) => {
   users.getByID(id).then(userObj => {
     if (userObj) {
       // Set authInfo so we can tell this is a real login session
-      done(null, userObj, { isSession: true });
+      done(null, userObj);
     } else {
       done(null, false);
     }
@@ -141,7 +150,7 @@ app.use(function(req, res, next){
 // Wrapper for bearer token authentication, so we don't even try it unless you
 // provided a token in the headers:
 let bearerAuthMiddleware = passport.authenticate('bearer', { session: false });
-function maybeBearerAuthMiddleware(req, res, next) {
+function maybeBearerAuthMiddleware(req: Request, res: Response, next: NextFunction) {
   if (req.get('Authorization')) {
     // then we have a token
     bearerAuthMiddleware(req, res, next);
@@ -209,7 +218,8 @@ app.post('/changepassword', function(req, res){
     return;
   }
 
-  const { password, new_password, new_password_again } = req.body;
+  let { username } = req.user;
+  let { password, new_password, new_password_again } = req.body;
 
   if (new_password.length === 0) {
     res.status(400).send("New password was empty")
@@ -220,13 +230,13 @@ app.post('/changepassword', function(req, res){
     return;
   }
 
-  users.authenticate(req.user.username, password).then(authenticated => {
+  users.authenticate(username, password).then(authenticated => {
     if (!authenticated) {
       res.status(403).send("Current password was wrong");
       return;
     }
 
-    users.setPassword(req.user.username, new_password).then(() => {
+    users.setPassword(username, new_password).then(() => {
       res.redirect('/');
     }).catch(err => {
       res.status(500).send(err.toString());
@@ -249,7 +259,7 @@ app.get('/status', function(req, res) {
   res.sendStatus(204);
 });
 
-function templateDogears(dogearsList) {
+function templateDogears(dogearsList: Array<dogears.Dogear>) {
   return dogearsList.map(mark => ({
     id: mark.id,
     current: mark.current,
@@ -261,9 +271,10 @@ function templateDogears(dogearsList) {
 // Homepage!
 app.get('/', function(req, res, next) {
   if (req.user) {
-    dogears.list(req.user.id).then((dogearsList) => {
+    let { id, username } = req.user;
+    dogears.list(id).then((dogearsList) => {
       res.render('index', {
-        title: `${req.user.username}'s Dogears`,
+        title: `${username}'s Dogears`,
         dogears: templateDogears(dogearsList),
       });
     }).catch(err => { return next(err); });
@@ -287,9 +298,9 @@ app.get('/fragments/dogears', function(req, res, next) {
 });
 
 // Install info page
-let cachedBookmarklets;
+let cachedBookmarklets: Array<Promise<string>>;
 app.get('/install', function(req, res){
-  if (cachedBookmarklets === undefined) {
+  if (typeof cachedBookmarklets === 'undefined') {
     cachedBookmarklets = [
       bookmarkletText('mark'),
       bookmarkletText('where'),
