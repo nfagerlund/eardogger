@@ -8,9 +8,7 @@ const app = express();
 export default app;
 
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import connectPgSimple from 'connect-pg-simple';
-const pgSession = connectPgSimple(session);
+import initializeSession from './session';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import type { IVerifyOptions as LocalVerifyOptions } from 'passport-local';
@@ -42,39 +40,18 @@ const hbsViews = expressHandlebars.create({
 app.engine('hbs', hbsViews.engine); // register for extension
 app.set('view engine', 'hbs'); // the default for no-extension views
 
-if (!process.env.SESSION_SECRET) {
-  throw new Error("The SESSION_SECRET environment variable wasn't set, and I absolutely demand it. Plz fix your env.");
-}
-
-// session handling
-let sessionOptions: session.SessionOptions = {
-  name: 'eardogger.sessid',
-  cookie: {
-    maxAge: 1000 * 60 * 60 * 24 * 30 * 2, // two months, in milliseconds.
-    sameSite: 'none',
-    secure: true,
-    httpOnly: false,
-  },
-  store: new pgSession({
-    pool: db.pool,
-    pruneSessionInterval: 60 * 60, // an hour, in seconds.
-  }),
-  secret: process.env.SESSION_SECRET,
-  saveUninitialized: false,
-  rolling: true,
-  resave: false,
-  unset: 'destroy',
-};
 
 if (process.env.USE_PROXY) {
   // Setting secure cookies takes some finagling if the client's talking HTTPS
   // to a proxy but it's talking HTTP to us. And we want to set secure cookies
   // because browsers are gonna stop allowing POSTS from foreign sites
   // otherwise, and that's kind of a Thing we do with the bookmarklets.
+  // PART ONE: (see session.ts for part two)
   app.set('trust proxy', 1);
-  sessionOptions.proxy = true;
 }
-app.use(session(sessionOptions));
+
+// Session handling
+app.use(initializeSession());
 
 // OK, let's passport.js.
 passport.use(new LocalStrategy(
