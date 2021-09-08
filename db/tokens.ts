@@ -59,8 +59,8 @@ let list: FTokenList = async function(userId: number, page: number = 1, size: nu
     meta: Meta,
   }>
 {
-  if (page < 0 || size < 0) {
-    throw new Error("Can't use negative page or page size.");
+  if (page <= 0 || size <= 0) {
+    throw new Error("Neither page nor page size can be <= 0.");
   }
   let offset = (page - 1) * size;
   let result = await db.query(
