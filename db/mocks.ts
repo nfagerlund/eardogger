@@ -134,7 +134,7 @@ let userGetByName: FUserGetByName = async function(username: string) {
   return usersData.find(user => user.username === username);
 }
 
-let userGetById: FUserGetByID = async function(id: number) {
+let userGetByID: FUserGetByID = async function(id: number) {
   return usersData[id];
 }
 
@@ -155,7 +155,7 @@ let users = {
   create: userCreate,
   authenticate: userAuthenticate,
   getByName: userGetByName,
-  getById: userGetById,
+  getByID: userGetByID,
   setPassword: userSetPassword,
   setEmail: userSetEmail,
   purgeByName: userPurgeByName,
