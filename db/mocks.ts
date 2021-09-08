@@ -1,3 +1,4 @@
+import { NoMatchError } from './dogears';
 import type {
   Dogear,
   FDogearCreate,
@@ -62,7 +63,13 @@ let create: FDogearCreate = async function(userID: number, prefix: string, curre
 };
 
 let update: FDogearUpdate = async function(userID: number, current: string) {
-  return [dogearsData[0]];
+  // Need to be able to test a whiff, so updates will always succeed for user 1
+  // and always fail for user 2.
+  if (userID === 1) {
+    return [dogearsData[0]];
+  } else {
+    throw new NoMatchError("No dogears match that URL");
+  }
 }
 
 let list: FDogearList = async function(userID: number) {
@@ -87,6 +94,7 @@ let dogears = {
   list,
   destroy,
   currently,
+  NoMatchError,
 };
 
 let usersData: Array<User> = [
