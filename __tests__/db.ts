@@ -1,6 +1,8 @@
 // setup stuff
-const dbmigrate = require('db-migrate').getInstance(true, {env: 'test'});
-const {Pool, Client} = require('pg');
+// @ts-ignore
+import { getInstance } from 'db-migrate';
+let dbMigrateInstance = getInstance(true, {env: 'test'});
+import { Pool, Client } from 'pg';
 import { readTextFilePromise, resolveFromProjectRoot } from '../util';
 import { describe, expect, test, beforeAll, afterAll, jest } from '@jest/globals';
 
@@ -13,7 +15,8 @@ const pool = new Pool(testDB);
 
 // swap in the test database for the main db helper
 jest.mock('../db/pg');
-const db = require('../db/pg'); // crosses fingers
+import * as db from '../db/pg'; // crosses fingers
+// @ts-ignore
 db.query.mockImplementation( (text: string, params: Array<any>) => pool.query(text, params) );
 
 // stuff I'm actually testing:
@@ -32,7 +35,7 @@ beforeAll( async () => {
   await client.end();
 
   // migrations, in case the schema's out of date
-  await dbmigrate.up();
+  await dbMigrateInstance.up();
 });
 
 afterAll( async () => {
