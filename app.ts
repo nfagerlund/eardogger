@@ -15,8 +15,6 @@ import type { IVerifyOptions as LocalVerifyOptions } from 'passport-local';
 import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import expressHandlebars from 'express-handlebars';
 import { bookmarkletText, resolveFromProjectRoot } from './util';
-// Main DB helper (session store needs this)
-import * as db from './db/pg';
 // Application object DB helpers
 import * as dogears from './db/dogears';
 import * as users from './db/users';
