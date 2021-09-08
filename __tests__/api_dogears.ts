@@ -18,13 +18,14 @@ let dogearMatcher = {
 
 // First off, mock the dogears database layer.
 jest.mock('../db/dogears', () => {
+  let { create, list, update, currently, destroy } = mocks.dogears;
   return {
     __esModule: true,
-    create: mocks.dogears.create,
-    list: mocks.dogears.list,
-    update: mocks.dogears.update,
-    currently: mocks.dogears.currently,
-    destroy: mocks.dogears.destroy,
+    create,
+    list,
+    update,
+    currently,
+    destroy,
   };
 });
 
