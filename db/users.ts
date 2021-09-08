@@ -47,14 +47,14 @@ let authenticate: FUserAuthenticate = async function(username: string, password:
 }
 
 type FUserGetByName = (username: string) => Promise<User | undefined>;
-let getByName: FUserGetByName = async function(username: string): Promise<User> {
+let getByName: FUserGetByName = async function(username: string): Promise<User | undefined> {
   username = username.trim();
   const result = await db.query("SELECT id, username, email, created FROM users WHERE username = $1", [username]);
   return result.rows[0];
 }
 
 type FUserGetByID = (id: number) => Promise<User | undefined>;
-let getByID: FUserGetByID = async function(id: number): Promise<User> {
+let getByID: FUserGetByID = async function(id: number): Promise<User | undefined> {
   let result = await db.query("SELECT id, username, email, created FROM users WHERE id = $1", [id]);
   return result.rows[0];
 }
@@ -72,7 +72,7 @@ let setPassword: FUserSetPassword = async function(username: string, password: s
 
 // returns user
 type FUserSetEmail = (username: string, email: string | null) => Promise<User | undefined>;
-let setEmail: FUserSetEmail = async function(username: string, email: string | null): Promise<User> {
+let setEmail: FUserSetEmail = async function(username: string, email: string | null): Promise<User | undefined> {
   username = username.trim();
   email = email || null; // '' => explicit sql null
   if (email) {
