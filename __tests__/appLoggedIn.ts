@@ -19,50 +19,21 @@ initializeSession.mockImplementation(fakeSession);
 
 // Then mock the entire DB layer
 jest.mock('../db/dogears', () => {
-  let { create, list, update, currently, destroy } = mocks.dogears;
   return {
     __esModule: true,
-    create,
-    list,
-    update,
-    currently,
-    destroy,
+    ...mocks.dogears,
   };
 });
 jest.mock('../db/users', () => {
-  let {
-    create,
-    authenticate,
-    getByName,
-    getByID,
-    setPassword,
-    setEmail,
-    purgeByName,
-  } = mocks.users;
   return {
     __esModule: true,
-    create,
-    authenticate,
-    getByName,
-    getByID,
-    setPassword,
-    setEmail,
-    purgeByName,
+    ...mocks.users,
   };
 });
 jest.mock('../db/tokens', () => {
-  let {
-    create,
-    list,
-    destroy,
-    findWithUser,
-  } = mocks.tokens;
   return {
     __esModule: true,
-    create,
-    list,
-    destroy,
-    findWithUser,
+    ...mocks.tokens,
   };
 });
 
