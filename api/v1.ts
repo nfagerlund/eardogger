@@ -121,9 +121,13 @@ router.get('/list', function(req, res){
 });
 
 // API: delete
-router.use('/delete', manageDogears);
+router.use('/dogear', manageDogears);
 router.delete('/dogear/:id', function(req, res){
-  const id = Number(req.params.id);
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) {
+    res.sendStatus(404);
+    return;
+  }
   if (!req.user) {
     throw new Error("Tried to delete dogear without authenticated user");
   }
