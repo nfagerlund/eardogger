@@ -158,3 +158,64 @@ describe("/resume/:url", () => {
   // Missing a test for going to the "create" view if it whiffs, but I'm less
   // concerned about that. (Would need to update mocks.)
 });
+
+describe("POST /signup (new account)", () => {
+  test("403 forbidden if you're logged in", async () => {
+    let response = await request(app).post('/signup')
+      .type('form')
+      .send({
+        new_username: 'new_challenger_joins',
+        new_password: 'password456',
+        new_password_again: 'password456',
+        email: '',
+      });
+    expect(response.statusCode).toBe(403);
+  });
+});
+
+describe("POST /changepassword", () => {
+  test("Changes password and redirects to / on success", async () => {
+    let response = await request(app).post('/changepassword')
+      .type('form')
+      .send({
+        password: 'password123',
+        new_password: 'password456',
+        new_password_again: 'password456',
+      });
+    expect(response.statusCode).toBe(302);
+    expect(response.header['location']).toEqual('/');
+  });
+
+  test("403 on bad current password", async () => {
+    let response = await request(app).post('/changepassword')
+      .type('form')
+      .send({
+        password: 'password789',
+        new_password: 'password456',
+        new_password_again: 'password456',
+      });
+    expect(response.statusCode).toBe(403);
+  });
+
+  test("400 on missing new password", async () => {
+    let response = await request(app).post('/changepassword')
+      .type('form')
+      .send({
+        password: 'password123',
+        new_password: '',
+        new_password_again: '',
+      });
+    expect(response.statusCode).toBe(400);
+  });
+
+  test("400 on mismatched new passwords", async () => {
+    let response = await request(app).post('/changepassword')
+      .type('form')
+      .send({
+        password: 'password123',
+        new_password: 'password456',
+        new_password_again: 'password789',
+      });
+    expect(response.statusCode).toBe(400);
+  });
+});

@@ -44,6 +44,13 @@ jest.mock('../db/tokens', () => {
 // Okay, finally we can do some tests.
 import app from '../app';
 
+describe("status/ping endpoint", () => {
+  test("always an empty 204", async () => {
+    let response = await request(app).get('/status');
+    expect(response.statusCode).toBe(204);
+  });
+});
+
 describe("account page", () => {
   test("it 401s", async () => {
     let response = await request(app).get('/account');
@@ -110,5 +117,45 @@ describe("/fragments/dogears", () => {
   });
 });
 
-// The one missing test is POST /mark (redirects to index), but I'm not too
-// concerned about that one.
+describe("POST /signup (new account)", () => {
+  test("Creates user and redirects to index on success", async () => {
+    let response = await request(app).post('/signup')
+      .type('form')
+      .send({
+        new_username: 'new_challenger_joins',
+        new_password: 'password456',
+        new_password_again: 'password456',
+        email: '', // I think that's how form data omits email
+      });
+    expect(response.statusCode).toBe(302);
+    expect(response.header['location']).toEqual('/');
+  });
+
+  test("Sends dumb 400 error on password mismatch", async () => {
+    let response = await request(app).post('/signup')
+      .type('form')
+      .send({
+        new_username: 'new_challenger_joins',
+        new_password: 'password456',
+        new_password_again: 'password789',
+        email: '',
+      });
+    expect(response.statusCode).toBe(400);
+  });
+});
+
+describe("POST /changepassword", () => {
+  test("401 unauthenticated if you're logged out", async () => {
+    let response = await request(app).post('/changepassword')
+      .type('form')
+      .send({
+        password: 'password123',
+        new_password: 'password456',
+        new_password_again: 'password456',
+      });
+    expect(response.statusCode).toBe(401);
+  });
+});
+
+// missing a test for POST /mark (redirects to index), but I'm not too concerned
+// about that one.
