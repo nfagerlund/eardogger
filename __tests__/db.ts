@@ -169,8 +169,11 @@ describe("User database layer", () => {
     // Need this before rest
     await users.create('test_lookup', 'aoeusnth', 'nff@example.com');
     const thatUser = await users.getByName('test_lookup');
-    expect(thatUser.username).toBe('test_lookup');
-    await expect(users.getByID(thatUser.id)).resolves.toHaveProperty('username', 'test_lookup');
+    expect(thatUser).not.toBeUndefined();
+    if (thatUser) {
+      expect(thatUser.username).toBe('test_lookup');
+      await expect(users.getByID(thatUser.id)).resolves.toHaveProperty('username', 'test_lookup');
+    }
   });
 
   test("Edit password", async () => {
