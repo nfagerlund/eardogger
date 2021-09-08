@@ -161,7 +161,109 @@ let users = {
   purgeByName: userPurgeByName,
 };
 
+// Tokens: only nick and wrong_boi from the users mocks will get tokens.
+let nickTokens: Array<Token> = [
+  {
+    id: 1,
+    user_id: 1,
+    scope: 'write_dogears',
+    created: new Date('2021-09-07T03:58:19.571Z'),
+    last_used: new Date('2021-09-07T03:58:19.571Z'),
+    comment: 'some comment',
+  },
+  {
+    id: 2,
+    user_id: 1,
+    scope: 'manage_dogears',
+    created: new Date('2021-09-07T03:58:19.571Z'),
+    last_used: new Date('2021-09-07T03:58:19.571Z'),
+    comment: 'some comment',
+  },
+];
+let wrongTokens: Array<Token> = [
+  {
+    id: 1,
+    user_id: 2,
+    scope: 'write_dogears',
+    created: new Date('2021-09-07T03:58:19.571Z'),
+    last_used: new Date('2021-09-07T03:58:19.571Z'),
+    comment: 'some comment',
+  },
+  {
+    id: 2,
+    user_id: 2,
+    scope: 'manage_dogears',
+    created: new Date('2021-09-07T03:58:19.571Z'),
+    last_used: new Date('2021-09-07T03:58:19.571Z'),
+    comment: 'some comment',
+  },
+];
+let tokenCleartexts: {[key: string]: Token} = {
+  tokenNickWrite: nickTokens[0],
+  tokenNickManage: nickTokens[1],
+  tokenWrongWrite: wrongTokens[0],
+  tokenWrongManage: wrongTokens[1],
+};
+
+let tokenCreate: FTokenCreate = async function(userID: number, scope: TokenScope, comment: string) {
+  // just care about shape.
+  return nickTokens[1];
+}
+
+let tokenList: FTokenList = async function(userId: number, page: number = 1, size: number = 50) {
+  let count = 2;
+  let totalPages = Math.ceil(count/size);
+  let prevPage = page <= 1 ? null : Math.min(page - 1, totalPages);
+  let nextPage = page >= totalPages ? null : page + 1;
+  let dataPage;
+  if (size === 1) {
+    if (page === 1) {
+      dataPage = [nickTokens[0]];
+    } else {
+      dataPage = [nickTokens[1]];
+    }
+  } else {
+    dataPage = nickTokens;
+  }
+  return {
+    data: dataPage,
+    meta: {
+      pagination: {
+        current_page: page,
+        prev_page: prevPage,
+        next_page: nextPage,
+        total_pages: totalPages,
+        total_count: count,
+      },
+    },
+  };
+}
+
+let tokenDestroy: FTokenDestroy = async function(userID: number, id: number) {
+  return;
+}
+
+let tokenFindWithUser: FTokenFindWithUser = async function(tokenCleartext: string) {
+  let token = tokenCleartexts[tokenCleartext];
+  if (token) {
+    return {
+      token: token,
+      user: usersData[token.user_id],
+    };
+  } else {
+    return null;
+  }
+}
+
+let tokens = {
+  create: tokenCreate,
+  list: tokenList,
+  destroy: tokenDestroy,
+  findWithUser: tokenFindWithUser,
+};
+
 export {
   dogears,
   users,
+  tokens,
 };
