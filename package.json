@@ -12,7 +12,6 @@
 
     "prebuild": "rm -rf ./dist",
     "prestart": "tsc",
-    "preweb": "tsc",
     "pretest": "tsc"
   },
   "dependencies": {
