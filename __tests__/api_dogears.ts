@@ -1,5 +1,6 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import type { Request, Response, NextFunction } from 'express';
+import request from 'supertest';
 import * as mocks from '../db/mocks';
 
 // Oh hey, jest's matchers kind of have their own runtime type system. Guess
@@ -47,9 +48,6 @@ app.use(function(req: Request, _res: Response, next: NextFunction) {
 // Uhhhh... bombs away, I guess
 import v1api from '../api/v1';
 app.use('/api/v1', v1api);
-
-// Supertest
-import request from 'supertest';
 
 describe("List dogears", () => {
   let testUrl = '/api/v1/list';
