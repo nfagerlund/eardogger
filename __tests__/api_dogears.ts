@@ -17,19 +17,16 @@ let dogearMatcher = {
 };
 
 // First off, mock the dogears database layer.
-jest.mock('../db/dogears');
-import * as dogears from '../db/dogears';
-// Typescript hates this one weird trick:
-// @ts-ignore
-dogears.create.mockImplementation(mocks.dogears.create);
-// @ts-ignore
-dogears.list.mockImplementation(mocks.dogears.list);
-// @ts-ignore
-dogears.update.mockImplementation(mocks.dogears.update);
-// @ts-ignore
-dogears.currently.mockImplementation(mocks.dogears.currently);
-// @ts-ignore
-dogears.destroy.mockImplementation(mocks.dogears.destroy);
+jest.mock('../db/dogears', () => {
+  return {
+    __esModule: true,
+    create: mocks.dogears.create,
+    list: mocks.dogears.list,
+    update: mocks.dogears.update,
+    currently: mocks.dogears.currently,
+    destroy: mocks.dogears.destroy,
+  };
+});
 
 // Next, fake up an app and mount the API mini-app in it.
 import express from 'express';
