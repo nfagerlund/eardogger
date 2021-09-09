@@ -50,6 +50,18 @@ function makeDoc(text: string) {
   return (new JSDOM(text)).window.document;
 }
 
+describe("static assets", () => {
+  test("frontend JS is available", async () => {
+    let response = await request(app).get('/client.js');
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("CSS is available", async () => {
+    let response = await request(app).get('/style.css');
+    expect(response.statusCode).toBe(200);
+  });
+});
+
 describe("/account", () => {
   test("it renders", async () => {
     let response = await request(app).get('/account');

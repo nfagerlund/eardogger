@@ -44,6 +44,18 @@ jest.mock('../db/tokens', () => {
 // Okay, finally we can do some tests.
 import app from '../app';
 
+describe("static assets", () => {
+  test("frontend JS is available", async () => {
+    let response = await request(app).get('/client.js');
+    expect(response.statusCode).toBe(200);
+  });
+
+  test("CSS is available", async () => {
+    let response = await request(app).get('/style.css');
+    expect(response.statusCode).toBe(200);
+  });
+});
+
 describe("status/ping endpoint", () => {
   test("always an empty 204", async () => {
     let response = await request(app).get('/status');
