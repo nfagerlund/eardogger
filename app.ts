@@ -230,6 +230,41 @@ app.get('/account', function(req, res){
   }
 });
 
+function templateTokens(tokensList: Array<tokens.Token>) {
+  return tokensList.map(token => ({
+    id: token.id,
+    scope: token.scope,
+    created: token.created.toLocaleDateString(),
+    comment: token.comment,
+    token: token.token,
+    last_used: token.last_used ? token.last_used.toLocaleDateString() : null,
+  }));
+}
+
+// Tokens fragment. Not supporting any non-default page size, and not really
+// expecting anyone to ever have > 50 tokens anyway, but still let's do it right.
+app.get('/fragments/tokens', function(req, res, next) {
+  if (req.user) {
+    let pageParam = req.query.page;
+    let page: number;
+    if (typeof pageParam === 'string') {
+      page = parseInt(pageParam) || 1;
+    } else {
+      page = 1;
+    }
+    tokens.list(req.user.id, page).then(tokensResponse => {
+      let { data: tokensList, meta: { pagination } } = tokensResponse;
+      res.render('fragments/tokens', {
+        layout: false,
+        tokens: templateTokens(tokensList),
+        pagination,
+      });
+    }).catch(err => { return next(err); });
+  } else {
+    res.sendStatus(404);
+  }
+});
+
 // Status endpoint
 app.get('/status', function(req, res) {
   res.sendStatus(204);

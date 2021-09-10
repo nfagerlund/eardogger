@@ -1,0 +1,11 @@
+<ul id="tokens-list">
+  {{#each tokens}}
+    <li class="token" data-token-id="{{token.id}}">
+      <span class="token-comment">{{token.comment}}</span>
+      <span class="token-scope">Permissions: {{token.scope}}</span>
+      <span class="token-created">Created on: {{token.created}}</span>
+      <span class="token-last-used">Last used: {{token.last_used}}</span>
+      <button type="button" class="token-delete" data-token-id="{{token.id}}">Delete</button>
+    </li>
+  {{/each}}
+</ul>
