@@ -15,33 +15,14 @@ function whenever(callback) {
 function clipboardHandler(button) {
   let target = document.getElementById( button.getAttribute('data-copy-target') );
   let copyButtons = document.getElementsByClassName('copy-button');
-  if (navigator.clipboard) { // New style
+  if (navigator.clipboard) {
     navigator.clipboard.writeText(target.textContent).then(() => {
       resetButtonStatuses('success', button, copyButtons);
     }).catch(() => {
       resetButtonStatuses('fail', button, copyButtons);
     });
-  } else { // Old style
-    // ganked from https://stackoverflow.com/questions/34045777/copy-to-clipboard-using-javascript-in-ios
-    let oldEditable = target.contentEditable;
-    let oldRead = target.readOnly;
-    target.contentEditable = true;
-    target.readOnly = false;
-
-    let range = document.createRange();
-    range.selectNodeContents(target);
-    let s = window.getSelection();
-    s.removeAllRanges();
-    s.addRange(range);
-    target.setSelectionRange(0, target.textContent.length);
-
-    target.contentEditable = oldEditable;
-    target.readOnly = oldRead;
-
-    let result = document.execCommand('copy');
-    let status = result ? 'success' : 'fail';
-
-    resetButtonStatuses(status, button, copyButtons);
+  } else {
+    resetButtonStatuses('fail', button, copyButtons);
   }
 }
 
