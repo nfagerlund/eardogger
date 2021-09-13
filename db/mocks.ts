@@ -1,5 +1,5 @@
 import { NoMatchError } from './dogears';
-import { buildMeta } from './pg';
+import { buildMeta } from './helpers';
 import type {
   Dogear,
   FDogearCreate,

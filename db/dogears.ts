@@ -1,5 +1,6 @@
-import { query, buildMeta } from './pg';
-import type { Meta } from './pg';
+import { query} from './pg';
+import { buildMeta } from './helpers';
+import type { Meta } from './helpers';
 import { URL } from 'url';
 
 const protocolAndWww = /^((https?:\/\/)?((www|m)\.)*)?/;
