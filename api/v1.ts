@@ -3,6 +3,7 @@ import express from 'express';
 import type { Request, Response, NextFunction } from 'express';
 import * as dogears from '../db/dogears';
 import { TokenScope } from '../db/tokens';
+import { normalizeIntParam } from '../util';
 
 const router = express.Router({mergeParams: true});
   // TODO: Once I move to token auth, I might want to set this to false? IDK.
@@ -113,7 +114,11 @@ router.get('/list', function(req, res){
   if (!req.user) {
     throw new Error("Tried to list dogears without authenticated user");
   }
-  dogears.list(req.user.id).then(dogears => {
+  dogears.list(
+    req.user.id,
+    normalizeIntParam(req.query.page),
+    normalizeIntParam(req.query.size),
+  ).then(dogears => {
     res.status(200).json(dogears);
   }).catch(err => {
     res.status(400).json({error: err.toString()});

@@ -121,15 +121,33 @@ Malformed, bad API version, etc. | 400, JSON object with `{error: "error message
 
 List all dogears.
 
-No parameters.
+#### Query parameters:
+
+Name | Type | Desc
+-|-|-
+`page` | integer | The page of dogears to return. Defaults to `1`.
+`size` | integer | The number of dogears to return per page. Defaults to `50`.
 
 #### Returns
 
 Outcome | Response
 -|-
-Success | 200, array of dogear objects
+Success | 200, `{data: array-of-dogears, meta: list-metadata}`
 Malformed, bad API version, etc. | 400, JSON object with `{error: "error message"}`
 
+The `meta` key of the response is an object describing the pagination details and the shape of the whole dataset. Using Typescript notation, the expected format is:
+
+```typescript
+{
+  pagination: {
+    current_page: number,
+    prev_page: number | null,
+    next_page: number | null,
+    total_pages: number,
+    total_count: number,
+  },
+}
+```
 
 ### DELETE /api/v1/dogear/:id
 
