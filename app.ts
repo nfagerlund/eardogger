@@ -222,18 +222,39 @@ app.post('/changepassword', function(req, res){
 });
 
 // Account page
-app.get('/account', function(req, res){
+app.get('/account', function(req, res, next){
   if (req.user) {
-    res.render('account', {title: 'Manage account'});
+    tokens.list(req.user.id, normalizeInt(req.query.page)).then(tokensResponse => {
+      let tokensList = templateTokens(tokensResponse.data);
+      let pagination = tokensResponse.meta.pagination;
+      res.render('account', {
+        title: 'Manage account',
+        tokens: tokensList,
+        pagination,
+      });
+    }).catch(err => { return next(err); });
   } else {
     res.status(401).send("Can't manage account if you're logged out");
   }
 });
 
+function normalizeInt(queryParam: any): number {
+  if (typeof queryParam === 'string') {
+    return parseInt(queryParam) || 1;
+  } else {
+    return 1;
+  }
+}
+
+let tokenScopeText = {
+  write_dogears: 'Can mark your spot.',
+  manage_dogears: 'Can view, update, and delete dogears.',
+};
+
 function templateTokens(tokensList: Array<tokens.Token>) {
   return tokensList.map(token => ({
     id: token.id,
-    scope: token.scope,
+    scope: tokenScopeText[token.scope],
     created: token.created.toLocaleDateString(),
     comment: token.comment,
     token: token.token,
@@ -245,18 +266,12 @@ function templateTokens(tokensList: Array<tokens.Token>) {
 // expecting anyone to ever have > 50 tokens anyway, but still let's do it right.
 app.get('/fragments/tokens', function(req, res, next) {
   if (req.user) {
-    let pageParam = req.query.page;
-    let page: number;
-    if (typeof pageParam === 'string') {
-      page = parseInt(pageParam) || 1;
-    } else {
-      page = 1;
-    }
-    tokens.list(req.user.id, page).then(tokensResponse => {
-      let { data: tokensList, meta: { pagination } } = tokensResponse;
+    tokens.list(req.user.id, normalizeInt(req.query.page)).then(tokensResponse => {
+      let tokensList = templateTokens(tokensResponse.data);
+      let pagination = tokensResponse.meta.pagination;
       res.render('fragments/tokens', {
         layout: false,
-        tokens: templateTokens(tokensList),
+        tokens: tokensList,
         pagination,
       });
     }).catch(err => { return next(err); });
