@@ -33,6 +33,11 @@ const hbsViews = expressHandlebars.create({
   extname: '.hbs',
   // defaults for layoutsDir and partialsDir
   defaultLayout: 'main', // that's the default but I hate magic and wonder
+  helpers: {
+    gt: function(lhs: number, rhs: number) {
+      return lhs > rhs;
+    }
+  },
 });
 
 app.engine('hbs', hbsViews.engine); // register for extension
