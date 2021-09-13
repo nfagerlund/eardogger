@@ -277,6 +277,21 @@ app.get('/fragments/tokens', function(req, res, next) {
   }
 });
 
+// Implementation for token delete button. Not doing this in API because of
+// permissions complexity.
+app.delete('/tokens/:id', function(req, res) {
+  if (req.user) {
+    let id = parseInt(req.params.id);
+    tokens.destroy(req.user.id, id).then(() => {
+      res.sendStatus(204);
+    }).catch(err => {
+      res.status(400).send(err);
+    });
+  } else {
+    res.sendStatus(401);
+  }
+});
+
 // Status endpoint
 app.get('/status', function(req, res) {
   res.sendStatus(204);

@@ -72,6 +72,13 @@ describe("/account", () => {
   });
 });
 
+describe("DELETE /tokens/:id", () => {
+  test("it returns 204", async () => {
+    let response = await request(app).delete('/tokens/1');
+    expect(response.statusCode).toBe(204);
+  });
+});
+
 describe("index page", () => {
   test("it renders", async () => {
     let response = await request(app).get('/');

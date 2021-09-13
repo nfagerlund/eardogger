@@ -70,6 +70,13 @@ describe("account page", () => {
   });
 });
 
+describe("DELETE /tokens/:id", () => {
+  test("it 401s", async () => {
+    let response = await request(app).delete('/tokens/1');
+    expect(response.statusCode).toBe(401);
+  });
+});
+
 function makeDoc(text: string) {
   return (new JSDOM(text)).window.document;
 }
