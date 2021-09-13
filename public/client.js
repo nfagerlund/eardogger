@@ -60,13 +60,24 @@ function submitDogear(dest, dogObj, triggerElement) {
 
 // u guessed it,
 function deleteDogear(id, triggerElement) {
+  triggerElement.classList.add('busy-fetching');
   fetch(`/api/v1/dogear/${id}`, {
     method: 'DELETE',
     credentials: 'include',
     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-  }).then(_res => {
+  }).then(() => {
     replaceFragment('/fragments/dogears', '/', 'dogears-fragment', triggerElement);
   });
+}
+
+function deleteToken(id, triggerElement) {
+  triggerElement.classList.add('busy-fetching');
+  fetch(`/tokens/${id}`, {
+    method: 'DELETE',
+    credentials: 'include',
+  }).then(() => {
+    replaceFragment('/fragments/tokens', '/account', 'tokens-fragment', triggerElement);
+  })
 }
 
 // general-purpose way to update a fragment of a page
@@ -124,10 +135,13 @@ document.addEventListener('click', function(e){
     e.preventDefault();
     clipboardHandler(that);
   } else if (that.matches('.really-delete.delete-dogear')) {
-    // Armed delete buttons (order matters, must check this before the next one):
+    // Armed delete buttons (order matters, must check this before the "really" one):
     e.preventDefault();
     deleteDogear(that.getAttribute('data-dogear-id'), that);
-  } else if (that.matches('.delete-dogear')) {
+  } else if (that.matches('.really-delete.token-delete')) {
+    e.preventDefault();
+    deleteToken(that.getAttribute('data-token-id'), that);
+  } else if (that.matches('.delete-button')) {
     // Unarmed delete buttons:
     e.preventDefault();
     that.classList.add('really-delete');
