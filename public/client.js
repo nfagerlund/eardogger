@@ -107,6 +107,25 @@ function deleteDogear(id) {
   });
 }
 
+function replaceFragment(url, fragmentElementId, triggerElement) {
+  triggerElement.classList.add('busy-fetching');
+  return fetch(url, {
+    credentials: 'include',
+  }).then(response => {
+    response.text().then(text => {
+      if (response.ok) {
+        document.getElementById(fragmentElementId).outerHTML = text;
+      } else {
+        document.getElementById(fragmentElementId).prepend(`Hmm, something went wrong: ${text}`);
+      }
+    });
+  }).catch(err => {
+    document.getElementById(fragmentElementId).prepend(`Hmm, something went wrong: ${err}`);
+  }).finally(() => {
+    triggerElement.classList.remove('busy-fetching');
+  });
+}
+
 // The big "clicking on buttons" listener
 document.addEventListener('click', function(e){
   const that = e.target;
@@ -116,6 +135,17 @@ document.addEventListener('click', function(e){
     const helpTarget = document.getElementById( that.getAttribute('data-help-target') );
     helpTarget.classList.toggle('help-hidden');
     that.classList.toggle('help-reveal-active');
+  } else if (that.matches('.pagination-link')) {
+    e.preventDefault();
+    replaceFragment(
+      that.getAttribute('data-fragment-url'),
+      that.getAttribute('data-fragment-element-id'),
+      that
+    ).then(() => {
+      // Later, do a history.pushState(), once I sort that out.
+    }).catch(() => {
+      // set location.href
+    });
   } else if (that.matches('.copy-button')) {
     // Clipboard copy buttons:
     e.preventDefault();
