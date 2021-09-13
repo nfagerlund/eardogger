@@ -1,0 +1,11 @@
+<nav class="pagination">
+  {{#if pagination.prev_page}}
+    <a class="pagination-link pagination-previous" href="{{page}}?page={{pagination.prev_page}}" data-fragment-url="{{fragment}}?page={{pagination.prev_page}}">Previous</a>
+    —
+  {{/if}}
+  <span class="pagination-current">Page {{pagination.current_page}} of {{pagination.total_pages}}</span>
+  {{#if pagination.next_page}}
+    —
+    <a class="pagination-link pagination-next" href="{{page}}?page={{pagination.next_page}}" data-fragment-url="{{fragment}}?page={{pagination.next_page}}">Next</a>
+  {{/if}}
+</nav>

@@ -1,15 +1,5 @@
 <section id="tokens-fragment">
-  <nav class="pagination">
-    {{#if pagination.prev_page}}
-      <a class="pagination-previous" href="/account?page={{pagination.prev_page}}" data-fragment-url="/fragments/tokens?page={{pagination.prev_page}}">Previous</a>
-      —
-    {{/if}}
-    <span class="pagination-current">Page {{pagination.current_page}} of {{pagination.total_pages}}</span>
-    {{#if pagination.next_page}}
-      —
-      <a class="pagination-next" href="/account?page={{pagination.next_page}}" data-fragment-url="/fragments/tokens?page={{pagination.next_page}}">Next</a>
-    {{/if}}
-  </nav>
+  {{> pagination pagination=pagination page="/account" fragment="/fragments/tokens"}}
   <ul id="tokens-list">
     {{#each tokens}}
       <li class="token" data-token-id="{{this.id}}">
@@ -21,4 +11,5 @@
       </li>
     {{/each}}
   </ul>
+  {{> pagination pagination=pagination page="/account" fragment="/fragments/tokens"}}
 </section>
