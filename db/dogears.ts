@@ -96,7 +96,7 @@ let list: FDogearList = async function(userID: number, page: number = 1, size: n
   let offset = (page - 1) * size;
   let result = await query(
     "SELECT id, user_id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC LIMIT $2 OFFSET $3",
-    [userID, page, offset]
+    [userID, size, offset]
   );
   let countResult = await query(
     "SELECT COUNT(*) AS count FROM dogears WHERE user_id = $1",
