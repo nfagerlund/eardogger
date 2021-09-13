@@ -298,10 +298,11 @@ function templateDogears(dogearsList: Array<dogears.Dogear>) {
 app.get('/', function(req, res, next) {
   if (req.user) {
     let { id, username } = req.user;
-    dogears.list(id).then((dogearsList) => {
+    dogears.list(id, normalizeInt(req.query.page)).then(result => {
       res.render('index', {
         title: `${username}'s Dogears`,
-        dogears: templateDogears(dogearsList.data),
+        dogears: templateDogears(result.data),
+        pagination: result.meta.pagination,
       });
     }).catch(err => { return next(err); });
   } else {
@@ -312,10 +313,11 @@ app.get('/', function(req, res, next) {
 // Dogears list as an HTML fragment (just LIs without a surrounding UL)
 app.get('/fragments/dogears', function(req, res, next) {
   if (req.user) {
-    dogears.list(req.user.id).then(dogearsList => {
+    dogears.list(req.user.id, normalizeInt(req.query.page)).then(result => {
       res.render('fragments/dogears', {
         layout: false,
-        dogears: templateDogears(dogearsList.data),
+        dogears: templateDogears(result.data),
+        pagination: result.meta.pagination,
       });
     }).catch(err => { return next(err); });
   } else {
