@@ -9,13 +9,19 @@ export default function initializeSession(): RequestHandler {
     throw new Error("The SESSION_SECRET environment variable wasn't set, and I absolutely demand it. Plz fix your env.");
   }
 
+  let secure = true;
+  if (process.env.EARDOGGER_INSECURE) {
+    console.log("Heads up: Setting session cookies to insecure mode due to EARDOGGER_INSECURE environment variable.");
+    secure = false;
+  }
+
   // session handling
   let sessionOptions: session.SessionOptions = {
     name: 'eardogger.sessid',
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 30 * 2, // two months, in milliseconds.
       sameSite: 'none',
-      secure: true,
+      secure: secure,
       httpOnly: false,
     },
     store: new pgSession({

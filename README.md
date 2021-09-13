@@ -18,6 +18,7 @@ The app needs these in order to run properly.
 - `DATABASE_URL` — Postgres connection string. Heroku automatically provides this.
 - `PORT` — Port for webserver to bind to. Heroku and Glitch automatically provide this.
 - `SESSION_SECRET` — Arbitrary secret used for securing user login sessions. No one provides it.
+- `EARDOGGER_INSECURE` - Set this to enable non-`secure` cookies in dev mode.
 
 ## Running Migrations
 
