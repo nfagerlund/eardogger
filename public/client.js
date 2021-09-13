@@ -88,14 +88,16 @@ function deleteDogear(id) {
   });
 }
 
-function replaceFragment(url, fragmentElementId, triggerElement) {
+// general-purpose way to update a fragment of a page
+function replaceFragment(fragmentUrl, newPageUrl, fragmentElementId, triggerElement) {
   triggerElement.classList.add('busy-fetching');
-  return fetch(url, {
+  return fetch(fragmentUrl, {
     credentials: 'include',
   }).then(response => {
     response.text().then(text => {
       if (response.ok) {
         document.getElementById(fragmentElementId).outerHTML = text;
+        history.pushState({fragmentElementId, fragmentText: text}, '', newPageUrl);
       } else {
         document.getElementById(fragmentElementId).prepend(`Hmm, something went wrong: ${text}`);
       }
@@ -106,6 +108,16 @@ function replaceFragment(url, fragmentElementId, triggerElement) {
     triggerElement.classList.remove('busy-fetching');
   });
 }
+
+// history state: { fragmentUrl: string, fragmentElementId: string, fragmentText: string }
+
+// Handle back/forward nav for partial page updates
+window.addEventListener('popstate', function(e) {
+  if (e.state && e.state.fragmentElementId && e.state.fragmentText) {
+    let { fragmentElementId, fragmentText } = e.state;
+    document.getElementById(fragmentElementId).outerHTML = fragmentText;
+  }
+});
 
 // The big "clicking on buttons" listener
 document.addEventListener('click', function(e){
@@ -120,12 +132,11 @@ document.addEventListener('click', function(e){
     e.preventDefault();
     replaceFragment(
       that.getAttribute('data-fragment-url'),
+      that.getAttribute('href'),
       that.getAttribute('data-fragment-element-id'),
       that
-    ).then(() => {
-      // Later, do a history.pushState(), once I sort that out.
-    }).catch(() => {
-      // set location.href
+    ).catch(() => {
+      document.location.href = that.getAttribute('href');
     });
   } else if (that.matches('.copy-button')) {
     // Clipboard copy buttons:
