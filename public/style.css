@@ -182,14 +182,16 @@ form#logout {
 #dogears .delete-dogear {
   grid-area: delete;
   align-self: self-start;
+}
 
+.delete-button {
   max-width: 6em; /* that's a hack around inability to transition auto values. */
   transition: max-width 1s linear, background-color .5s ease-out;
   white-space: nowrap;
   overflow-x: hidden;
 }
 
-#dogears .really-delete-dogear {
+.really-delete {
   max-width: 16em;
   background-color: var(--color-danger);
 }

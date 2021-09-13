@@ -123,22 +123,22 @@ document.addEventListener('click', function(e){
     // Clipboard copy buttons:
     e.preventDefault();
     clipboardHandler(that);
-  } else if (that.matches('.really-delete-dogear')) {
+  } else if (that.matches('.really-delete.delete-dogear')) {
     // Armed delete buttons (order matters, must check this before the next one):
     e.preventDefault();
     deleteDogear(that.getAttribute('data-dogear-id'), that);
   } else if (that.matches('.delete-dogear')) {
     // Unarmed delete buttons:
     e.preventDefault();
-    that.classList.add('really-delete-dogear');
+    that.classList.add('really-delete');
     that.innerText = 'REALLY delete';
   } else {
     // Disarm delete buttons when clicking elsewhere:
-    const reallies = this.getElementsByClassName('really-delete-dogear');
+    const reallies = this.getElementsByClassName('really-delete');
     // it's a live HTMLCollection, so we have to run the loop backwards. Comedy.
     for (var i = reallies.length - 1; i >= 0; i--) {
       reallies[i].innerText = 'Delete';
-      reallies[i].classList.remove('really-delete-dogear');
+      reallies[i].classList.remove('really-delete');
     }
   }
 });
