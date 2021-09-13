@@ -1,4 +1,10 @@
 <section class="dogears" id="dogears-fragment">
+  {{> pagination
+    pagination=pagination
+    page="/"
+    fragment="/fragments/dogears"
+    fragment_id="dogears-fragment"
+  }}
   <ul id="dogears">
     {{#each dogears}}
       <li>
@@ -9,4 +15,10 @@
       </li>
     {{/each}}
   </ul>
+  {{> pagination
+    pagination=pagination
+    page="/"
+    fragment="/fragments/dogears"
+    fragment_id="dogears-fragment"
+  }}
 </section>
