@@ -1,0 +1,12 @@
+<section class="dogears" id="dogears-fragment">
+  <ul id="dogears">
+    {{#each dogears}}
+      <li>
+          <a href="{{this.current}}">{{this.linkText}}</a>
+          <span class="current">({{this.current}})</span>
+          <span class="date">Last read: {{this.updatedString}}</span>
+          <button type="button" class="delete-dogear" data-dogear-id="{{this.id}}">Delete</button>
+      </li>
+    {{/each}}
+  </ul>
+</section>

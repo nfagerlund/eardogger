@@ -39,27 +39,8 @@ function resetButtonStatuses(newStatus, activeButton, allButtons) {
   }
 }
 
-// Get the list of bookmarks from the backend, and refresh the on-page list with current info.
-function refreshDogears() {
-  const bookmarksList = document.getElementById('dogears');
-  if (!bookmarksList) {
-    return;
-  }
-
-  fetch('/fragments/dogears', {
-    method: 'GET',
-    credentials: 'include',
-  }).then(response => {
-    response.text().then(dogears => {
-      bookmarksList.innerHTML = dogears;
-    });
-  }).catch(err => {
-    bookmarksList.innerHTML = `<li>Something went wrong! Error: ${err}</li>`;
-  });
-}
-
 // Submit a dogear object to the endpoint of your choice. Returns a promise that resolves to a bool (success y/n).
-function submitDogear(dest, dogObj) {
+function submitDogear(dest, dogObj, triggerElement) {
   return fetch(dest, {
     method: 'POST',
     credentials: 'include',
@@ -67,7 +48,7 @@ function submitDogear(dest, dogObj) {
     body: JSON.stringify(dogObj)
   }).then(response => {
     if (response.ok) {
-      refreshDogears();
+      replaceFragment('/fragments/dogears', '/', 'dogears-fragment', triggerElement);
       return true;
     } else {
       return false;
@@ -78,13 +59,13 @@ function submitDogear(dest, dogObj) {
 };
 
 // u guessed it,
-function deleteDogear(id) {
+function deleteDogear(id, triggerElement) {
   fetch(`/api/v1/dogear/${id}`, {
     method: 'DELETE',
     credentials: 'include',
     headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
   }).then(_res => {
-    refreshDogears();
+    replaceFragment('/fragments/dogears', '/', 'dogears-fragment', triggerElement);
   });
 }
 
@@ -145,7 +126,7 @@ document.addEventListener('click', function(e){
   } else if (that.matches('.really-delete-dogear')) {
     // Armed delete buttons (order matters, must check this before the next one):
     e.preventDefault();
-    deleteDogear(that.getAttribute('data-dogear-id'));
+    deleteDogear(that.getAttribute('data-dogear-id'), that);
   } else if (that.matches('.delete-dogear')) {
     // Unarmed delete buttons:
     e.preventDefault();
@@ -167,9 +148,11 @@ document.addEventListener('submit', function(e){
   const that = e.target;
   if (that.matches('#update-dogear')) {
     e.preventDefault();
-    submitDogear('/api/v1/update', {
-      current: that.elements['current'].value,
-    }).then(success => {
+    submitDogear(
+      '/api/v1/update',
+      {current: that.elements['current'].value},
+      that
+    ).then(success => {
       if (success) {
         that.elements['current'].value = '';
       } else {
