@@ -50,7 +50,7 @@ describe("Dogears database layer", () => {
 //
   test("Create and list", async () => {
     // Set up a user, no pw/email
-    const {id: userID} = await users.create('dogears_create_and_list');
+    let {id: userID} = await users.create('dogears_create_and_list');
 
     // No dogears for new user
     await expect(dogears.list(userID)).resolves.toStrictEqual({
@@ -60,24 +60,24 @@ describe("Dogears database layer", () => {
           current_page: 1,
           prev_page: null,
           next_page: null,
-          total_pages: 1,
+          total_pages: 0,
           total_count: 0,
         },
       },
     });
 
     // Make sure creating a dogear works.
-    await Promise.all([
-      // A normal one.
-      expect(dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).resolves.toMatchObject({prefix: 'example.com/comic/'}),
-      // A second one, with no title.
-      expect(dogears.create(userID, 'example.com/story/', 'https://example.com/story/2')).resolves.toBeDefined(),
-      // A third, with no current.
-      expect(dogears.create(userID, 'example.com/extras/')).resolves.toBeDefined(),
-    ]);
+    // A normal one.
+    expect(await dogears.create(userID, 'example.com/comic/', 'https://example.com/comic/240', 'Example Comic')).toMatchObject({prefix: 'example.com/comic/'});
+    // A second one, with no title.
+    expect(await dogears.create(userID, 'example.com/story/', 'https://example.com/story/2')).toMatchObject({prefix: 'example.com/story/'});
+    // A third, with no current.
+    expect(await dogears.create(userID, 'example.com/extras/')).toMatchObject({prefix: 'example.com/extras/'});
 
     // Three dogears now
-    await expect(dogears.list(userID)).resolves.toHaveLength(3);
+    let result = await dogears.list(userID);
+    expect(result.data.length).toBe(3);
+    expect(result.meta.pagination.total_count).toBe(3);
   });
 
   test("Save and restore", async () => {
@@ -266,7 +266,6 @@ describe("tokens database layer", () => {
     }
     // Default page size of 50:
     let firstPage = await tokens.list(rightUser.id);
-    console.log(firstPage);
     expect(Array.isArray(firstPage.data)).toBe(true);
     expect(firstPage.data).toHaveLength(14);
     expect(firstPage.meta.pagination).toMatchObject({
