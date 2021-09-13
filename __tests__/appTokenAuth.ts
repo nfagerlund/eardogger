@@ -57,18 +57,18 @@ describe("manage_dogears scope", () => {
     let response = await request(app).get('/api/v1/list')
       .set('Authorization', 'Bearer tokenNickManage');
     expect(response.statusCode).toBe(200);
-    let body = response.body;
-    expect(Array.isArray(body)).toBe(true);
-    expect(body.length > 0).toBe(true); // cf. mocks
+    let data = response.body.data;
+    expect(Array.isArray(data)).toBe(true);
+    expect(data.length > 0).toBe(true); // cf. mocks
   });
 
   test("different users get different lists", async () => {
     let response = await request(app).get('/api/v1/list')
       .set('Authorization', 'Bearer tokenWrongManage');
     expect(response.statusCode).toBe(200);
-    let body = response.body;
-    expect(Array.isArray(body)).toBe(true);
-    expect(body).toHaveLength(0); // cf. mocks
+    let data = response.body.data;
+    expect(Array.isArray(data)).toBe(true);
+    expect(data).toHaveLength(0); // cf. mocks
   });
 
   test("can create dogears", async () => {
