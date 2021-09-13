@@ -72,11 +72,31 @@ let update: FDogearUpdate = async function(userID: number, current: string) {
   }
 }
 
-let list: FDogearList = async function(userID: number) {
-  if (userID === 1) {
-    return dogearsData;
+let list: FDogearList = async function(userID: number, page: number = 1, size: number = 50) {
+  let count = 2;
+  let dataPage: Array<Dogear>;
+  if (size === 1) {
+    if (page === 1) {
+      dataPage = [dogearsData[0]];
+    } else if (page === 2) {
+      dataPage = [dogearsData[1]];
+    } else {
+      dataPage = [];
+    }
   } else {
-    return [];
+    dataPage = dogearsData;
+  }
+
+  if (userID === 1) {
+    return {
+      data: dataPage,
+      meta: buildMeta(count, page, size),
+    };
+  } else {
+    return {
+      data: [],
+      meta: buildMeta(0, page, size),
+    };
   }
 }
 

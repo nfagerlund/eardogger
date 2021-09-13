@@ -301,7 +301,7 @@ app.get('/', function(req, res, next) {
     dogears.list(id).then((dogearsList) => {
       res.render('index', {
         title: `${username}'s Dogears`,
-        dogears: templateDogears(dogearsList),
+        dogears: templateDogears(dogearsList.data),
       });
     }).catch(err => { return next(err); });
   } else {
@@ -315,7 +315,7 @@ app.get('/fragments/dogears', function(req, res, next) {
     dogears.list(req.user.id).then(dogearsList => {
       res.render('fragments/dogears', {
         layout: false,
-        dogears: templateDogears(dogearsList),
+        dogears: templateDogears(dogearsList.data),
       });
     }).catch(err => { return next(err); });
   } else {

@@ -1,4 +1,5 @@
-import * as db from './pg';
+import { query, buildMeta } from './pg';
+import type { Meta } from './pg';
 import { URL } from 'url';
 
 const protocolAndWww = /^((https?:\/\/)?((www|m)\.)*)?/;
@@ -50,7 +51,7 @@ let create: FDogearCreate = async function(
     displayName = displayName.trim();
   }
 
-  const result = await db.query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " +
+  const result = await query("INSERT INTO dogears (user_id, prefix, current, display_name) VALUES ($1, $2, $3, $4) " +
       "ON CONFLICT (user_id, prefix) DO UPDATE SET " +
       "current = $3, updated = current_timestamp, display_name = $4 WHERE " +
       "EXCLUDED.user_id = $1 AND EXCLUDED.prefix = $2 " +
@@ -74,7 +75,7 @@ let update: FDogearUpdate = async function(userID: number, current: string): Pro
   } catch(e) {
     throw new TypeError("Update dogear requires a valid URL");
   }
-  const result = await db.query("UPDATE dogears " +
+  const result = await query("UPDATE dogears " +
       "SET current = $2, updated = current_timestamp WHERE " +
       "user_id = $1 AND $2 LIKE $3 || prefix || '%' " +
       "RETURNING id, user_id, prefix, current, display_name, updated",
@@ -86,18 +87,31 @@ let update: FDogearUpdate = async function(userID: number, current: string): Pro
   return result.rows;
 }
 
-type FDogearList = (userID: number) => Promise<Array<Dogear>>;
-let list: FDogearList = async function(userID: number): Promise<Array<Dogear>> {
-  const result = await db.query(
-    "SELECT id, user_id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC",
+type FDogearList = (userID: number, page?: number, size?: number) => Promise<{data: Array<Dogear>, meta: Meta}>;
+let list: FDogearList = async function(userID: number, page: number = 1, size: number = 50): Promise<{data: Array<Dogear>, meta: Meta}> {
+  if (page <= 0 || size <= 0) {
+    throw new Error("Neither page nor page size can be <= 0.");
+  }
+  let offset = (page - 1) * size;
+  let result = await query(
+    "SELECT id, user_id, prefix, current, display_name, updated FROM dogears WHERE user_id = $1 ORDER BY updated DESC LIMIT $2 OFFSET $3",
+    [userID, page, offset]
+  );
+  let countResult = await query(
+    "SELECT COUNT(*) AS count FROM dogears WHERE user_id = $1",
     [userID]
   );
-  return result.rows;
+  let count = parseInt(countResult.rows[0].count);
+
+  return {
+    data: result.rows,
+    meta: buildMeta(count, page, size),
+  };
 }
 
 type FDogearDestroy = (userID: number, id: number) => Promise<void>;
 let destroy: FDogearDestroy = async function(userID: number, id: number): Promise<void> {
-  const result = await db.query(
+  const result = await query(
     "DELETE FROM dogears WHERE id = $2 AND user_id = $1",
     [userID, id]
   );
@@ -110,7 +124,7 @@ let destroy: FDogearDestroy = async function(userID: number, id: number): Promis
 type FDogearCurrently = (userID: number, urlOrPrefix: string) => Promise<string | false>;
 let currently: FDogearCurrently = async function(userID: number, urlOrPrefix: string): Promise<string | false> {
   urlOrPrefix = urlOrPrefix.trim();
-  const result = await db.query(
+  const result = await query(
     "SELECT current FROM dogears WHERE user_id = $1 AND $2 LIKE $3 || prefix || '%' ORDER BY LENGTH(prefix) DESC",
     [userID, urlOrPrefix, getProtocolAndWww(urlOrPrefix)]
   );
