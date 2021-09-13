@@ -10,6 +10,7 @@ export {
   bookmarkletText,
   projectRoot,
   resolveFromProjectRoot,
+  normalizeIntParam,
 }
 
 function resolveFromProjectRoot(filePath: string) {
@@ -57,4 +58,14 @@ async function bookmarkletText(bookmarkletName: string, token = '') {
     text = text.replace(/eardogger\.com/g, process.env.SITE_HOSTNAME);
   }
   return 'javascript:' + encodeURI(text);
+}
+
+// Express query params can be a variety of oddball classes, so this helper
+// resolves them to a plain `number | undefined`.
+function normalizeIntParam(queryParam: any): number | undefined {
+  if (typeof queryParam === 'string') {
+    return parseInt(queryParam) || 1;
+  } else {
+    return undefined;
+  }
 }

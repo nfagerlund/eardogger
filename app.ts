@@ -14,7 +14,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import type { IVerifyOptions as LocalVerifyOptions } from 'passport-local';
 import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import expressHandlebars from 'express-handlebars';
-import { bookmarkletText, resolveFromProjectRoot } from './util';
+import { bookmarkletText, resolveFromProjectRoot, normalizeIntParam } from './util';
 // Application object DB helpers
 import * as dogears from './db/dogears';
 import * as users from './db/users';
@@ -224,7 +224,7 @@ app.post('/changepassword', function(req, res){
 // Account page
 app.get('/account', function(req, res, next){
   if (req.user) {
-    tokens.list(req.user.id, normalizeInt(req.query.page)).then(tokensResponse => {
+    tokens.list(req.user.id, normalizeIntParam(req.query.page)).then(tokensResponse => {
       let tokensList = templateTokens(tokensResponse.data);
       let pagination = tokensResponse.meta.pagination;
       res.render('account', {
@@ -237,14 +237,6 @@ app.get('/account', function(req, res, next){
     res.status(401).send("Can't manage account if you're logged out");
   }
 });
-
-function normalizeInt(queryParam: any): number {
-  if (typeof queryParam === 'string') {
-    return parseInt(queryParam) || 1;
-  } else {
-    return 1;
-  }
-}
 
 let tokenScopeText = {
   write_dogears: 'Can mark your spot.',
@@ -266,7 +258,7 @@ function templateTokens(tokensList: Array<tokens.Token>) {
 // expecting anyone to ever have > 50 tokens anyway, but still let's do it right.
 app.get('/fragments/tokens', function(req, res, next) {
   if (req.user) {
-    tokens.list(req.user.id, normalizeInt(req.query.page)).then(tokensResponse => {
+    tokens.list(req.user.id, normalizeIntParam(req.query.page)).then(tokensResponse => {
       let tokensList = templateTokens(tokensResponse.data);
       let pagination = tokensResponse.meta.pagination;
       res.render('fragments/tokens', {
@@ -298,7 +290,7 @@ function templateDogears(dogearsList: Array<dogears.Dogear>) {
 app.get('/', function(req, res, next) {
   if (req.user) {
     let { id, username } = req.user;
-    dogears.list(id, normalizeInt(req.query.page)).then(result => {
+    dogears.list(id, normalizeIntParam(req.query.page)).then(result => {
       res.render('index', {
         title: `${username}'s Dogears`,
         dogears: templateDogears(result.data),
@@ -313,7 +305,7 @@ app.get('/', function(req, res, next) {
 // Dogears list as an HTML fragment (just LIs without a surrounding UL)
 app.get('/fragments/dogears', function(req, res, next) {
   if (req.user) {
-    dogears.list(req.user.id, normalizeInt(req.query.page)).then(result => {
+    dogears.list(req.user.id, normalizeIntParam(req.query.page)).then(result => {
       res.render('fragments/dogears', {
         layout: false,
         dogears: templateDogears(result.data),
