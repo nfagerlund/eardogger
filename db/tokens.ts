@@ -1,4 +1,5 @@
-import * as db from './pg';
+import { query, buildMeta } from './pg';
+import type { Meta } from './pg';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import type { User } from './users';
@@ -15,16 +16,6 @@ interface Token {
   token?: string,
 };
 
-interface Meta {
-  pagination: {
-    current_page: number,
-    prev_page: number | null,
-    next_page: number | null,
-    total_pages: number,
-    total_count: number,
-  },
-};
-
 function sha256hash(tokenCleartext: string) {
   return crypto.createHash('sha256').update(tokenCleartext).digest('hex');
 }
@@ -35,7 +26,7 @@ type FTokenCreate = (userID: number, scope: TokenScope, comment: string) => Prom
 let create: FTokenCreate = async function(userID: number, scope: TokenScope, comment: string): Promise<Token> {
   let tokenCleartext = `eardoggerv1.${uuidv4()}`;
   let tokenHash = sha256hash(tokenCleartext);
-  let result = await db.query(
+  let result = await query(
     "INSERT INTO tokens (user_id, token_hash, scope, comment) VALUES ($1, $2, $3, $4) RETURNING id, created",
     [userID, tokenHash, scope, comment]
   );
@@ -63,33 +54,23 @@ let list: FTokenList = async function(userId: number, page: number = 1, size: nu
     throw new Error("Neither page nor page size can be <= 0.");
   }
   let offset = (page - 1) * size;
-  let result = await db.query(
+  let result = await query(
     "SELECT id, user_id, scope, created, last_used, comment FROM tokens WHERE user_id = $1 ORDER BY last_used, id DESC LIMIT $2 OFFSET $3",
     [userId, size, offset]
   );
-  let countResult = await db.query("SELECT COUNT(*) AS count FROM tokens WHERE user_id = $1", [userId]);
+  let countResult = await query("SELECT COUNT(*) AS count FROM tokens WHERE user_id = $1", [userId]);
   // Not sure why COUNT() comes back as a string, but hey:
   let count = parseInt(countResult.rows[0].count);
-  let totalPages = Math.ceil(count/size);
-  let prevPage = page <= 1 ? null : Math.min(page - 1, totalPages);
-  let nextPage = page >= totalPages ? null : page + 1;
+
   return {
     data: result.rows,
-    meta: {
-      pagination: {
-        current_page: page,
-        prev_page: prevPage,
-        next_page: nextPage,
-        total_pages: totalPages,
-        total_count: count,
-      },
-    },
+    meta: buildMeta(count, page, size),
   };
 }
 
 type FTokenDestroy = (userID: number, id: number) => Promise<void>;
 let destroy: FTokenDestroy = async function(userID: number, id: number): Promise<void> {
-  let result = await db.query(
+  let result = await query(
     "DELETE FROM tokens WHERE id = $1 AND user_id = $2",
     [id, userID]
   );
@@ -100,7 +81,7 @@ let destroy: FTokenDestroy = async function(userID: number, id: number): Promise
 
 type FTokenFindWithUser = (tokenCleartext: string) => Promise<{token: Token, user: User} | null>;
 let findWithUser: FTokenFindWithUser = async function(tokenCleartext: string): Promise<{token: Token, user: User} | null> {
-  let result = await db.query(
+  let result = await query(
     "SELECT tokens.id AS token_id, users.id AS user_id, tokens.scope, tokens.created AS token_created, tokens.last_used, tokens.comment, users.username, users.email, users.created AS user_created FROM tokens JOIN users ON tokens.user_id = users.id WHERE tokens.token_hash = $1 LIMIT 1",
     [sha256hash(tokenCleartext)]
   );
@@ -111,7 +92,7 @@ let findWithUser: FTokenFindWithUser = async function(tokenCleartext: string): P
   }
   let fields = result.rows[0];
   // Update last_used (tho we're returning the old value.)
-  await db.query(
+  await query(
       "UPDATE tokens SET last_used = CURRENT_TIMESTAMP WHERE id = $1",
       [fields.token_id]
   );
@@ -146,7 +127,6 @@ export {
 export type {
   TokenScope,
   Token,
-  Meta,
   FTokenCreate,
   FTokenList,
   FTokenDestroy,

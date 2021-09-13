@@ -1,4 +1,5 @@
 import { NoMatchError } from './dogears';
+import { buildMeta } from './pg';
 import type {
   Dogear,
   FDogearCreate,
@@ -20,7 +21,6 @@ import type {
 import type {
   TokenScope,
   Token,
-  Meta,
   FTokenCreate,
   FTokenList,
   FTokenDestroy,
@@ -220,30 +220,21 @@ let tokenCreate: FTokenCreate = async function(userID: number, scope: TokenScope
 
 let tokenList: FTokenList = async function(userId: number, page: number = 1, size: number = 50) {
   let count = 2;
-  let totalPages = Math.ceil(count/size);
-  let prevPage = page <= 1 ? null : Math.min(page - 1, totalPages);
-  let nextPage = page >= totalPages ? null : page + 1;
-  let dataPage;
+  let dataPage: Array<Token>;
   if (size === 1) {
     if (page === 1) {
       dataPage = [nickTokens[0]];
-    } else {
+    } else if (page === 2) {
       dataPage = [nickTokens[1]];
+    } else {
+      dataPage = [];
     }
   } else {
     dataPage = nickTokens;
   }
   return {
     data: dataPage,
-    meta: {
-      pagination: {
-        current_page: page,
-        prev_page: prevPage,
-        next_page: nextPage,
-        total_pages: totalPages,
-        total_count: count,
-      },
-    },
+    meta: buildMeta(count, page, size),
   };
 }
 
