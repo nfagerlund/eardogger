@@ -280,3 +280,20 @@ form#logout {
 .help-reveal-active {
   transform: rotate(180deg);
 }
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.busy-fetching::after {
+  content: "🐶";
+  display: inline-block;
+  animation: rotation 2s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
