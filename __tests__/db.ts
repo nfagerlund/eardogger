@@ -53,7 +53,18 @@ describe("Dogears database layer", () => {
     const {id: userID} = await users.create('dogears_create_and_list');
 
     // No dogears for new user
-    await expect(dogears.list(userID)).resolves.toStrictEqual([]);
+    await expect(dogears.list(userID)).resolves.toStrictEqual({
+      data: [],
+      meta: {
+        pagination: {
+          current_page: 1,
+          prev_page: null,
+          next_page: null,
+          total_pages: 1,
+          total_count: 0,
+        },
+      },
+    });
 
     // Make sure creating a dogear works.
     await Promise.all([
@@ -101,10 +112,10 @@ describe("Dogears database layer", () => {
     // Updating w/ create()'s fallback behavior
     // also stripping protocol from prefix
     await expect(dogears.create(userID, 'http://example.com/comic/', 'https://example.com/comic/242', 'New Name')).resolves.toBeDefined();
-    let list = await dogears.list(userID);
+    let result = await dogears.list(userID);
     await Promise.all([
-      expect(list).toHaveLength(1),
-      expect(list[0]).toMatchObject({
+      expect(result.data).toHaveLength(1),
+      expect(result.data[0]).toMatchObject({
         current: 'https://example.com/comic/242',
         display_name: 'New Name',
         prefix: 'example.com/comic/',
@@ -124,7 +135,9 @@ describe("Dogears database layer", () => {
     await expect(dogears.destroy(userTwo, dogearID)).rejects.toThrow();
     // User one can destroy
     await expect(dogears.destroy(userOne, dogearID)).resolves.toBeUndefined();
-    await expect(dogears.list(userOne)).resolves.toHaveLength(0);
+    let emptyList = await dogears.list(userOne);
+    expect(emptyList.meta.pagination.total_count).toBe(0);
+    expect(emptyList.data.length).toBe(0);
   });
 
 });
@@ -253,6 +266,7 @@ describe("tokens database layer", () => {
     }
     // Default page size of 50:
     let firstPage = await tokens.list(rightUser.id);
+    console.log(firstPage);
     expect(Array.isArray(firstPage.data)).toBe(true);
     expect(firstPage.data).toHaveLength(14);
     expect(firstPage.meta.pagination).toMatchObject({

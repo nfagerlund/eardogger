@@ -113,9 +113,12 @@ describe("/fragments/dogears", () => {
     let response = await request(app).get('/fragments/dogears');
     expect(response.statusCode).toBe(200);
     let doc = JSDOM.fragment(response.text);
-    expect(doc.getElementById('dogears')).toBeFalsy(); // we only get the innerHTML of the UL
-    expect(doc.getElementById('update-dogear')).toBeFalsy(); // not an index page
+    // we get the full outer HTML of the section
+    expect(doc.getElementById('dogears')).toBeTruthy();
+    expect(doc.getElementById('dogears-fragment')).toBeTruthy();
     expect(doc.querySelectorAll('li').length > 0).toBe(true);
+    // but it's not an index page
+    expect(doc.getElementById('update-dogear')).toBeFalsy();
     // structure of a dogear LI:
     expect(doc.querySelector('li > a')).toBeTruthy();
     expect(doc.querySelector('li > .current')).toBeTruthy();
