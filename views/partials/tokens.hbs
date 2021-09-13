@@ -1,5 +1,10 @@
 <section id="tokens-fragment">
-  {{> pagination pagination=pagination page="/account" fragment="/fragments/tokens"}}
+  {{> pagination
+    pagination=pagination
+    page="/account"
+    fragment="/fragments/tokens"
+    fragment_id="tokens-fragment"
+  }}
   <ul id="tokens-list">
     {{#each tokens}}
       <li class="token" data-token-id="{{this.id}}">
@@ -11,5 +16,10 @@
       </li>
     {{/each}}
   </ul>
-  {{> pagination pagination=pagination page="/account" fragment="/fragments/tokens"}}
+  {{> pagination
+    pagination=pagination
+    page="/account"
+    fragment="/fragments/tokens"
+    fragment_id="tokens-fragment"
+  }}
 </section>
