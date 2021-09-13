@@ -13,6 +13,9 @@ const testDB = {
 const client = new Client(testDB);
 const pool = new Pool(testDB);
 
+// Allow tests in this one file to run a lil longer, bc sometimes they might.
+jest.setTimeout(10000); // 10s
+
 // swap in the test database for the main db helper
 jest.mock('../db/pg');
 import * as db from '../db/pg'; // crosses fingers
