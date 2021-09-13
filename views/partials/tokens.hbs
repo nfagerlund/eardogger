@@ -1,11 +1,24 @@
-<ul id="tokens-list">
-  {{#each tokens}}
-    <li class="token" data-token-id="{{this.id}}">
-      <span class="token-comment">{{this.comment}}</span>
-      <span class="token-last-used">Last used: {{#if this.last_used}}{{this.last_used}}{{else}}never{{/if}}</span>
-      <span class="token-created">Created: {{this.created}}</span>
-      <span class="token-scope">{{this.scope}}</span>
-      <button type="button" class="token-delete" data-token-id="{{this.id}}">Delete</button>
-    </li>
-  {{/each}}
-</ul>
+<section id="tokens-fragment">
+  <nav class="pagination">
+    {{#if pagination.prev_page}}
+      <a class="pagination-previous" href="/account?page={{pagination.prev_page}}" data-fragment-url="/fragments/tokens?page={{pagination.prev_page}}">Previous</a>
+      —
+    {{/if}}
+    <span class="pagination-current">Page {{pagination.current_page}} of {{pagination.total_pages}}</span>
+    {{#if pagination.next_page}}
+      —
+      <a class="pagination-next" href="/account?page={{pagination.next_page}}" data-fragment-url="/fragments/tokens?page={{pagination.next_page}}">Next</a>
+    {{/if}}
+  </nav>
+  <ul id="tokens-list">
+    {{#each tokens}}
+      <li class="token" data-token-id="{{this.id}}">
+        <span class="token-comment">{{this.comment}}</span>
+        <span class="token-last-used">Last used: {{#if this.last_used}}{{this.last_used}}{{else}}never{{/if}}</span>
+        <span class="token-created">Created: {{this.created}}</span>
+        <span class="token-scope">{{this.scope}}</span>
+        <button type="button" class="token-delete" data-token-id="{{this.id}}">Delete</button>
+      </li>
+    {{/each}}
+  </ul>
+</section>
