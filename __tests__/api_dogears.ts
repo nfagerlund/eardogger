@@ -53,17 +53,19 @@ describe("List dogears", () => {
     expect(response.header).not.toHaveProperty('access-control-allow-methods');
   });
 
-  test("returns JSON array of Dogears on success", async () => {
+  test("returns object whose `data` property is a JSON array of Dogears on success", async () => {
     let response = await request(app).get(testUrl);
     expect(response.statusCode).toBe(200);
     expect(response.type).toBe('application/json');
     let body = response.body;
-    // Response is a JSON array...
-    expect(Array.isArray(body)).toBe(true);
+    // Response is an object whose `data` property is an array...
+    expect(Array.isArray(body.data)).toBe(true);
     // ...with length > 0...
-    expect(body.length > 0).toBe(true);
+    expect(body.data.length > 0).toBe(true);
     // ...containing Dogear objects, or at least something that looks like them.
-    expect(body[0]).toMatchObject(dogearMatcher);
+    expect(body.data[0]).toMatchObject(dogearMatcher);
+    // Response also has a meta property with pagination info:
+    expect(body.meta.pagination.total_count > 0).toBe(true);
   });
 
   // No real notable error condition I know to test, at least within the API's
