@@ -155,6 +155,10 @@ form#logout {
   border-bottom: 1px solid;
 }
 
+#dogears li:last-child, .token:last-child {
+  border-bottom: 0;
+}
+
 #dogears li {
   grid-template-columns: 1fr auto auto;
   grid-template-rows: 1fr auto;
