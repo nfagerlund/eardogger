@@ -1,109 +1,90 @@
-<h2 id="install">Install the Eardogger Bookmarklets</h2>
+<h2 id="install">Install the Eardogger Bookmarklet(s)</h2>
 
-<p>Bookmarklets are like simple browser extensions: when you activate them, they perform an action on whatever page you're currently viewing. Eardogger uses two bookmarklets:</p>
+<p>Eardogger relies on a <strong>bookmarklet,</strong> which needs to be installed in your web browser.</p>
 
-<ul>
-  <li><strong>"Mark my spot"</strong> — Self-explanatory.</li>
-  <li><strong>"Where was I?"</strong> (optional) — Like a "load saved game" button. If you previously marked your spot on the site you're viewing, this jumps directly to your saved location.</li>
-</ul>
+<p>Bookmarklets are like simple browser extensions: when you activate them, they perform an action on whatever page you're currently viewing.</p>
 
-<p>If your desktop and mobile browsers sync bookmarks with each other, you might only need to install these once; bookmarklets get synced just like regular bookmarks.</p>
+<p>Once you install Eardogger's "Mark my spot" bookmarklet, you can activate it whenever you want to save your place on a site. It works on both mobile and desktop.</p>
 
-<div class="columns">
-  <div>
-    <h3><a href="{{mark}}">Mark my spot</a></h3>
+<nav class="tabs">
+  <a href="#" id="tab-desktop-instructions" data-show="desktop" class="active">Desktop</a>
+  <a href="#" id="tab-ios-instructions" data-show="ios">iOS</a>
+  <a href="#" id="tab-android-instructions" data-show="android">Android</a>
+</nav>
 
-    <p><strong>Desktop:</strong> Bookmark that link ⬆️</p>
+<section class="tabbed-instructions">
+  <h2 class="only desktop">Desktop Instructions</h2>
+  <h2 class="only ios">iOS Instructions (Safari)</h2>
+  <h2 class="only android">Android Instructions (Chrome)</h2>
 
-    <p><strong>Mobile:</strong> Make a random bookmark, then replace its URL with that text ⬇️</p>
+  <p class="only ios">First, use the share menu to add a new bookmark for <em>this install page.</em> Put it in the "Favorites" folder, and change its name to "🐶 Mark my spot".</p>
 
-    <button type="button" class="copy-button" data-copy-target="bookmarklet-text-mark" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
+  <p class="only android">First, open Chrome's "…" menu and tap the star to add a new bookmark for <em>this install page.</em> Change its name to "🐶 Mark my spot".</p>
 
-    <textarea
-      id="bookmarklet-text-mark"
-      readonly
-      rows="3"
-      cols="20"
-      spellcheck="false"
-    >{{mark}}</textarea>
-  </div>
+  <p>
+    <span class="only desktop">First,</span>
+    <span class="only ios android">Next,</span>
+    click the button below to generate a personal bookmarklet. This bookmarklet contains a unique access token that lets it update your dogears.
+  </p>
 
-  <div>
-    <h3><a href="{{where}}">Where was I?</a></h3>
+  <aside>If you previously generated some bookmarklets that you aren't using anymore, you can revoke their tokens; click your username at the top of the site to go to your account page, and look for tokens that haven't been used in a long time.</aside>
 
-    <p><strong>Desktop:</strong> Bookmark that link ⬆️</p>
+  <button id="generate-personal-bookmarklet" type="button">Generate personal bookmarklet</button>
 
-    <p><strong>Mobile:</strong> Make a random bookmark, then replace its URL with that text ⬇️</p>
 
-    <button type="button" class="copy-button" data-copy-target="bookmarklet-text-where" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
 
-    <textarea
-      id="bookmarklet-text-where"
-      readonly
-      rows="3"
-      cols="20"
-      spellcheck="false"
-    >{{where}}</textarea>
-  </div>
-</div>
 
-  <div>
-    <h3><a href="{{markWithToken}}">Mark my spot (with token)</a></h3>
+  <p class="only desktop">Next, bookmark the link below! You can drag and drop it onto your bookmarks toolbar, or right-click it and select "bookmark."</p>
 
-    <p><strong>Desktop:</strong> Bookmark that link ⬆️</p>
+  <p class="only ios android">Next, copy the big fugly URL below to your clipboard:</p>
 
-    <p><strong>Mobile:</strong> Make a random bookmark, then replace its URL with that text ⬇️</p>
 
-    <button type="button" class="copy-button" data-copy-target="bookmarklet-text-mark-with-token" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
 
-    <textarea
-      id="bookmarklet-text-mark-with-token"
-      readonly
-      rows="3"
-      cols="20"
-      spellcheck="false"
-    >{{markWithToken}}</textarea>
-  </div>
+  <p class="only ios">Finally, open your bookmarks and tap "edit". Find the bookmark you made earlier, and replace its URL with the URL you just copied.</p>
 
-<h2>Desktop Instructions</h2>
+  <p class="only android">Finally, open your bookmarks and find the bookmark you made earlier. Edit it, and replace its URL with the URL you just copied.</p>
 
-<p>Drag and drop the links above, or right-click the links and select "bookmark."</p>
+  <h3>You're Ready to Go!</h3>
 
-<p>You usually want these on the "bookmark toolbar" or in the menu, so they're easily accessible.</p>
+  <p class="only desktop">To save your place on a site, just click the "🐶 Mark my spot" bookmarklet.</p>
 
-<h2>iOS Instructions (Safari)</h2>
+  <p class="only ios">To save your place on a site:</p>
 
-<p>iOS doesn't want you to bookmark javascript URLs by accident, so it adds an extra step: you have to create a normal bookmark, then manually replace its URL. In more detail:</p>
+  <ul class="only ios">
+    <li>Tap the URL bar to reveal your "Favorites" bookmarks.</li>
+    <li>Tap the icon for "🐶 Mark my spot".</li>
+  </ul>
 
-<ol>
-  <li>Use the share menu to bookmark <em>this</em> page. For easy access, put it in the "favorites" section.</li>
-  <li>Copy the <code>javascript:</code> URL to the clipboard.</li>
-  <li>Open your bookmarks and tap "edit".</li>
-  <li>Edit the bookmark you just made. Rename it, and replace the current URL with the copied <code>javascript:</code> URL.</li>
-</ol>
+  <p class="only ios">If you chose to put the bookmarklet somewhere other than "Favorites", you can activate it from the main bookmarks list instead.</p>
 
-<p>If you put your bookmarklets in "favorites," the fastest way to activate them is to tap the URL bar; a list of icons will appear, and you can tap the icon for your bookmarklet. You can also activate bookmarklets from the main bookmarks sheet.</p>
+  <p class="only ios">If you use a browser other than Safari, the steps to install and use the bookmarklet will be a little different, but most iOS browsers seem to require the same pattern of "bookmark a random page, then replace the URL later" when installing bookmarklets.</p>
 
-<p>Other iOS browsers have their controls in different places, but still use the same "bookmark something random, then replace the name and URL" technique.</p>
+  <p class="only android">To save your place on a site:</p>
 
-<h2>Android Instructions (Chrome)</h2>
+  <ul class="only android">
+    <li>Tap the location bar.</li>
+    <li>Start typing the words "Mark my spot", until the "🐶 Mark my spot" bookmarklet appears in the list of suggestions.</li>
+    <li>Tap the suggestion for "🐶 Mark my spot".</li>
+  </ul>
 
-<p>Chrome on Android uses the same installation technique as iOS Safari:</p>
+  <p class="only android">That's a bit strange, but for some reason Chrome doesn't let you activate bookmarklets by tapping them in the main bookmarks list; only location bar suggestions will work. Optionally, you can rename your bookmarklet to use a unique abbreviation, so you don't have to type as much to make it appear.</p>
 
-<ol>
-  <li>Bookmark <em>this</em> page by going to the "…" menu and tapping the star.</li>
-  <li>Copy the <code>javascript:</code> URL to the clipboard.</li>
-  <li>Open your bookmarks, find the bookmark you made, and edit it. Rename it, and replace the current URL with the copied <code>javascript:</code> URL.</li>
-</ol>
+  <p class="only android">If you use a browser other than Chrome, the steps to install and use the bookmarklet will be a little different. I'm not an expert in Android browsers, but you can probably find decent instructions on your own.</p>
 
-<p>However, <em>activating</em> bookmarklets on Chrome is weird. You must:</p>
+  <h3>One last thing</h3>
 
-<ol>
-  <li>Tap the location bar.</li>
-  <li>Type part of the bookmarklet's name, so it appears in the list of suggestions.</li>
-  <li>Tap the bookmarklet in the suggestions list.</li>
-</ol>
+  <p>Eardogger also supports an optional bookmarklet called "🐶 Where was I?". When you activate it on a site that you've previously dogeared, it jumps directly to your saved location. Just saves a tiny bit of time if you left a tab open but then read further on your phone.</p>
 
-<p>For some reason, Chrome <em>doesn't</em> let you activate bookmarklets by tapping them from the bookmarks list; only the location bar suggestions will work. Because of this, you might want to include a unique abbreviation in your bookmarklet names, so you don't have to type as much to make them appear in the suggestions list.</p>
+  <p>
+    You can install it the same way as the main bookmarklet; just follow the previous instructions, but use
+    <span class="only desktop">the link below</span>
+    <span class="only ios android">the URL below</span>
+    instead of the personal bookmarklet you generated above.
+  </p>
 
-<p>Other Android browsers might do their own things, but if you've gone to the trouble to install a non-default browser on your telephone in the first place, you can probably sort it out.</p>
+  {{> bookmarklet
+    bookmarklet=where
+    name="Where was I?"
+    id="mark"
+  }}
+</section>

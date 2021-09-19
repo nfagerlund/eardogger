@@ -1,0 +1,18 @@
+{{! args: bookmarklet, id, name}}
+<div>
+  <h3><a href="{{bookmarklet}}">🐶 {{name}}</a></h3>
+
+  <p><strong>Desktop:</strong> Bookmark that link ⬆️</p>
+
+  <p><strong>Mobile:</strong> Make a random bookmark, then replace its URL with that text ⬇️</p>
+
+  <button type="button" class="copy-button" data-copy-target="bookmarklet-text-{{id}}" data-status-ready="👯‍♀️" data-status-success="✅" data-status-fail="❓"><span class="status">👯‍♀️</span> Copy to clipboard</button>
+
+  <textarea
+    id="bookmarklet-text-{{id}}"
+    readonly
+    rows="3"
+    cols="20"
+    spellcheck="false"
+  >{{bookmarklet}}</textarea>
+</div>
