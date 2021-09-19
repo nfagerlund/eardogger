@@ -65,9 +65,9 @@ async function bookmarkletText(bookmarkletName: string, token = '') {
 
 // Express query params can be a variety of oddball classes, so this helper
 // resolves them to a plain `number | undefined`.
-function normalizeIntParam(queryParam: any): number | undefined {
+function normalizeIntParam(queryParam: any, defaultValue: number = 1): number | undefined {
   if (typeof queryParam === 'string') {
-    return parseInt(queryParam) || 1;
+    return parseInt(queryParam) || defaultValue;
   } else {
     return undefined;
   }
