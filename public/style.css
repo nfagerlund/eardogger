@@ -267,7 +267,7 @@ form#logout {
 }
 
 .unready {
-  opacity: 0.8;
+  opacity: 0.5;
 }
 
 /* Be good on smalls */
