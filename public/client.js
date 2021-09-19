@@ -181,6 +181,10 @@ document.addEventListener('submit', function(e){
 
 // OK, here's all the stuff where I need to know the page state before doing something:
 whenever(() => {
+  // Reveal copy buttons if they're functional
+  if (navigator.clipboard) {
+    document.body.classList.add('copy-buttons-enabled');
+  }
 
   // "Returning to site in..." countdown timer after dogearing something
   const countdownIndicator = document.getElementById('countdown');

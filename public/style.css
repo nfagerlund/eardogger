@@ -184,6 +184,15 @@ form#logout {
   align-self: self-start;
 }
 
+/* Hide copy buttons by default */
+.copy-button {
+  display: none;
+}
+
+.copy-buttons-enabled .copy-button {
+  display: inline-block;
+}
+
 .delete-button {
   max-width: 6em; /* that's a hack around inability to transition auto values. */
   transition: max-width 1s linear, background-color .5s ease-out;
