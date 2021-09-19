@@ -354,18 +354,37 @@ app.get('/fragments/dogears', function(req, res, next) {
 });
 
 // Install info page
-let cachedBookmarklets: Array<Promise<string>>;
+let cachedWhereBookmarklet = bookmarkletText('where');
 app.get('/install', function(req, res){
-  if (typeof cachedBookmarklets === 'undefined') {
-    cachedBookmarklets = [
-      bookmarkletText('mark'),
-      bookmarkletText('where'),
-      bookmarkletText('markWithToken', 'eardoggerv1.f33994b8-f7fd-40b5-ab74-81f48fcc3185'),
-    ]
-  }
-  Promise.all(cachedBookmarklets).then( ([mark, where, markWithToken]) => {
-    res.render('install', {title: 'Install', mark, where, markWithToken});
+  cachedWhereBookmarklet.then(where => {
+    res.render('install', {title: 'Install', where});
   });
+});
+
+// Personal bookmarklet fragment
+// N.B.! This is done as a GET so it'll slot into the fragment replacer without
+// any fuss, but it creates a new resource and thus should probably be a POST!
+// Sorry about that!
+app.get('/fragments/personalmark', function(req, res, next) {
+  if (req.user) {
+    let now = new Date();
+    let comment = `Personal bookmarklet created ${now.toLocaleDateString()}`;
+    tokens.create(req.user.id, 'write_dogears', comment).then(token => {
+      if (!token.token) {
+        // Something went WAY wrong, and we just can't render this.
+        res.sendStatus(500);
+      } else {
+        bookmarkletText('markWithToken', token.token).then(bookmarklet => {
+          res.render('fragments/personalmark', {
+            layout: false,
+            markWithToken: bookmarklet,
+          });
+        }).catch(err => { return next(err); });
+      }
+    }).catch(err => { return next(err); });
+  } else {
+    res.sendStatus(404);
+  }
 });
 
 // Faq
