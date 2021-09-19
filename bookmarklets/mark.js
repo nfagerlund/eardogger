@@ -22,7 +22,7 @@
     let msg = (txt, auto)=>{
       let m = d.createElement('div');
       Object.assign(m.style, s);
-      m.onclick = function(e){m.remove();};
+      m.onclick = function(){m.remove();};
       m.innerHTML = txt;
       m.place = ()=>{m.style.top = `${window.scrollY + 100}px`; d.body.append(m);};
       m.auto = ()=>{window.setTimeout(()=>{m.remove()}, 3000);};
