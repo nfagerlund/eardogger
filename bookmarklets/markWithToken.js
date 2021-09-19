@@ -4,6 +4,7 @@
 (
   ()=>{
     let d = document;
+    let t = '<TOKEN>';
     let e = 'https://eardogger.com';
     let s = {
       position:'absolute',
@@ -23,7 +24,7 @@
     let msg = (txt, auto)=>{
       let m = d.createElement('div');
       Object.assign(m.style, s);
-      m.onclick = function(e){m.remove();};
+      m.onclick = function(){m.remove();};
       m.innerHTML = txt;
       m.place = ()=>{m.style.top = `${window.scrollY + 100}px`; d.body.append(m);};
       m.auto = ()=>{window.setTimeout(()=>{m.remove()}, 3000);};
@@ -46,7 +47,7 @@
         headers:{
           'Content-Type':'application/json',
           'Accept':'application/json',
-          'Authorization':'Bearer <TOKEN>'
+          'Authorization':'Bearer ' + t
         },
         body:JSON.stringify({current: d.location.href})
       }).then(rs=>{
