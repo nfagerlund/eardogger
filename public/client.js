@@ -182,45 +182,45 @@ document.addEventListener('submit', function(e){
 // OK, here's all the stuff where I need to know the page state before doing something:
 whenever(() => {
 
-// "Returning to site in..." countdown timer after dogearing something
-const countdownIndicator = document.getElementById('countdown');
-if (countdownIndicator) {
-  // we're redirecting soon.
-  var count = 3;
-  function tick() {
-    if (count > 0) {
-      countdownIndicator.innerText = count.toString();
-      setTimeout(tick, count * 300);
-    } else {
-      document.location.href = countdownIndicator.getAttribute('data-returnto');
+  // "Returning to site in..." countdown timer after dogearing something
+  const countdownIndicator = document.getElementById('countdown');
+  if (countdownIndicator) {
+    // we're redirecting soon.
+    var count = 3;
+    function tick() {
+      if (count > 0) {
+        countdownIndicator.innerText = count.toString();
+        setTimeout(tick, count * 300);
+      } else {
+        document.location.href = countdownIndicator.getAttribute('data-returnto');
+      }
+      count--;
     }
-    count--;
+    tick();
   }
-  tick();
-}
 
-// Creating new dogear: Suggest the domain name as the default prefix, but let them customize it
-// if the same domain hosts several sites.
-const createForm = document.getElementById('create-dogear');
-if (createForm && createForm.elements['prefix'] && createForm.elements['prefix'].value) {
-  const prefix = createForm.elements['prefix'];
-  const changePrefix = document.getElementById('change-prefix');
+  // Creating new dogear: Suggest the domain name as the default prefix, but let them customize it
+  // if the same domain hosts several sites.
+  const createForm = document.getElementById('create-dogear');
+  if (createForm && createForm.elements['prefix'] && createForm.elements['prefix'].value) {
+    const prefix = createForm.elements['prefix'];
+    const changePrefix = document.getElementById('change-prefix');
 
-  const prefixHost = (new URL(prefix.defaultValue)).host + '/';
+    const prefixHost = (new URL(prefix.defaultValue)).host + '/';
 
-  prefix.value = prefixHost;
-  prefix.readOnly = true;
-  prefix.classList.add('read-only');
-  changePrefix.style.display = 'inline-block'; // 'cause it's hidden by default.
+    prefix.value = prefixHost;
+    prefix.readOnly = true;
+    prefix.classList.add('read-only');
+    changePrefix.style.display = 'inline-block'; // 'cause it's hidden by default.
 
-  changePrefix.addEventListener('click', function(_e){
-    this.style.display = 'none';
-    prefix.readOnly = false;
-    prefix.classList.remove('read-only');
-    prefix.value = prefix.defaultValue.replace(/^https?:\/\//, '');
-    prefix.focus();
-  });
-}
+    changePrefix.addEventListener('click', function(_e){
+      this.style.display = 'none';
+      prefix.readOnly = false;
+      prefix.classList.remove('read-only');
+      prefix.value = prefix.defaultValue.replace(/^https?:\/\//, '');
+      prefix.focus();
+    });
+  }
 
 }); // end whenever()
 })(); // that's a wrap
