@@ -45,6 +45,10 @@ form p {
   font-family: var(--font-text);
 }
 
+aside {
+  margin: 1em;
+}
+
 button {
   font-size: 16px;
   font-family: var(--font-display);
@@ -256,14 +260,10 @@ form#logout {
   margin-top: -1px;
 }
 
-.tabbed-instructions .only {
+.tabbed-instructions[data-show="desktop"] .only:not(.desktop),
+.tabbed-instructions[data-show="ios"]     .only:not(.ios),
+.tabbed-instructions[data-show="android"] .only:not(.android) {
   display: none;
-}
-
-.tabbed-instructions[data-show="desktop"] .only.desktop,
-.tabbed-instructions[data-show="ios"]     .only.ios,
-.tabbed-instructions[data-show="android"] .only.android {
-  display: unset;
 }
 
 .unready {
