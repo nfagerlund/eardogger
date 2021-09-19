@@ -121,15 +121,18 @@ document.addEventListener('click', function(e){
     helpTarget.classList.toggle('help-hidden');
     that.classList.toggle('help-reveal-active');
   } else if (that.matches('.pagination-link')) {
-    e.preventDefault();
-    replaceFragment(
-      that.getAttribute('data-fragment-url'),
-      that.getAttribute('href'),
-      that.getAttribute('data-fragment-element-id'),
-      that
-    ).catch(() => {
-      document.location.href = that.getAttribute('href');
-    });
+    // Don't mess with cmd/ctrl-click, only plain click!
+    if (!e.metaKey && !e.ctrlKey) {
+      e.preventDefault();
+      replaceFragment(
+        that.getAttribute('data-fragment-url'),
+        that.getAttribute('href'),
+        that.getAttribute('data-fragment-element-id'),
+        that
+      ).catch(() => {
+        document.location.href = that.getAttribute('href');
+      });
+    }
   } else if (that.matches('.copy-button')) {
     // Clipboard copy buttons:
     e.preventDefault();
