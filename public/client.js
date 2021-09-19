@@ -133,6 +133,10 @@ document.addEventListener('click', function(e){
         document.location.href = that.getAttribute('href');
       });
     }
+  } else if (that.matches('.tabs .tab')) {
+    e.preventDefault();
+    document.getElementById(that.getAttribute('data-target'))
+      .setAttribute('data-show', that.getAttribute('data-show'));
   } else if (that.matches('.copy-button')) {
     // Clipboard copy buttons:
     e.preventDefault();
