@@ -3,8 +3,8 @@
     {{#if pagination.prev_page}}
       <a
         class="pagination-link pagination-previous"
-        href="{{page}}?page={{pagination.prev_page}}"
-        data-fragment-url="{{fragment}}?page={{pagination.prev_page}}"
+        href="{{page}}?page={{pagination.prev_page}}{{#if pageSize}}&size={{pageSize}}{{/if}}"
+        data-fragment-url="{{fragment}}?page={{pagination.prev_page}}{{#if pageSize}}&size={{pageSize}}{{/if}}"
         data-fragment-element-id="{{fragment_id}}"
       >Previous</a>
       —
@@ -14,8 +14,8 @@
       —
       <a
         class="pagination-link pagination-next"
-        href="{{page}}?page={{pagination.next_page}}"
-        data-fragment-url="{{fragment}}?page={{pagination.next_page}}"
+        href="{{page}}?page={{pagination.next_page}}{{#if pageSize}}&size={{pageSize}}{{/if}}"
+        data-fragment-url="{{fragment}}?page={{pagination.next_page}}{{#if pageSize}}&size={{pageSize}}{{/if}}"
         data-fragment-element-id="{{fragment_id}}"
       >Next</a>
     {{/if}}

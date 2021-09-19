@@ -14,7 +14,7 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import type { IVerifyOptions as LocalVerifyOptions } from 'passport-local';
 import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import expressHandlebars from 'express-handlebars';
-import { bookmarkletText, resolveFromProjectRoot, normalizeIntParam } from './util';
+import { bookmarkletText, resolveFromProjectRoot, normalizeIntParam, defaultPageSize } from './util';
 // Application object DB helpers
 import * as dogears from './db/dogears';
 import * as users from './db/users';
@@ -36,7 +36,7 @@ const hbsViews = expressHandlebars.create({
   helpers: {
     gt: function(lhs: number, rhs: number) {
       return lhs > rhs;
-    }
+    },
   },
 });
 
@@ -227,15 +227,19 @@ app.post('/changepassword', function(req, res){
 });
 
 // Account page
+// Query params: page, size
 app.get('/account', function(req, res, next){
   if (req.user) {
-    tokens.list(req.user.id, normalizeIntParam(req.query.page)).then(tokensResponse => {
+    let page = normalizeIntParam(req.query.page, 1);
+    let size = normalizeIntParam(req.query.size, defaultPageSize);
+    tokens.list(req.user.id, page, size).then(tokensResponse => {
       let tokensList = templateTokens(tokensResponse.data);
       let pagination = tokensResponse.meta.pagination;
       res.render('account', {
         title: 'Manage account',
         tokens: tokensList,
         pagination,
+        pageSize: req.query.size, // raw, not normalized
       });
     }).catch(err => { return next(err); });
   } else {
@@ -261,15 +265,19 @@ function templateTokens(tokensList: Array<tokens.Token>) {
 
 // Tokens fragment. Not supporting any non-default page size, and not really
 // expecting anyone to ever have > 50 tokens anyway, but still let's do it right.
+// Query params: page, size
 app.get('/fragments/tokens', function(req, res, next) {
   if (req.user) {
-    tokens.list(req.user.id, normalizeIntParam(req.query.page)).then(tokensResponse => {
+    let page = normalizeIntParam(req.query.page, 1);
+    let size = normalizeIntParam(req.query.size, defaultPageSize);
+    tokens.list(req.user.id, page, size).then(tokensResponse => {
       let tokensList = templateTokens(tokensResponse.data);
       let pagination = tokensResponse.meta.pagination;
       res.render('fragments/tokens', {
         layout: false,
         tokens: tokensList,
         pagination,
+        pageSize: req.query.size, // raw, not normalized
       });
     }).catch(err => { return next(err); });
   } else {
@@ -307,14 +315,18 @@ function templateDogears(dogearsList: Array<dogears.Dogear>) {
 }
 
 // Homepage!
+// Query params: page, size
 app.get('/', function(req, res, next) {
   if (req.user) {
+    let page = normalizeIntParam(req.query.page, 1);
+    let size = normalizeIntParam(req.query.size, defaultPageSize);
     let { id, username } = req.user;
-    dogears.list(id, normalizeIntParam(req.query.page)).then(result => {
+    dogears.list(id, page, size).then(result => {
       res.render('index', {
         title: `${username}'s Dogears`,
         dogears: templateDogears(result.data),
         pagination: result.meta.pagination,
+        pageSize: req.query.size, // raw, not normalized
       });
     }).catch(err => { return next(err); });
   } else {
@@ -322,14 +334,18 @@ app.get('/', function(req, res, next) {
   }
 });
 
-// Dogears list as an HTML fragment (just LIs without a surrounding UL)
+// Dogears list as an HTML fragment
+// Query params: page, size
 app.get('/fragments/dogears', function(req, res, next) {
   if (req.user) {
-    dogears.list(req.user.id, normalizeIntParam(req.query.page)).then(result => {
+    let page = normalizeIntParam(req.query.page, 1);
+    let size = normalizeIntParam(req.query.size, defaultPageSize);
+    dogears.list(req.user.id, page, size).then(result => {
       res.render('fragments/dogears', {
         layout: false,
         dogears: templateDogears(result.data),
         pagination: result.meta.pagination,
+        pageSize: req.query.size, // raw, not normalized
       });
     }).catch(err => { return next(err); });
   } else {
