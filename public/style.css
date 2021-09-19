@@ -256,6 +256,20 @@ form#logout {
   margin-top: -1px;
 }
 
+.tabbed-instructions .only {
+  display: none;
+}
+
+.tabbed-instructions[data-show="desktop"] .only.desktop,
+.tabbed-instructions[data-show="ios"]     .only.ios,
+.tabbed-instructions[data-show="android"] .only.android {
+  display: unset;
+}
+
+.unready {
+  opacity: 0.8;
+}
+
 /* Be good on smalls */
 @media screen and (max-width: 400px) {
   body {
@@ -276,7 +290,7 @@ form#logout {
   font-weight: bold;
 }
 
-.help {
+.help, aside {
   font-size: smaller;
 }
 
