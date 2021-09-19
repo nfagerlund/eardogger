@@ -133,6 +133,14 @@ document.addEventListener('click', function(e){
         document.location.href = that.getAttribute('href');
       });
     }
+  } else if (that.matches('#generate-personal-bookmarklet')) {
+    // This one's a one-off, so just hardcode everything.
+    replaceFragment(
+      '/fragments/personalmark',
+      '/install',
+      'generate-personal-bookmarklet-fragment',
+      that
+    );
   } else if (that.matches('.tabs .tab')) {
     e.preventDefault();
     document.getElementById(that.getAttribute('data-target'))
