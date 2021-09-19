@@ -4,6 +4,7 @@ import type { Meta } from './helpers';
 import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import type { User } from './users';
+import { defaultPageSize } from '../util';
 
 type TokenScope = 'write_dogears' | 'manage_dogears';
 
@@ -45,7 +46,7 @@ let create: FTokenCreate = async function(userID: number, scope: TokenScope, com
 
 // Return paginated list of tokens for a user
 type FTokenList = (userId: number, page?: number, size?: number) => Promise<{data: Array<Token>, meta: Meta}>;
-let list: FTokenList = async function(userId: number, page: number = 1, size: number = 50):
+let list: FTokenList = async function(userId: number, page: number = 1, size: number = defaultPageSize):
   Promise<{
     data: Array<Token>,
     meta: Meta,

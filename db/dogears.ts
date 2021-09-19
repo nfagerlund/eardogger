@@ -2,6 +2,7 @@ import { query} from './pg';
 import { buildMeta } from './helpers';
 import type { Meta } from './helpers';
 import { URL } from 'url';
+import { defaultPageSize } from '../util';
 
 const protocolAndWww = /^((https?:\/\/)?((www|m)\.)*)?/;
 function getProtocolAndWww(url: string) {
@@ -89,7 +90,7 @@ let update: FDogearUpdate = async function(userID: number, current: string): Pro
 }
 
 type FDogearList = (userID: number, page?: number, size?: number) => Promise<{data: Array<Dogear>, meta: Meta}>;
-let list: FDogearList = async function(userID: number, page: number = 1, size: number = 50): Promise<{data: Array<Dogear>, meta: Meta}> {
+let list: FDogearList = async function(userID: number, page: number = 1, size: number = defaultPageSize): Promise<{data: Array<Dogear>, meta: Meta}> {
   if (page <= 0 || size <= 0) {
     throw new Error("Neither page nor page size can be <= 0.");
   }

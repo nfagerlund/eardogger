@@ -5,12 +5,15 @@ import path from 'path';
 // outside this file should rely directly on path.resolve() or __dirname.
 const projectRoot = path.resolve(__dirname, '..');
 
+const defaultPageSize = 50;
+
 export {
   readTextFilePromise,
   bookmarkletText,
   projectRoot,
   resolveFromProjectRoot,
   normalizeIntParam,
+  defaultPageSize,
 }
 
 function resolveFromProjectRoot(filePath: string) {
