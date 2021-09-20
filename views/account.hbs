@@ -19,6 +19,20 @@
 
 <h2>Manage access tokens</h2>
 
-Insert explanation here.
+<p>This is a list of your access tokens, which are associated with <a href="/install">personal bookmarklets</a>. <button type="button" class="help-reveal" data-help-target="help-account-access-token">(huh?)</button></p>
+
+<div id="help-account-access-token" class="help help-hidden">
+  <p>When you mark your spot on a site, Eardogger needs to know who you are so it can update the right person's dogears. There's a few ways we could do that:</p>
+
+  <ul>
+    <li>Navigate away from what you're reading to a page on eardogger.com, learn who you are via your login cookie, then update your dogears and send you back to where you were. This is slow, but it's very reliable, so we use it as a fallback.</li>
+    <li>Send an update request to eardogger.com via JavaScript, and include your login cookie with it. This is nice and elegant, and it's what we used to do for fast updates. Unfortunately, to a web browser this looks exactly the same as an ad company spying on you across different sites — we're passing information about your activity on many sites (whatever you're reading) to another site (Eardogger) and correlating it with a persistent identifier (your account), and the browser doesn't really know that in this case you specifically wanted that. Recent versions of Safari have started trying to block cookie-using trackers, which forces our old-style bookmarklets into "slow mode." Ah well.</li>
+    <li>Send an update request via JavaScript, and include a random secret (AKA a "token") that's associated with your account. This is actually very similar to using a login cookie (which also identifies you via some random garbage that we just happen to remember having given you at some point), except that the identifier has to be embedded in the bookmarklet code itself instead of being auto-saved by your browser. That adds an extra step when you're installing the bookmarklet, but it lets us go fast and <em>doesn't</em> look anything like ad tracking, so it works more reliably when tracking protections are turned on.</li>
+  </ul>
+
+  <p>So, the current version of Eardogger's <span class="cartouche">🐶 Mark my spot</span> bookmarklet (as of September 2021) uses the third option: each <a href="/install">personal bookmarklet</a> you generate gets its own unique token. This token lets the bookmarklet act like it's logged in as you, but it can only do certain things. (Specifically, it can only <em>update</em> your dogears; it can't even list them.)</p>
+</div>
+
+<p>If you generated some bookmarketlets that you aren't using anymore, you can revoke their tokens. If you accidentally revoke a token that's still in use, that bookmarklet will keep working but will switch to slow mode. You can <a href="/install">generate a new one</a> to enable fast updates again.</p>
 
 {{> tokens tokens=tokens pagination=pagination}}
