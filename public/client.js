@@ -162,6 +162,11 @@ document.addEventListener('click', function(e){
     e.preventDefault();
     document.getElementById(that.getAttribute('data-target'))
       .setAttribute('data-show', that.getAttribute('data-show'));
+    let tabs = document.querySelectorAll('.tabs .tab');
+    for (let i = 0; i < tabs.length; i++) {
+      tabs[i].classList.remove('active');
+    }
+    that.classList.add('active');
   } else if (that.matches('.copy-button')) {
     // Clipboard copy buttons:
     e.preventDefault();

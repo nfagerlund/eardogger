@@ -19,6 +19,8 @@ footer {
 body {
   --color-disabled: #888;
   --color-danger: #f99;
+  --color-button: #e5e0ff;
+  --color-button-border: grey;
   --font-display: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
   --font-text: "Avenir Next", "Avenir", "Candara", "Verdana", sans-serif;
   --font-mono: "Courier Prime", "Courier", "Courier New", monospace;
@@ -57,8 +59,8 @@ button {
   font-size: 16px;
   font-family: var(--font-display);
   border-radius: 3px;
-  background-color: #e5e0ff;
-  border: 1px solid grey;
+  background-color: var(--color-button);
+  border: 1px solid var(--color-button-border);
   cursor: pointer;
 }
 
@@ -68,7 +70,7 @@ input, .mock-input, textarea {
   margin-top: 5px;
   padding: 5px;
   width: 100%;
-  border: 1px solid grey;
+  border: 1px solid var(--color-button-border);
   border-radius: 3px;
   font-size: 16px;
 }
@@ -262,6 +264,33 @@ form#logout {
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   margin-top: -1px;
+}
+
+.tabs .tab {
+  padding: 1em;
+  margin: 0 .25em;
+  border-top-left-radius: 1em;
+  border-top-right-radius: .5em;
+  border-color: black;
+  border-style: solid;
+  border-width: 1px 1px 0 1px;
+  text-decoration: none;
+  color: black;
+  background-color: var(--color-button);
+}
+
+.tabs .tab.active {
+  background-color: transparent;
+  text-decoration: underline;
+  border-style: dashed;
+}
+
+.tabs {
+  margin-top: 1.5em;
+  border-bottom: 1px black solid;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .tabbed-instructions[data-show="desktop"] .only:not(.desktop),
