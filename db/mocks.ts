@@ -210,7 +210,7 @@ let nickTokens: Array<Token> = [
 ];
 let wrongTokens: Array<Token> = [
   {
-    id: 1,
+    id: 3,
     user_id: 2,
     scope: 'write_dogears',
     created: new Date('2021-09-07T03:58:19.571Z'),
@@ -218,7 +218,7 @@ let wrongTokens: Array<Token> = [
     comment: 'some comment',
   },
   {
-    id: 2,
+    id: 4,
     user_id: 2,
     scope: 'manage_dogears',
     created: new Date('2021-09-07T03:58:19.571Z'),
@@ -226,6 +226,15 @@ let wrongTokens: Array<Token> = [
     comment: 'some comment',
   },
 ];
+let newToken: Token = {
+  id: 5,
+  user_id: 1,
+  scope: 'write_dogears',
+  created: new Date('2021-09-20T03:58:19.571Z'),
+  last_used: null,
+  comment: 'some comment',
+  token: 'eardoggerv1.aaaaa-55555',
+};
 let tokenCleartexts: {[key: string]: Token} = {
   tokenNickWrite: nickTokens[0],
   tokenNickManage: nickTokens[1],
@@ -234,8 +243,7 @@ let tokenCleartexts: {[key: string]: Token} = {
 };
 
 let tokenCreate: FTokenCreate = async function(userID: number, scope: TokenScope, comment: string) {
-  // just care about shape.
-  return nickTokens[1];
+  return newToken;
 }
 
 let tokenList: FTokenList = async function(userId: number, page: number = 1, size: number = 50) {

@@ -136,6 +136,13 @@ describe("/fragments/dogears", () => {
   });
 });
 
+describe("/fragments/personalmark", () => {
+  test("it 404s", async () => {
+    let response = await request(app).get('/fragments/personalmark');
+    expect(response.statusCode).toBe(404);
+  });
+});
+
 describe("POST /signup (new account)", () => {
   test("Creates user and redirects to index on success", async () => {
     let response = await request(app).post('/signup')

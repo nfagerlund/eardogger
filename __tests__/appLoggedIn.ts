@@ -171,6 +171,15 @@ describe("/fragments/dogears", () => {
   });
 });
 
+describe("/fragments/personalmark", () => {
+  test("it renders and contains a new token", async () => {
+    let response = await request(app).get('/fragments/personalmark');
+    expect(response.statusCode).toBe(200);
+    // per tokens.create mock:
+    expect(response.text).toMatch(/eardoggerv1.aaaaa-55555/);
+  });
+});
+
 describe("/mark/:url", () => {
   test("it renders the 'marked' view if update succeeds", async () => {
     let response = await request(app).get('/mark/https%3A%2F%2Fexample.com%2Fcomic%2F25');
