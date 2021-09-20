@@ -49,6 +49,10 @@ aside {
   margin: 1em;
 }
 
+summary {
+  cursor: pointer;
+}
+
 button {
   font-size: 16px;
   font-family: var(--font-display);

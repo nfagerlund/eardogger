@@ -1,17 +1,21 @@
 <h2>Change password</h2>
 
-<form action="/changepassword" method="post" id="changepasswordform">
-  <label for="password">Current password</label>
-  <input type="password" id="password" name="password" />
+<details>
+  <summary>Click here to change your password.</summary>
 
-  <label for="new_password">New password</label>
-  <input type="password" id="new_password" name="new_password" />
+  <form action="/changepassword" method="post" id="changepasswordform">
+    <label for="password">Current password</label>
+    <input type="password" id="password" name="password" />
 
-  <label for="new_password_again">Confirm new password</label>
-  <input type="password" id="new_password_again" name="new_password_again" />
+    <label for="new_password">New password</label>
+    <input type="password" id="new_password" name="new_password" />
 
-  <button type="submit">Change password</button>
-</form>
+    <label for="new_password_again">Confirm new password</label>
+    <input type="password" id="new_password_again" name="new_password_again" />
+
+    <button type="submit">Change password</button>
+  </form>
+</details>
 
 <h2>Manage access tokens</h2>
 
