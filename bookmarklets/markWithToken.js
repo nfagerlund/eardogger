@@ -57,7 +57,7 @@
           b.auto();
         } else if (rs.status === 400) {
           // explain yrself, possibly w/ link to update bookmarklet
-          // expects a {error: "message"} object in the response
+          // expects an {error: "message"} object in the response
           rs.json().then(data=>{
             b.innerHTML = data.error;
             b.place();
@@ -65,14 +65,15 @@
         } else {
           // other http error - 401 not authorized, or 404 bookmark doesn't
           // exist; navigate to old-style update/create page
-          // go();
+          go();
         }
-      }).catch(err=>{
+      }).catch(()=>{
         // request was never sent; navigate to old-style update page
-        // go();
+        go();
       });
     } else {
-      // go();
+      // fetch() not available
+      go();
     }
   }
 )();
