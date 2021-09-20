@@ -85,6 +85,8 @@ let originalHistoryState = null;
 // general-purpose way to update a fragment of a page
 function replaceFragment(fragmentUrl, newPageUrl, fragmentElementId, triggerElement) {
   let fragmentElement = document.getElementById(fragmentElementId);
+  // Stash this _before_ revving up the spinner, so we don't get perma-spin on final back-nav.
+  let previousText = fragmentElement.outerHTML;
   triggerElement.classList.add('busy-fetching');
   return fetch(fragmentUrl, {
     credentials: 'include',
@@ -96,7 +98,7 @@ function replaceFragment(fragmentUrl, newPageUrl, fragmentElementId, triggerElem
           originalHistoryState = {
             fragmentUrl: null,
             fragmentElementId,
-            fragmentText: fragmentElement.outerHTML,
+            fragmentText: previousText,
           }
         }
         // Replace fragment, and update history state:
