@@ -1,7 +1,6 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import { Request, Response, NextFunction } from 'express';
 import request from 'supertest';
-import type { Response as SuperResponse } from 'supertest';
 import { JSDOM } from 'jsdom';
 import * as mocks from '../db/mocks';
 
@@ -93,7 +92,45 @@ describe("index page", () => {
     expect(doc.querySelector('#dogears > li > .current')).toBeTruthy();
     expect(doc.querySelector('#dogears > li > .date')).toBeTruthy();
     expect(doc.querySelector('#dogears > li > .delete-dogear')).toBeTruthy();
+    // No pagination controls if everything fits on one page:
+    expect(doc.querySelector('.pagination')).toBeFalsy();
   });
+
+  test("it accepts page/size query parameters", async () => {
+    let p1response = await request(app).get('/?size=1');
+    expect(p1response.statusCode).toBe(200);
+    let p1doc = makeDoc(p1response.text);
+    // It's a normal dogears list page...
+    expect(p1doc.title).toMatch(/Dogears —/);
+    expect(p1doc.getElementById('dogears')).toBeTruthy();
+    // Pagination controls if there's too much for one page:
+    // (n.b. this depends on the mocks having more than one dogear.)
+    expect(p1doc.querySelector('.pagination')).toBeTruthy();
+    // No page prior to page 1:
+    expect(p1doc.querySelector('.pagination-link.pagination-previous')).toBeFalsy();
+    // Current page display:
+    expect(p1doc.querySelector('.pagination-current')?.textContent).toBe('Page 1 of 2');
+    let nextLink = p1doc.querySelector('.pagination-link.pagination-next');
+    expect(nextLink).toBeTruthy();
+    // Next link preserves size param, goes to next page:
+    expect(nextLink?.getAttribute('href')).toBe('/?page=2&size=1');
+    // Fragment URL 200s:
+    let fragmentUrl = nextLink?.getAttribute('data-fragment-url');
+    expect(typeof fragmentUrl).toBe('string');
+    if (typeof fragmentUrl === 'string') {
+      let p2FragResponse = await request(app).get(fragmentUrl);
+      expect(p2FragResponse.statusCode).toBe(200);
+    }
+    let p2response = await request(app).get('/?page=2&size=1');
+    expect(p2response.statusCode).toBe(200);
+    let p2doc = makeDoc(p2response.text);
+    expect(p2doc.querySelector('.pagination')).toBeTruthy();
+    expect(p2doc.querySelector('.pagination-link.pagination-previous')).toBeTruthy();
+    // No page after page 2:
+    expect(p2doc.querySelector('.pagination-link.pagination-next')).toBeFalsy();
+    // Current page display:
+    expect(p2doc.querySelector('.pagination-current')?.textContent).toBe('Page 2 of 2');
+  })
 });
 
 describe("faq page", () => {
