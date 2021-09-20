@@ -396,7 +396,12 @@ app.get('/faq', function(req, res){
 app.get('/mark/:url', function(req, res){
   if (req.user) {
     dogears.update(req.user.id, req.params.url).then(updatedDogears => {
-      res.render('marked', {title: 'Saved your place', url: req.params.url, updatedDogears});
+      res.render('marked', {
+        title: 'Saved your place',
+        url: req.params.url,
+        updatedDogears,
+        slowMode: true,
+      });
     }).catch(err => {
       if (err instanceof dogears.NoMatchError) {
         res.render('create', {title: 'Dogear this?', url: req.params.url});
