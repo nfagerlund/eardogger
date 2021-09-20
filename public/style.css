@@ -289,7 +289,7 @@ form#logout {
 .tabs {
   margin-top: 1em;
   padding-top: .5em;
-  overflow-y: clip; /* No box-shadow on bottom, this way. */
+  overflow-y: hidden; /* No box-shadow on bottom, this way. */
   border-bottom: 1px black solid;
   display: flex;
   align-items: flex-end;
