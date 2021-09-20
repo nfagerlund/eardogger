@@ -57,7 +57,7 @@ let list: FTokenList = async function(userId: number, page: number = 1, size: nu
   }
   let offset = (page - 1) * size;
   let result = await query(
-    "SELECT id, user_id, scope, created, last_used, comment FROM tokens WHERE user_id = $1 ORDER BY last_used, id DESC LIMIT $2 OFFSET $3",
+    "SELECT id, user_id, scope, created, last_used, comment FROM tokens WHERE user_id = $1 ORDER BY last_used DESC NULLS LAST, id DESC LIMIT $2 OFFSET $3",
     [userId, size, offset]
   );
   let countResult = await query("SELECT COUNT(*) AS count FROM tokens WHERE user_id = $1", [userId]);
