@@ -21,12 +21,13 @@ body {
   --color-danger: #f99;
   --color-button: #e5e0ff;
   --color-button-border: grey;
+  --measure-border-radius: 3px;
+  --measure-input-height: 28px;
   --font-display: "Futura", "Helvetica Neue", helvetica, arial, sans-serif;
   --font-text: "Avenir Next", "Avenir", "Candara", "Verdana", sans-serif;
   --font-mono: "Courier Prime", "Courier", "Courier New", monospace;
   /* still waitin on universal support for "system-ui", sigh. */
   --font-ui: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --input-height: 28px;
   font-family: var(--font-text);
   background-color: #FFF8EB;
   max-width: 70ch;
@@ -58,7 +59,7 @@ summary {
 button {
   font-size: 16px;
   font-family: var(--font-display);
-  border-radius: 3px;
+  border-radius: var(--measure-border-radius);
   background-color: var(--color-button);
   border: 1px solid var(--color-button-border);
   cursor: pointer;
@@ -71,12 +72,12 @@ input, .mock-input, textarea {
   padding: 5px;
   width: 100%;
   border: 1px solid var(--color-button-border);
-  border-radius: 3px;
+  border-radius: var(--measure-border-radius);
   font-size: 16px;
 }
 
 input, button {
-  height: var(--input-height);
+  height: var(--measure-input-height);
 }
 
 textarea {
@@ -87,7 +88,7 @@ textarea {
 
 .mock-input {
   font-family: var(--font-ui);
-  min-height: var(--input-height);
+  min-height: var(--measure-input-height);
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
@@ -309,7 +310,7 @@ form#logout {
 .cartouche {
 	border: 1px black solid;
 	padding: .1em .3em;
-	border-radius: 0.3em;
+	border-radius: var(--measure-border-radius);
 }
 
 /* Be good on smalls */
