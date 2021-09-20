@@ -52,7 +52,11 @@
   </div>
 
   <div id="generate-personal-bookmarklet-fragment">
-    <button id="generate-personal-bookmarklet" type="button">Generate personal bookmarklet</button>
+    {{#if user}}
+      <button id="generate-personal-bookmarklet" type="button">Generate personal bookmarklet</button>
+    {{else}}
+      <p><span class="cartouche">(If you were logged in, this would be a button.)</span></p>
+    {{/if}}
 
     <p class="only desktop unready">Next, bookmark the link below! You can drag and drop it onto your bookmarks toolbar, or right-click it and select "bookmark."</p>
 
