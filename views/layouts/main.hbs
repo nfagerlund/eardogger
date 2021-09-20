@@ -19,14 +19,14 @@
 
       {{#if user}}
         <form id="logout" action="/logout" method="post">
-          <a href="/account">{{user.username}}</a>
+          {{user.username}}
           <button type="submit">Log out</button>
         </form>
       {{/if}}
     </header>
 
     <nav>
-      <a href="/">Home</a> | <a href="/install">Install</a> | <a href="/faq">How to</a>
+      <a href="/">Home</a> | <a href="/install">Install</a> | <a href="/faq">How to</a> | <a href="/account">Account</a>
     </nav>
 
     <main>{{{body}}}</main>
