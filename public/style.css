@@ -282,15 +282,18 @@ form#logout {
 .tabs .tab.active {
   background-color: transparent;
   text-decoration: underline;
-  border-style: dashed;
+  box-shadow: 0 0 .5em grey;
 }
 
 .tabs {
-  margin-top: 1.5em;
+  margin-top: 1em;
+  padding-top: .5em;
+  overflow-y: clip; /* No box-shadow on bottom, this way. */
   border-bottom: 1px black solid;
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .tabbed-instructions[data-show="desktop"] .only:not(.desktop),
