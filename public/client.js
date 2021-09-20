@@ -80,22 +80,34 @@ function deleteToken(id, triggerElement) {
   })
 }
 
+let originalHistoryState = null;
+
 // general-purpose way to update a fragment of a page
 function replaceFragment(fragmentUrl, newPageUrl, fragmentElementId, triggerElement) {
+  let fragmentElement = document.getElementById(fragmentElementId);
   triggerElement.classList.add('busy-fetching');
   return fetch(fragmentUrl, {
     credentials: 'include',
   }).then(response => {
     response.text().then(text => {
       if (response.ok) {
-        document.getElementById(fragmentElementId).outerHTML = text;
+        // Preserve original condition, if this is the first time we're making history:
+        if (!originalHistoryState && !history.state) {
+          originalHistoryState = {
+            fragmentUrl: null,
+            fragmentElementId,
+            fragmentText: fragmentElement.outerHTML,
+          }
+        }
+        // Replace fragment, and update history state:
+        fragmentElement.outerHTML = text;
         history.pushState({fragmentElementId, fragmentText: text}, '', newPageUrl);
       } else {
-        document.getElementById(fragmentElementId).prepend(`Hmm, something went wrong: ${text}`);
+        fragmentElement.prepend(`Hmm, something went wrong: ${text}`);
       }
     });
   }).catch(err => {
-    document.getElementById(fragmentElementId).prepend(`Hmm, something went wrong: ${err}`);
+    fragmentElement.prepend(`Hmm, something went wrong: ${err}`);
   }).finally(() => {
     triggerElement.classList.remove('busy-fetching');
   });
@@ -107,6 +119,9 @@ function replaceFragment(fragmentUrl, newPageUrl, fragmentElementId, triggerElem
 window.addEventListener('popstate', function(e) {
   if (e.state && e.state.fragmentElementId && e.state.fragmentText) {
     let { fragmentElementId, fragmentText } = e.state;
+    document.getElementById(fragmentElementId).outerHTML = fragmentText;
+  } else if (!e.state && originalHistoryState) {
+    let { fragmentElementId, fragmentText } = originalHistoryState;
     document.getElementById(fragmentElementId).outerHTML = fragmentText;
   }
 });
