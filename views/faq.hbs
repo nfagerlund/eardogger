@@ -31,19 +31,13 @@
 
 <h2 id="news">News</h2>
 
-<h3>April 8, 2020</h3>
+<h3>September 20, 2021</h3>
 
-<p>
-I taught Eardogger that "<code>www.</code>" is just decorative, so now it understands that <code>http://example.comic/34</code> and <code>http://www.example.comic/56</code> belong to the same site.
-</p>
+<p>Hey, has anyone else noticed that the "mark my spot" bookmarklet was acting really slow on recent versions of Safari? Like, navigating away from your page and back instead of just popping up a little "saving... done" banner?</p>
 
-<p>
-(Most sites accept both plain and "www" versions of their URLs, and then just redirect you to the owner's preferred format. But I ran into some sites that changed what their preferred format was at some point, which I wasn't expecting! Anyway, now people can do that without breaking your bookmarks.)
-</p>
+<p><em>Well.</em> Turns out this was because of tracking protection! My lil bookmarklet was sending a request in the background that included your Eardogger login cookie, and it was doing so from any number of other sites (i.e. whatever stuff you're trying to mark your spot in), and to a web browser, that looks exactly like an ad-tech company spying on you across the internet.</p>
 
-<p>
-<strong>Addendum, April 19:</strong> Did the same thing for 2007-style "m-dot" mobile site subdomains. A few places (like Webtoons) still do this, even though it's completely heinous and annoying.
-</p>
+<p>I figured that out some time ago, but only recently figured out how to work around it. That workaround is live now! If you go to the <a href="/install">install page</a> and re-generate your "mark my spot" bookmarklet, you'll get to experience the nice fast version of dogearing, no matter how privacy-conscious your browser is.</p>
 
 <h2 id="faq">FAQ</h2>
 
