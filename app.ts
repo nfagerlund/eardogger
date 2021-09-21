@@ -330,7 +330,7 @@ app.get('/', function(req, res, next) {
       });
     }).catch(err => { return next(err); });
   } else {
-    res.render('login', {title: 'Log in'});
+    res.render('login', {title: 'Welcome to Eardogger'});
   }
 });
 
@@ -411,7 +411,7 @@ app.get('/mark/:url', function(req, res){
     })
   } else {
     req.session.returnTo = req.originalUrl;
-    res.render('login', {title: 'Log in'});
+    res.render('login', {title: 'Welcome to Eardogger'});
   }
 });
 
