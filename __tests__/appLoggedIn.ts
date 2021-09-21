@@ -137,7 +137,7 @@ describe("faq page", () => {
   test("it renders", async () => {
     let response = await request(app).get('/faq');
     let doc = makeDoc(response.text);
-    expect(doc.title).toMatch(/^How to/);
+    expect(doc.title).toMatch(/^About/);
     expect(doc.getElementById('what-is')).toBeTruthy();
     expect(doc.getElementById('faq')).toBeTruthy();
   });

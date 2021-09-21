@@ -389,7 +389,7 @@ app.get('/fragments/personalmark', function(req, res, next) {
 
 // Faq
 app.get('/faq', function(req, res){
-  res.render('faq', {title: 'How to'});
+  res.render('faq', {title: 'About Eardogger'});
 });
 
 // UI version of updating a dogear; redirects instead of returning json
