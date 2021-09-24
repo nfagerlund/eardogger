@@ -27,7 +27,7 @@
       m.onclick = function(){m.remove();};
       m.innerHTML = txt;
       m.place = ()=>{m.style.top = `${window.scrollY + 100}px`; d.body.append(m);};
-      m.auto = ()=>{window.setTimeout(()=>{m.remove()}, 3000);};
+      m.auto = ()=>{window.setTimeout(()=>{m.remove()}, 1500);};
 
       m.place();
       if (auto) {
@@ -39,7 +39,7 @@
       d.location.href = e + '/mark/' + encodeURIComponent(d.location.href);
     };
     if (fetch) {
-      let b = msg('Updating dogear...');
+      let b = msg('🐶 Updating dogear...');
       fetch(e + '/api/v1/update', {
         method:'POST',
         mode:'cors',
@@ -52,7 +52,7 @@
         body:JSON.stringify({current: d.location.href})
       }).then(rs=>{
         if (rs.ok) {
-          b.innerHTML = 'Dogear updated';
+          b.innerHTML = '✅ Done!';
           b.place();
           b.auto();
         } else if (rs.status === 400) {
