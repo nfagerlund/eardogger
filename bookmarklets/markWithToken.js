@@ -15,7 +15,7 @@
       boxShadow:'0 15px 20px black',
       borderRadius:'8px',
       textAlign:'center',
-      fontSize:'16px',
+      fontSize:'20px',
       fontFamily:'sans-serif',
       background:'#FFF8EB',
       color:'black',
