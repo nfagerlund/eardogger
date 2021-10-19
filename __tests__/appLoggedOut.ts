@@ -137,7 +137,12 @@ describe("/fragments/dogears", () => {
 });
 
 describe("/fragments/personalmark", () => {
-  test("it 404s", async () => {
+  test("post 404s", async () => {
+    let response = await request(app).post('/fragments/personalmark');
+    expect(response.statusCode).toBe(404);
+  });
+
+  test("get 404s", async () => {
     let response = await request(app).get('/fragments/personalmark');
     expect(response.statusCode).toBe(404);
   });

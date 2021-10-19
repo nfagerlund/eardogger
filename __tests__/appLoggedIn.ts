@@ -172,11 +172,16 @@ describe("/fragments/dogears", () => {
 });
 
 describe("/fragments/personalmark", () => {
-  test("it renders and contains a new token", async () => {
-    let response = await request(app).get('/fragments/personalmark');
-    expect(response.statusCode).toBe(200);
+  test("post renders and contains a new token", async () => {
+    let response = await request(app).post('/fragments/personalmark');
+    expect(response.statusCode).toBe(201);
     // per tokens.create mock:
     expect(response.text).toMatch(/eardoggerv1.aaaaa-55555/);
+  });
+
+  test("get 404s", async () => {
+    let response = await request(app).get('/fragments/personalmark');
+    expect(response.statusCode).toBe(404);
   });
 });
 
