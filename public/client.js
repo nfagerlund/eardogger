@@ -83,12 +83,13 @@ function deleteToken(id, triggerElement) {
 let originalHistoryState = null;
 
 // general-purpose way to update a fragment of a page
-function replaceFragment(fragmentUrl, newPageUrl, fragmentElementId, triggerElement) {
+function replaceFragment(fragmentUrl, newPageUrl, fragmentElementId, triggerElement, method = 'GET') {
   let fragmentElement = document.getElementById(fragmentElementId);
   // Stash this _before_ revving up the spinner, so we don't get perma-spin on final back-nav.
   let previousText = fragmentElement.outerHTML;
   triggerElement.classList.add('busy-fetching');
   return fetch(fragmentUrl, {
+    method,
     credentials: 'include',
   }).then(response => {
     response.text().then(text => {
@@ -156,7 +157,8 @@ document.addEventListener('click', function(e){
       '/fragments/personalmark',
       '/install',
       'generate-personal-bookmarklet-fragment',
-      that
+      that,
+      'POST'
     );
   } else if (that.matches('.tabs .tab')) {
     e.preventDefault();

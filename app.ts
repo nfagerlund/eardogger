@@ -362,10 +362,7 @@ app.get('/install', function(req, res){
 });
 
 // Personal bookmarklet fragment
-// N.B.! This is done as a GET so it'll slot into the fragment replacer without
-// any fuss, but it creates a new resource and thus should probably be a POST!
-// Sorry about that!
-app.get('/fragments/personalmark', function(req, res, next) {
+app.post('/fragments/personalmark', function(req, res, next) {
   if (req.user) {
     let now = new Date();
     let comment = `Personal bookmarklet created ${now.toLocaleDateString()}`;
@@ -375,6 +372,7 @@ app.get('/fragments/personalmark', function(req, res, next) {
         res.sendStatus(500);
       } else {
         bookmarkletText('markWithToken', token.token).then(bookmarklet => {
+          res.status(201);
           res.render('fragments/personalmark', {
             layout: false,
             markWithToken: bookmarklet,
