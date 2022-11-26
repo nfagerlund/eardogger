@@ -18,7 +18,11 @@ The app needs these in order to run properly.
 - `DATABASE_URL` — Postgres connection string. Heroku automatically provides this.
 - `PORT` — Port for webserver to bind to. Heroku and Glitch automatically provide this.
 - `SESSION_SECRET` — Arbitrary secret used for securing user login sessions. No one provides it.
-- `EARDOGGER_INSECURE` - Set this to enable non-`secure` cookies in dev mode.
+- `USE_PROXY` — Should usually be set to something truthy. Express has issues with trying to set `secure` cookies if it _thinks_ it's speaking HTTP to clients, and in a normal deployment TLS gets terminated long before Express gets involved. Symptom of getting this wrong: it won't fuckin' let you log in.
+- `EARDOGGER_INSECURE` - Set this to enable non-`secure` cookies in dev mode. Basically I didn't design these holistically, and there are actually three scenarios:
+    - HTTP all the way through: set this.
+    - HTTPS but TLS gets terminated before us and Express is speaking HTTP: set `USE_PROXY`.
+    - HTTPS all the way through: set neither.
 
 ## Running Migrations
 
