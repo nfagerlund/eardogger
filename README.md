@@ -311,7 +311,7 @@ Private note: Garbage Book has a bunch of notes from when I was setting everythi
     - I dropped Cloudflare for this because it doesn't work very well in front of Fly for whatever reason.
         - Kept throwing 525 error codes. Might be a ciphersuite problem, might be something else, no one really seems to know and it doesn't seem to affect all apps equally, but it's officially Not Recommended, so bye.
         - The CDN features aren't really needed anymore either, because of Fly's statics feature.
-        - The Cloudflare account and config are still around, but they're not really doing anything. I should take them down, probably.
+        - The Cloudflare config for Eardogger is now gone.
     - I always forget how DNS records work, so:
         - You have to grab the static IPv4 and IPv6 addrs that Fly assigned to your app and bring them to Hover's UI.
         - You need two each of A (for v4) and AAAA (for v6) records:
@@ -351,4 +351,5 @@ Mostly the same deal as prod:
 
 - The glitch deployment has rotted, I think; couldn't get it running properly. Oh, actually that's probably a change in the Heroku CLI method for getting the DB creds. Developing on Fly with the dev instance will be easier going forward anyhow.
 - I'm not using Terraform to manage deployments or resources anymore, because there's no off-the-shelf providers that really work well with my current stack. The fly provider is too rudamentary at the moment to do everything the app toml can do.
-- I'm not using Cloudflare anymore (see DNS above).
+- I'm not using Cloudflare anymore (see DNS above), and the config for the site is now removed.
+- All of the Heroku resources for the site are now removed.
