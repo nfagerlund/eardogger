@@ -273,3 +273,82 @@ Outcome | Response
 -|-
 Success | 302 "found" redirect to current location of dogear.
 Can't find bookmark | 404, but probably like, a nice 404.
+
+## Architecture
+
+I forgot to write much of anything down for the first-gen architecture and regretted it! So here's the lowdown on the current setup.
+
+This is definitely TMI, but nothing ought to be especially exploitable without first stealing all of my login credentials for literally everything, and I think it would all be pretty easy to discover if you managed to do that anyway. So let's go ahead and fight the REAL enemy: my flaky-ass memory and the fact that I only do maintenance on this site like once a year.
+
+Private note: Garbage Book has a bunch of notes from when I was setting everything up; look around 2022.11.25 for it.
+
+### Prod Environment
+
+- App container: fly.io
+    - It's the `eardogger-prod` app in Nick's personal organization.
+    - One `shared-cpu-1x` firecracker VM, 256mb ram.
+    - No persistent volumes.
+    - Region: `sea`
+        - Fly uses its own self-hosted regions, apps can run in multiple regions if their scale count allows.
+    - `DATABASE_URL` and `SESSION_SECRET` are in Fly's "secrets" for the app.
+        - DB info can be gotten from Neon dashboard (gotta add the db user password from the Neon entry in Nick's 1pass, at the start of the URL like user:pass)
+        - Session secret is in Nick's 1pass, but also you can always just re-set it and all it'll do is force everyone to log in again.
+    - Other env vars are in the `[env]` section of the deploy config; they're persisted in the remote app database, but they don't appear anywhere in the UI 🤷🏽.
+    - Deployment method: running `fly deploy -c fly.prod.toml` (w/ the fly CLI logged in as Nick) from a local checkout of the repo at the desired commit -- no CI/git-ops remote deployment at this time.
+    - Deployment config: fly.prod.toml in this repo.
+        - It's not the default filename (on purpose!), which is why the `fly` commands all need the `-c` option.
+        - `fly deploy` always uses the local toml file to update the remote state, so it's _sort of_ IAC-ish.
+- Database: neon.tech
+    - "Project": `eardogger`
+    - region: us-west-2 (Oregon)
+        - Neon uses AWS regions.
+        - Region is set per-project at creation time and can't be changed; going to a different region means a full service migration.
+        - Oregon (The Dalles?) and Seattle are close enough that this feels about as snappy as the Heroku config (both components in us-east-1) did. It's probably measurably slower, but not perceptibly.
+    - Database: `eardogger_prod`
+    - Postgres user: `eardogger_prod` (regretting that, should have made the names distinguishable just to help with my inability to read Postgres GRANT statements or connection strings in the correct order.)
+        - The password is in Nick's 1pass under Neon.
+- DNS: Hover
+    - I dropped Cloudflare for this because it doesn't work very well in front of Fly for whatever reason.
+        - Kept throwing 525 error codes. Might be a ciphersuite problem, might be something else, no one really seems to know and it doesn't seem to affect all apps equally, but it's officially Not Recommended, so bye.
+        - The CDN features aren't really needed anymore either, because of Fly's statics feature.
+        - The Cloudflare account and config are still around, but they're not really doing anything. I should take them down, probably.
+    - I always forget how DNS records work, so:
+        - You have to grab the static IPv4 and IPv6 addrs that Fly assigned to your app and bring them to Hover's UI.
+        - You need two each of A (for v4) and AAAA (for v6) records:
+            - Hostname of `@` means the root domain (no subdomains).
+            - Hostname of `*` means every subdomain — just using this to let `www.` through so that I can redirect it to root at the HTTP level in actual app code. If you try to go to any other subdomain, your browser will 🚨 about cert problems (see below).
+        - The `_acme-challenge` CNAME records are for SSL certificate verification, to prove I own the domain — fly's built-in cert stuff uses that, but I think it's passing through to something that Let's Encrypt uses.
+        - The MX record and the mail CNAME don't touch Fly at all and aren't meant to.
+- TLS: Fly / Let's Encrypt
+    - I set this up using Fly's dashboard UI for the eardogger-prod app, though I think you can do it with the fly CLI also.
+    - It's two separate certs: one for the root domain, and one for www. That's because static hostname certs are cheap (10 free and 10¢/mo after that, at time of writing), but wildcard certs are $2/mo.
+    - Yes, I only use the www cert to let people through so I can immediately 301 their asses back to the root domain. That has to happen inside the HTTP protocol boundary, so everything outside that has to treat www as though it's real.
+    - The cert validation step uses CNAME records I set up on Hover (see above). I think there's a way to skip that part, but it can result in transitory weird glitches, so no thx.
+- Monitoring: ..."uptimerobot"?
+    - It pings /status, which returns a 204 no content if all's hunky-dory.
+    - I originally set this up to keep the free Heroku dyno awake, since I didn't need the rest of those free monthly dyno hours and wanted to keep the site lag-free. So that's not necessary anymore.
+    - But it DID properly alert me during the maintenance downtime when I was sorting out the DNS changes, so maybe leave it going.
+    - Yes I am literally an ops neanderthal here, leave me alone.
+
+### Dev Environment
+
+Mostly the same deal as prod:
+
+- App: fly
+    - `eardogger-dev` app in Nick's personal org.
+    - `fly.dev.toml`
+    - https://eardogger-dev.fly.dev
+    - I'm keeping it stopped unless I'm actively testing app changes. (Although it keeps its IP address allocations while down.)
+    - Use `fly scale count 0 -c fly.dev.toml` to halt the app, and I guess count 1 to bring it back up the next time it's time to do some hacking.
+    - I don't think the session secret is recoverable from anywhere, because why bother.
+- DB: neon
+    - Project: `eardogger` (same as prod)
+    - DB: `eardogger_dev`
+    - DB user: `nfagerlund` (Oh right, should probably change that.) Password in Nick's 1pass.
+- DNS and TLS: just the default Fly-hosted stuff, didn't configure any domains other than the fly.dev one.
+
+### Detritus
+
+- The glitch deployment has rotted, I think; couldn't get it running properly. Oh, actually that's probably a change in the Heroku CLI method for getting the DB creds. Developing on Fly with the dev instance will be easier going forward anyhow.
+- I'm not using Terraform to manage deployments or resources anymore, because there's no off-the-shelf providers that really work well with my current stack. The fly provider is too rudamentary at the moment to do everything the app toml can do.
+- I'm not using Cloudflare anymore (see DNS above).
