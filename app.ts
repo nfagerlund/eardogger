@@ -53,6 +53,17 @@ if (process.env.USE_PROXY) {
   app.set('trust proxy', 1);
 }
 
+// Redirect www.domain to the root domain
+function wwwRedirect(req: Request, res: Response, next: NextFunction) {
+  if (req.headers.host?.slice(0,4) === "www.") {
+    let newHost = req.headers.host?.slice(4);
+    return res.redirect(301, `${req.protocol}://${newHost}${req.originalUrl}`);
+  }
+  next();
+}
+
+app.use(wwwRedirect);
+
 // Session handling
 app.use(initializeSession());
 
