@@ -7,7 +7,7 @@ processes = []
 
 [env]
   PORT = "8080"
-  SITE_HOSTNAME = "eardogger-prod.fly.dev"
+  SITE_HOSTNAME = "eardogger.com"
   USE_PROXY = "true"
 
 [experimental]
