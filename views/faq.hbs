@@ -31,13 +31,21 @@
 
 <h2 id="news">News</h2>
 
-<h3>September 20, 2021</h3>
+<h3>November 27, 2022</h3>
 
-<p>Hey, has anyone else noticed that the "mark my spot" bookmarklet was acting really slow on recent versions of Safari? Like, navigating away from your page and back instead of just popping up a little "saving... done" banner?</p>
+<p>I guess it's about time for the yearly-ish maintenance to this site! There've been some changes around here. Here's a brief rundown of everything that's going to be different going forward for my two or three semi-active users:</p>
 
-<p><em>Well.</em> Turns out this was because of tracking protection! My lil bookmarklet was sending a request in the background that included your Eardogger login cookie, and it was doing so from any number of other sites (i.e. whatever stuff you're trying to mark your spot in), and to a web browser, that looks exactly like an ad-tech company spying on you across the internet.</p>
+<ul>
+<li>&nbsp;</li>
+</ul>
 
-<p>I figured that out some time ago, but only recently figured out how to work around it. That workaround is live now! If you go to the <a href="/install">install page</a> and re-generate your "mark my spot" bookmarklet, you'll get to experience the nice fast version of dogearing, no matter how privacy-conscious your browser is.</p>
+<p>...Yep: it was another round of internal or infrastructural updates with no perceptible effect on the function of the site.</p>
+
+<p>What happened is that I'd been running Eardogger on Heroku's free tier (like the scrub that I am), and they decided this year that they were going to shut that free tier down and push all the hobby apps onto their paid plans. Which is absolutely 100% a fair enough decision that I don't begrudge them in the slightest! I've gotten a lot of value out of that free tier, and they didn't have to give me any of it. And they're probably pretty sick of hosting cryptominers or whatever.</p>
+
+<p><strong>However.</strong> Although I'm happy to pay for what I use, Heroku's paid tiers — even the new cheaper ones they just added — are more expensive than an app like Eardogger can justify. I love all three of you, but I don't "ten-plus dollars every month for a single barely-used app" love you. So I had to hustle to get us onto some other platform(s).</p>
+
+<p>I ended up going with <a href="https://fly.io">Fly</a> for the app container, and an upstart serverless Postgres thingy called <a href="https://neon.tech">Neon</a> for the database. Fly's free tier is quite generous (so I'm still living scrub life), but if I end up hosting bunch of other little containerized apps there, the bill for the surplus is more like $2 per. Neon doesn't even have paid tiers yet because it's baby, but it <em>looks</em> like their tech stack is actually novel enough to let them bill much more granularly than any of the existing Postgres-as-a-service outfits do, if they so choose. It'll be interesting to see how that shakes out!</p>
 
 <h2 id="faq">FAQ</h2>
 
