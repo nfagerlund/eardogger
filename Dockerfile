@@ -1,6 +1,6 @@
 FROM debian:bullseye as builder
 
-ARG NODE_VERSION=v12.22.12
+ARG NODE_VERSION=v16.20.0
 ARG YARN_VERSION=latest
 
 RUN apt-get update; apt install -y curl
